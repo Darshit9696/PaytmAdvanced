@@ -1,16 +1,86 @@
-# Paytm Clone: Monorepo Architecture & Data Flow
+# 💸 Paytm Clone
 
-## 1. Three-Layer Pipeline
-* **Frontend Application (`apps/user-app`):** Acts as the interface and API routing layer. It does not handle database logic or credentials directly.
-* **Shared Database Package (`packages/db`):** Houses the Prisma schema, migrations, and the centralized client wrapper. It acts as the single source of truth for the database schema across all apps.
-* **Cloud Database (Neon Postgres):** The secure, external physical storage layer that processes data via a secure SSL connection string.
+A full-stack digital payments application inspired by Paytm, built using a modern monorepo architecture. This project focuses on scalability, clean architecture, and real-world backend concepts such as authentication, wallet management, payment processing, and merchant services.
 
-## 2. The Prisma Singleton Pattern (`packages/db/src/index.ts`)
-* **The Problem:** Next.js uses Fast Refresh in development, which re-executes code files on every save. Standard instantiation (`new PrismaClient()`) spawns a brand-new connection pool on every hot-reload, rapidly crashing the database with "too many connections" errors.
-* **The Solution:** The client is attached to `globalThis` in development. Because `globalThis` persists across hot-reloads, the application reuses the existing active database connection instead of opening a new one.
+> 🚧 This project is currently under active development.
 
-## 3. Why Separate Apps (User App vs. Merchant App)?
-Instead of making the Merchant Dashboard a component or folder inside the User App, it is isolated into its own independent application for three reasons:
-1. **Security:** Keeps sensitive corporate business logic, internal banking integration code, and merchant endpoints completely hidden from regular user-facing frontend bundles.
-2. **Authentication:** Separates standard user OTP/phone logins from complex business role-based access control (RBAC).
-3. **Independent Scaling:** Allows DevOps to scale up infrastructure for the `user-app` during peak transactional traffic (like Friday nights) without wasting resources or money spinning up unneeded instances for the `merchant-app`.
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+
+### Backend
+- Express.js
+- Node.js
+- TypeScript
+
+### Database
+- PostgreSQL (Neon)
+- Prisma ORM
+
+### Monorepo & Tooling
+- Turborepo
+- npm Workspaces
+
+### Version Control
+- Git
+- GitHub
+
+---
+
+## 📁 Project Structure
+
+```
+paytm-advanced-app/
+│
+├── apps/
+│   ├── user-app/        # User-facing application
+│   ├── merchant-app/    # Merchant dashboard
+│   └── web/             # Express backend
+│
+├── packages/
+│   ├── db/              # Prisma schema & database client
+│   ├── ui/              # Shared UI components
+│   ├── eslint-config/
+│   └── typescript-config/
+│
+└── turbo.json
+```
+
+---
+
+## 🚀 Status
+
+Currently implementing:
+
+- ✅ Turborepo setup
+- ✅ Next.js applications
+- ✅ Express backend
+- ✅ PostgreSQL database
+- ✅ Prisma setup
+- 🚧 Authentication
+- 🚧 Wallet System
+- 🚧 Money Transfer
+- 🚧 Merchant Dashboard
+
+---
+
+## 📌 Goal
+
+The objective of this project is to build a production-inspired payment platform while learning:
+
+- Monorepo architecture
+- Full-stack development
+- Database design
+- Authentication & Authorization
+- Payment workflows
+- Scalable backend architecture
+
+---
+
+**More documentation, architecture diagrams, API documentation, and deployment instructions will be added as the project progresses.**
