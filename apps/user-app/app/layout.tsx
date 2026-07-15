@@ -1,3 +1,5 @@
+import { Providers } from "../provider";
+
 export default function RootLayout({
   children,
 }: {
@@ -6,7 +8,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-          {children}
+        {/* "Every component in my application should have access to the authentication session." */}
+        <Providers>
+            {children}
+        </Providers>
       </body>
     </html>
   );

@@ -1,20 +1,24 @@
 import { NextResponse } from "next/server";
-// We import the global prisma instance we created in packages/db/src/index.ts
-import { prisma } from "@repo/db/client";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 export const GET = async () => {
     try {
-        // Spawns a user with a unique email using Math.random() so you can refresh without errors
-        await prisma.user.create({
-            data: {
-                email: `test-${Math.floor(Math.random() * 10000)}@example.com`,
-                name: "Darshit"
-            }
-        });
-        
-        return NextResponse.json({
-            message: "Hi there! User successfully created in your Neon Database."
-        });
+        // "Hey NextAuth, does this incoming request belong to a logged-in user?
+         const session = await getServerSession(authOptions);
+
+         if(session?.user)
+         {
+            return NextResponse.json({
+                user: session.user, 
+                msg : "You are logged in "
+            })
+         }
+         else{
+            return NextResponse.json({
+                msg : "session might be null"
+            })
+         }
     } catch (error: any) {
         return NextResponse.json({
             error: "Something went wrong",
