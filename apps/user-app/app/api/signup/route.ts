@@ -25,7 +25,7 @@ export const POST = async (request: Request) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // 3. Create the user
-        await prisma.user.create({
+       const user = await prisma.user.create({
             data: {
                 name,
                 email,
@@ -33,6 +33,14 @@ export const POST = async (request: Request) => {
                 number: phone
             }
         })
+
+        await prisma.wallet.create({
+        data: {
+            userId: user.id,
+            balance: 10000,
+        },
+
+        });
 
         return NextResponse.json({
             msg: "Signed up successfully",

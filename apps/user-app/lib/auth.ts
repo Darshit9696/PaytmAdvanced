@@ -1,4 +1,4 @@
-import db from "@repo/db/client";
+import { prisma } from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { type AuthOptions } from "next-auth";
@@ -37,7 +37,7 @@ export const authOptions : AuthOptions = {
         }
 
         // 1. Find the user
-        const existingUser = await db.user.findUnique({
+        const existingUser = await prisma.user.findUnique({
           where: {
             number: credentials.phone,
           },
@@ -77,8 +77,11 @@ export const authOptions : AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    async session({ token, session }: any) {
-      session.user.id = token.sub;
+    async session({ token, session }) {
+      if(session.user && token.sub)
+      {
+          session.user.id = token.sub;
+      }
       return session;
     },
   },
