@@ -1,28 +1,28 @@
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import { prisma } from "@repo/db/client";
 
-export const GET = async () => {
-    try {
-        // "Hey NextAuth, does this incoming request belong to a logged-in user?
-         const session = await getServerSession(authOptions);
+export const GET = async (request: Request) => {
 
-         if(session?.user)
-         {
-            return NextResponse.json({
-                user: session.user, 
-                msg : "You are logged in "
-            })
-         }
-         else{
-            return NextResponse.json({
-                msg : "session might be null"
-            })
-         }
-    } catch (error: any) {
-        return NextResponse.json({
-            error: "Something went wrong",
-            details: error.message
-        }, { status: 500 });
-    }
-};
+    console.log(request.url);
+    const { searchParams } = new URL(request.url);
+    console.log(searchParams);
+
+    const id = searchParams.get("id");
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id : Number(id)
+        },
+        select: {
+            id:true,
+            name: true,
+            number: true,
+        },
+    })
+
+    return new Response(JSON.stringify(user), {
+        status : 200,
+    })
+}
