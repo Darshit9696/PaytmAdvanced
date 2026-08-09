@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ShieldCheck, Wallet, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 
@@ -10,7 +10,7 @@ interface Reciever {
     number: string;
 }
 
-export default function TransactionPage() {
+function TransactionContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -76,7 +76,7 @@ export default function TransactionPage() {
                 },
                 body: JSON.stringify({
                     receiverId,
-                    amount : parsedAmount
+                    amount: parsedAmount
                 })
             });
 
@@ -233,5 +233,13 @@ export default function TransactionPage() {
 
             </div>
         </div>
+    );
+}
+
+export default function TransactionPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-slate-400">Loading payment page...</div>}>
+            <TransactionContent />
+        </Suspense>
     );
 }

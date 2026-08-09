@@ -29,8 +29,6 @@ export const authOptions : AuthOptions = {
         },
       },
 
-      
-
       async authorize(credentials: any) {
         if (!credentials?.phone || !credentials?.password) {
           return null;

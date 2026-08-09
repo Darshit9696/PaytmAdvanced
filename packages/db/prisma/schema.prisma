@@ -14,18 +14,36 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  number    String   @unique
-  email     String?  @unique
+  id        Int     @id @default(autoincrement())
+  number    String  @unique
+  email     String? @unique
   name      String
   password  String
 
-
   wallet Wallet?
 
+  sentTransactions     Transaction[] @relation("Sender")
+  receivedTransactions Transaction[] @relation("Receiver")
+
+  bankAccount BankAccount?
+
+  onRampTransactions  OnRampTransaction[]
+  offRampTransactions OffRampTransaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model OffRampTransaction {
+  id        Int             @id @default(autoincrement())
+  token     String          @unique
+  amount    Int
+  provider  String
+  status    OffRampStatus
+  startTime DateTime        @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 }
 
 model Wallet {
@@ -38,14 +56,18 @@ model Wallet {
 }
 
 model Transaction {
-  id          Int @id @default(autoincrement())
+  id         Int @id @default(autoincrement())
 
-  amount      Int
+  amount     Int
+  note       String?
 
-  senderId    Int
-  receiverId  Int
+  senderId   Int
+  receiverId Int
 
-  createdAt   DateTime @default(now())
+  sender   User @relation("Sender", fields: [senderId], references: [id])
+  receiver User @relation("Receiver", fields: [receiverId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 model Merchant {
@@ -62,6 +84,41 @@ model Merchant {
   updatedAt     DateTime @updatedAt
 }
 
+model OnRampTransaction {
+  id        Int          @id @default(autoincrement())
+  token     String       @unique
+  amount    Int
+  provider  String
+  status    OnRampStatus
+  startTime DateTime     @default(now())
+
+  userId    Int
+  user      User         @relation(fields: [userId], references: [id])
+}
+
+model BankAccount {
+  id        Int    @id @default(autoincrement())
+  userId    Int    @unique
+
+  accountNumber String @unique
+  balance   Int @default(50000)
+
+  bankName  String @default("HDFC")
+
+  user      User @relation(fields: [userId], references: [id])
+}
+
+enum OnRampStatus {
+  Processing
+  Success
+  Failure
+}
+
+enum OffRampStatus {
+  Processing
+  Success
+  Failure
+}
 enum AuthType {
   CREDENTIALS
   GOOGLE

@@ -19,7 +19,6 @@
       }
     ],
     "paths": {
-      // Whenever you see @/something, treat it as ./something from the project root.
       "@/*": ["./*"]
     }
   },

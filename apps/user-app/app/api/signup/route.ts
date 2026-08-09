@@ -23,15 +23,28 @@ export const POST = async (request: Request) => {
 
         // 2. Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
+        
 
+
+        const accountNumber = Math.floor(
+            100000000000 + Math.random() * 900000000000
+        ).toString();
+        
         // 3. Create the user
        const user = await prisma.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
-                number: phone
-            }
+                number: phone,
+                
+                bankAccount : {
+                    create : 
+                    {
+                        accountNumber,
+                    },
+                },
+            },
         })
 
         await prisma.wallet.create({

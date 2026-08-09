@@ -1,25 +1,56 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
+import { usePathname } from "next/navigation";
+import { LayoutDashboard, Send, History, Store, User } from "lucide-react";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname(); // Tracks current URL path automatically
+
   return (
-    <div className="flex h-screen bg-slate-100">
+    <div className="flex h-screen bg-slate-100 font-sans">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-slate-200 flex flex-col p-6 hidden md:flex">
-        <div className="text-2xl font-bold text-blue-900 mb-8 flex items-center gap-2">
-           Paytm 
+        <div className="text-2xl font-black text-[#002e6e] mb-8 tracking-tight">
+          Paytm 
         </div>
 
-        <nav className="flex-1 space-y-2">
-          <SidebarItem href="/dashboard" icon="🏠" label="Dashboard" active />
-          <SidebarItem href="/dashboard/transfer" icon="💸" label="Send Money" />
-          <SidebarItem href="/dashboard/transactions" icon="📜" label="Transactions" />
-          <SidebarItem href="/dashboard/merchant" icon="🏪" label="Merchant" />
-          <SidebarItem href="/dashboard/profile" icon="👤" label="Profile" />
+        <nav className="flex-1 space-y-1.5">
+          <SidebarItem 
+            href="/dashboard" 
+            icon={<LayoutDashboard className="w-5 h-5" />} 
+            label="Dashboard" 
+            active={pathname === "/dashboard"} 
+          />
+          <SidebarItem 
+            href="/dashboard/transfer" 
+            icon={<Send className="w-5 h-5" />} 
+            label="Send Money" 
+            active={pathname === "/dashboard/transfer"} 
+          />
+          <SidebarItem 
+            href="/dashboard/transactions" 
+            icon={<History className="w-5 h-5" />} 
+            label="Transactions" 
+            active={pathname === "/dashboard/transactions"} 
+          />
+          <SidebarItem 
+            href="/dashboard/merchant" 
+            icon={<Store className="w-5 h-5" />} 
+            label="Merchant" 
+            active={pathname === "/dashboard/merchant"} 
+          />
+          <SidebarItem 
+            href="/dashboard/profile" 
+            icon={<User className="w-5 h-5" />} 
+            label="Profile" 
+            active={pathname === "/dashboard/profile"} 
+          />
         </nav>
       </aside>
 
@@ -38,21 +69,23 @@ function SidebarItem({
   active = false,
 }: {
   href: string;
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   active?: boolean;
 }) {
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
         active
-          ? "bg-blue-50 text-blue-600 font-semibold"
-          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+          ? "bg-[#00baf2]/10 text-[#002e6e] font-bold shadow-sm border-l-4 border-[#00baf2] rounded-l-none"
+          : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
       }`}
     >
-      <span className="text-lg">{icon}</span>
-      {label}
+      <span className={`transition-colors ${active ? "text-[#00baf2]" : "text-slate-400"}`}>
+        {icon}
+      </span>
+      <span className="text-sm">{label}</span>
     </Link>
   );
 }

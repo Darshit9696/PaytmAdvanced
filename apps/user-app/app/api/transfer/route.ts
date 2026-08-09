@@ -20,7 +20,6 @@ export const POST = async (request: Request) => {
     const receiverId = body.receiverId;
     console.log(receiverId);
     
-        
     const requiredAmount = body.amount;
 
     const receiverWallet = await prisma.wallet.findUnique({
@@ -56,7 +55,6 @@ export const POST = async (request: Request) => {
             { status: 400 }
         );
     }
-
 
     const senderWallet = await prisma.wallet.findUnique({
         where: {
@@ -106,6 +104,15 @@ export const POST = async (request: Request) => {
                     }
                 }
             })
+
+            await tx.transaction.create({
+                data: {
+                    senderId: Number(senderId),
+                    receiverId: Number(receiverId),
+                    amount: requiredAmount,
+                    note: body.note || null
+                }
+            });
 
             return {
                 senderId: Number(senderId),

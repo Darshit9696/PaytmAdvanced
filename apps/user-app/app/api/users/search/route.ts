@@ -16,6 +16,11 @@ export const GET = async (request: Request) => {
                 contains: query!,
                 mode: "insensitive",
             }
+        },
+        select : {
+            id : true,
+            name : true,
+            number : true,
         }
     })
 

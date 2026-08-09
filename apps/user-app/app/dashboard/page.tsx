@@ -1,8 +1,11 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; // or your auth options path
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@repo/db/client";
 import { SearchUsers } from "@/components/SearchUsers";
+import Link from "next/link";
+import { ArrowUpRight, ArrowDownLeft, Plus } from "lucide-react";
+import { DynamicTimerBanner } from "@/components/DynamicTimerBanner";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -11,94 +14,142 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const userId = Number(session.user.id);
+
+  // Fetch user profile + wallet balance + recent real DB transactions
   const user = await prisma.user.findUnique({
-    where: {
-      id: Number(session.user.id),
-    },
+    where: { id: userId },
     include: {
       wallet: true,
     },
   });
 
+  // Pull last 4 transactions involving this user from your databasen for the recent transactions card
+  const dbTransactions = await prisma.transaction.findMany({
+    where: {
+      OR: [{ senderId: userId }, { receiverId: userId }],
+    },
+    take: 4,
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      sender: true,
+      receiver: true,
+    },
+  });
+
+  // Simple query to get distinct people you've interacted with for "Quick Send"
+  const recentInteractions = await prisma.transaction.findMany({
+    where: { senderId: userId },
+    take: 5,
+    orderBy: { createdAt: "desc" },
+    distinct: ["receiverId"],
+    include: { receiver: true },
+  });
+
   return (
-    // max-w-5xl
-    // Sets the maximum width of the container. basically makes the box not stretch too much on large screens.
-    // mx means margin-left and margin-right.So the container becomes centered.
-    // space-y-6 adds vertical spacing btw all direct child elements.
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6 font-sans">
       {/* Header Greeting */}
       <div>
-        {/* md means medium screens and larger. mobile -> 2xl and medium and large screens pe 3xl */}
-        <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
+        <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
           Hi, {user?.name || "User"} 👋
         </h1>
-        <p className="text-slate-500 text-sm">Here is your financial summary</p>
+        <p className="text-slate-500 text-sm mt-0.5">Here is your financial summary</p>
       </div>
 
-      {/* 1. Balance Card */}
-      {/* relative : "Children using absolute positioning should use this card as their reference." */}
-      {/* justify-between : Pushes the two children to opposite ends. */}
-      <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-lg relative overflow-hidden">
-        <div className="flex justify-between items-start">
+      {/* 1. Dynamic Balance Card */}
+      <div className="bg-[#06244f] text-white rounded-2xl p-6 shadow-xl relative overflow-hidden border border-slate-800/20">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
-            <p className="text-slate-400 text-sm font-medium">Available Balance</p>
-            {/* mt : margin from top to be 1 */}
-            <h2 className="text-4xl font-extrabold mt-1">{user?.wallet?.balance?.toFixed(2)?.toString() || "0.00"}</h2>
-            <p className="text-emerald-400 text-sm mt-2 font-medium">
-              ↑ +₹250 Today
-            </p>
+            <p className="text-cyan-200/80 text-xs font-bold uppercase tracking-wider">Available Balance</p>
+            <h2 className="text-4xl font-black mt-1.5 tracking-tight">
+              ₹{(user?.wallet?.balance ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+            </h2>
           </div>
-          <span className="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-full">
-            Updated 2 mins ago
-          </span>
+
+          {/* On-Ramp and Off-Ramp Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            {/* Primary Action: Add Money */}
+            <Link
+              href="/dashboard/on-ramp"
+              className="h-11 bg-[#00baf2] hover:bg-sky-500 text-white px-6 rounded-xl text-sm font-bold transition-all duration-200 hover:scale-[1.02] shadow-sm text-center flex items-center justify-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add Money
+            </Link>
+
+            {/* Secondary Action: Withdraw */}
+            <Link
+              href="/dashboard/withdraw"
+              className="h-11 bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 px-6 rounded-xl text-sm font-bold transition-all duration-200 hover:scale-[1.02] shadow-sm text-center flex items-center justify-center gap-2"
+            >
+              <ArrowDownLeft className="w-4 h-4 text-slate-600" />
+              Withdraw
+            </Link>
+          </div>
         </div>
       </div>
 
-     <SearchUsers/>
+      {/* 2. Interactive Search Area */}
+      <SearchUsers />
 
       {/* 3. Bottom Grid Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Recent Transactions Card */}
+
+        {/* Real DB Recent Transactions Card */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="font-bold text-slate-800">Recent Transactions</h3>
-            <button className="text-xs text-blue-600 font-semibold hover:underline">
+            <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider text-slate-400">Recent Transactions</h3>
+            <Link href="/dashboard/transactions" className="text-xs text-[#00baf2] font-bold hover:underline">
               View All
-            </button>
+            </Link>
           </div>
 
-          <div className="space-y-3">
-            <TransactionItem
-              name="Aryan"
-              type="sent"
-              amount="₹500"
-              date="Today, 2:15 PM"
-            />
-            <TransactionItem
-              name="Rahul"
-              type="received"
-              amount="₹300"
-              date="Yesterday"
-            />
-            <TransactionItem
-              name="Neel"
-              type="sent"
-              amount="₹1,200"
-              date="14 July"
-            />
+          <div className="space-y-1 divide-y divide-slate-100">
+            {dbTransactions.length === 0 ? (
+              <p className="text-sm text-slate-400 py-4 text-center">No recent wallet transactions found.</p>
+            ) : (
+              dbTransactions.map((tx) => {
+                const isSent = tx.senderId === userId;
+                const displayUser = isSent ? tx.receiver : tx.sender;
+                return (
+                  <TransactionItem
+                    key={tx.id}
+                    name={displayUser.name}
+                    isSent={isSent}
+                    amount={tx.amount}
+                    date={new Date(tx.createdAt).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  />
+                );
+              })
+            )}
           </div>
         </div>
 
-        {/* Quick Transfer / Favorites Card */}
+        {/* Real Quick Send Favorites Card */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <h3 className="font-bold text-slate-800">Quick Send</h3>
-          <div className="flex items-center gap-4 overflow-x-auto pb-2">
-            <QuickUser name="Aryan" phone="9876543210" />
-            <QuickUser name="Rahul" phone="9123456789" />
-            <QuickUser name="Neel" phone="9988776655" />
-            <QuickUser name="Dhruv" phone="9112233445" />
+          <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider text-slate-400">Quick Send</h3>
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+            {recentInteractions.length === 0 ? (
+              <p className="text-xs text-slate-400 py-4 w-full text-center">People you pay will appear here.</p>
+            ) : (
+              recentInteractions.map((interaction) => (
+                <QuickUser
+                  key={interaction.id}
+                  name={interaction.receiver.name}
+                  phone={interaction.receiver.number}
+                />
+              ))
+            )}
           </div>
         </div>
+
       </div>
     </div>
   );
@@ -107,48 +158,48 @@ export default async function DashboardPage() {
 {/* Helper Component: Transaction Row */ }
 function TransactionItem({
   name,
-  type,
+  isSent,
   amount,
   date,
 }: {
   name: string;
-  type: "sent" | "received";
-  amount: string;
+  isSent: boolean;
+  amount: number;
   date: string;
 }) {
-  const isSent = type === "sent";
   return (
-    <div className="flex justify-between items-center p-2 rounded-lg hover:bg-slate-50 transition-colors">
+    <div className="flex justify-between items-center py-3 first:pt-0 last:pb-0 transition-colors">
       <div className="flex items-center gap-3">
         <div
-          className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs ${isSent ? "bg-red-100 text-red-600" : "bg-emerald-100 text-emerald-600"
+          className={`w-9 h-9 rounded-full flex items-center justify-center border ${isSent ? "bg-red-50 border-red-100 text-red-500" : "bg-emerald-50 border-emerald-100 text-emerald-600"
             }`}
         >
-          {isSent ? "↑" : "↓"}
+          {isSent ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownLeft className="w-4 h-4" />}
         </div>
         <div>
-          <p className="text-sm font-medium text-slate-800">{name}</p>
-          <p className="text-xs text-slate-400">{date}</p>
+          <p className="text-sm font-bold text-slate-800">{name}</p>
+          <p className="text-[11px] text-slate-400 font-medium font-mono">{date}</p>
         </div>
       </div>
-      <span
-        className={`text-sm font-bold ${isSent ? "text-slate-800" : "text-emerald-600"
-          }`}
-      >
-        {isSent ? `-${amount}` : `+${amount}`}
+      {/* Updated: Changed text-base font-black tracking-tight to text-sm font-medium */}
+      <span className={`text-sm font-medium ${isSent ? "text-red-600" : "text-emerald-600"}`}>
+        {isSent ? `-${amount.toLocaleString("en-IN")}` : `+${amount.toLocaleString("en-IN")}`}
       </span>
     </div>
   );
 }
 
-{/* Helper Component: Quick Send Avatar */ }
+{/* Helper Component: Quick Send Action Avatar Redirect Link */ }
 function QuickUser({ name, phone }: { name: string; phone: string }) {
   return (
-    <button className="flex flex-col items-center gap-2 p-3 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all min-w-[80px]">
-      <div className="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center text-slate-700 font-bold text-sm">
+    <Link
+      href={`/dashboard/transfer?name=${encodeURIComponent(name)}&phone=${phone}`}
+      className="flex flex-col items-center gap-2 p-3 rounded-xl border border-slate-100 hover:border-[#00baf2] hover:bg-cyan-50/30 transition-all min-w-[84px] text-center"
+    >
+      <div className="w-11 h-11 bg-cyan-50 border border-cyan-100 rounded-full flex items-center justify-center text-[#002e6e] font-black text-xs uppercase shadow-inner">
         {name[0]}
       </div>
-      <span className="text-xs font-semibold text-slate-700">{name}</span>
-    </button>
+      <span className="text-[11px] font-bold text-slate-700 truncate max-w-[72px]">{name.split(" ")[0]}</span>
+    </Link>
   );
 }
