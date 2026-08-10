@@ -6,72 +6,18 @@ import { type AuthOptions } from "next-auth";
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
-      id: "credentials",
-      name: "User Credentials",
-
-      credentials: {
-        phone: {
-          label: "Phone Number",
-          type: "text",
-          placeholder: "9876543210",
-        },
-        password: {
-          label: "Password",
-          type: "password",
-        },
-      },
-
-      async authorize(credentials: any) {
-        if (!credentials?.phone || !credentials?.password) {
-          return null;
-        }
-
-        // 1. Find the user
-        const existingUser = await prisma.user.findUnique({
-          where: {
-            number: credentials.phone,
-          },
-        });
-
-        if (!existingUser) {
-          return null;
-        }
-
-        // 2. Compare passwords
-        const passwordMatched = await bcrypt.compare(
-          credentials.password,
-          existingUser.password
-        );
-
-        if (!passwordMatched) {
-          return null;
-        }
-
-        // 3. Login successful
-        return {
-          id: existingUser.id.toString(),
-          name: existingUser.name,
-          email: existingUser.email,
-          role: "user",
-        };
-      },
-    }),
-
-    CredentialsProvider({
-      id: "merchant-credentials",
       name: "Merchant Credentials",
-
       credentials: {
         email: {
           label: "Email",
           type: "email",
+          placeholder: "merchant@business.com",
         },
         password: {
           label: "Password",
           type: "password",
         },
       },
-
       async authorize(credentials: any) {
         if (!credentials?.email || !credentials?.password) {
           return null;
@@ -90,7 +36,7 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
-        // 2. Compare passwords
+        // 2. Compare hashed password
         const passwordMatched = await bcrypt.compare(
           credentials.password,
           existingMerchant.password
@@ -100,11 +46,11 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
-        // 3. Login successful
+        // 3. Return authenticated merchant object
         return {
           id: existingMerchant.id.toString(),
-          name: existingMerchant.ownerName,
           email: existingMerchant.email,
+          name: existingMerchant.ownerName,
           businessName: existingMerchant.businessName,
           ownerName: existingMerchant.ownerName,
           role: "merchant",
@@ -118,25 +64,31 @@ export const authOptions: AuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "merchant-secret-key-12345",
+
+  pages: {
+    signIn: "/merchant/login",
+  },
 
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.sub = user.id;
+        token.id = user.id;
         token.email = user.email || "";
-        token.role = (user as any).role || "user";
-        token.businessName = (user as any).businessName;
-        token.ownerName = (user as any).ownerName;
+        token.businessName = user.businessName;
+        token.ownerName = user.ownerName;
+        token.role = "merchant";
       }
       return token;
     },
     async session({ token, session }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-        session.user.role = token.role as string;
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.email = (token.email as string) || "";
+        session.user.name = (token.ownerName as string) || (token.name as string) || "";
         session.user.businessName = token.businessName as string;
         session.user.ownerName = token.ownerName as string;
+        session.user.role = (token.role as string) || "merchant";
       }
       return session;
     },

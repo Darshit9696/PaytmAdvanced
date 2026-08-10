@@ -221,7 +221,6 @@ function SendMoneyContent() {
                             </div>
 
                             <button
-                            onClick={handleTransfer}
                                 type="submit"
                                 disabled={loading || !amount}
                                 className="w-full bg-[#00baf2] hover:bg-[#00a3d5] text-white font-bold py-3.5 rounded-xl shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
