@@ -75,7 +75,7 @@ model Merchant {
   id            Int      @id @default(autoincrement())
   businessName  String
   ownerName     String
-  balance Int   @default(0)
+  balance Int   @default(100000)
   email         String   @unique
   phone         String   @unique
   password      String
@@ -90,13 +90,17 @@ model Merchant {
 
 model MerchantTransaction {
   id         Int      @id @default(autoincrement())
+  transactionId String            @unique
   amount     Int
   merchantId Int
-  customerId Int
+  note          String?
+  customerId Int?
   createdAt  DateTime @default(now())
 
+  status TransactionStatus @default(PENDING)
+
   merchant Merchant @relation(fields: [merchantId], references: [id])
-  customer User     @relation(fields: [customerId], references: [id])
+  customer User?     @relation(fields: [customerId], references: [id])
 }
 
 model OnRampTransaction {
@@ -139,4 +143,10 @@ enum AuthType {
   CREDENTIALS
   GOOGLE
   GITHUB
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }

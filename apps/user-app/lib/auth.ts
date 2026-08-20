@@ -50,64 +50,11 @@ export const authOptions: AuthOptions = {
         // 3. Login successful
         return {
           id: existingUser.id.toString(),
+          userId: existingUser.id.toString(),
           name: existingUser.name,
           email: existingUser.email,
-          role: "user",
-        };
-      },
-    }),
-
-    CredentialsProvider({
-      id: "merchant-credentials",
-      name: "Merchant Credentials",
-
-      credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-        },
-        password: {
-          label: "Password",
-          type: "password",
-        },
-      },
-
-      async authorize(credentials: any) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
-        const emailClean = credentials.email.trim().toLowerCase();
-
-        // 1. Find merchant by email
-        const existingMerchant = await prisma.merchant.findUnique({
-          where: {
-            email: emailClean,
-          },
-        });
-
-        if (!existingMerchant) {
-          return null;
-        }
-
-        // 2. Compare passwords
-        const passwordMatched = await bcrypt.compare(
-          credentials.password,
-          existingMerchant.password
-        );
-
-        if (!passwordMatched) {
-          return null;
-        }
-
-        // 3. Login successful
-        return {
-          id: existingMerchant.id.toString(),
-          name: existingMerchant.ownerName,
-          email: existingMerchant.email,
-          businessName: existingMerchant.businessName,
-          ownerName: existingMerchant.ownerName,
-          role: "merchant",
+          number: existingUser.number,
+          role: "USER",
         };
       },
     }),
@@ -118,25 +65,41 @@ export const authOptions: AuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
+  cookies: {
+    sessionToken: {
+      name: `next-auth.user-session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
+
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
+        token.id = user.id;
+        token.userId = user.id;
+        token.name = user.name || "";
         token.email = user.email || "";
-        token.role = (user as any).role || "user";
-        token.businessName = (user as any).businessName;
-        token.ownerName = (user as any).ownerName;
+        token.number = (user as any).number || "";
+        token.role = "USER";
       }
       return token;
     },
     async session({ token, session }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-        session.user.role = token.role as string;
-        session.user.businessName = token.businessName as string;
-        session.user.ownerName = token.ownerName as string;
+      if (session.user && (token.sub || token.id)) {
+        session.user.id = (token.sub || token.id) as string;
+        session.user.userId = (token.userId || token.sub || token.id) as string;
+        session.user.name = (token.name as string) || "";
+        session.user.email = (token.email as string) || "";
+        session.user.number = (token.number as string) || "";
+        session.user.role = "USER";
       }
       return session;
     },

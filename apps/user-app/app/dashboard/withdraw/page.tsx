@@ -51,173 +51,162 @@ export default function WithdrawMoneyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f7fa] flex flex-col justify-between font-sans selection:bg-cyan-100 selection:text-[#06244f]">
+    <div className="max-w-2xl mx-auto space-y-6 font-sans">
       
-      {/* Top App Header */}
-      <header className="w-full bg-white border-b border-slate-200 py-4 px-6 md:px-12 flex items-center justify-between shadow-xs">
+      {/* Top Header */}
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="text-2xl font-black text-[#06244f] tracking-tight">
-            Paytm
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="p-2 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <div>
+            <h1 className="text-xl font-bold text-white tracking-tight">Withdraw to Bank</h1>
+            <p className="text-xs text-slate-400">Transfer wallet balance to bank account</p>
           </div>
-          <div className="h-5 w-px bg-slate-200" />
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
-            Wallet Withdrawal
-          </span>
+        </div>
+      </div>
+
+      {/* Main Container Card */}
+      <div className="bg-[#0f172a] border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+        
+        {/* Header Banner */}
+        <div className="bg-slate-900 border-b border-slate-800 p-6 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+            <ArrowDownLeft className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-white">Bank Off-Ramp</h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Transfer funds securely from your digital wallet to your verified bank account.
+            </p>
+          </div>
         </div>
 
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#06244f] transition-colors cursor-pointer"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Dashboard</span>
-        </button>
-      </header>
-
-      {/* Main Centered Card Container */}
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8">
-        <div className="w-full max-w-xl bg-white rounded-3xl shadow-xl shadow-blue-900/5 border border-slate-100 overflow-hidden">
+        {/* Form Content */}
+        <form onSubmit={handleWithdraw} className="p-6 sm:p-8 space-y-6">
           
-          {/* Card Header Banner */}
-          <div className="bg-[#06244f] px-8 py-6 text-white flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-[#00baf2] shrink-0">
-              <ArrowDownLeft className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-black tracking-tight">Withdraw to Bank</h1>
-              <p className="text-xs text-cyan-200/80 font-medium mt-0.5">
-                Transfer money securely from your Paytm Wallet to your linked bank account.
-              </p>
+          {/* Amount Input Section */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+              Withdrawal Amount
+            </label>
+            <div className="relative flex items-center bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 focus-within:border-cyan-500/50 transition-all">
+              <span className="text-3xl font-extrabold text-slate-400 mr-2">₹</span>
+              <input
+                type="number"
+                min="1"
+                step="any"
+                placeholder="0"
+                value={amount}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "" || Number(val) >= 0) {
+                    setAmount(val);
+                  }
+                }}
+                className="w-full text-3xl font-extrabold text-white bg-transparent outline-none placeholder-slate-600"
+                autoFocus
+                required
+              />
             </div>
           </div>
 
-          {/* Form Content */}
-          <form onSubmit={handleWithdraw} className="p-6 sm:p-8 space-y-6">
-            
-            {/* Amount Input Section */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                Withdrawal Amount
-              </label>
-              <div className="relative flex items-center bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus-within:border-[#00baf2] focus-within:ring-2 focus-within:ring-[#00baf2]/10 transition-all">
-                <span className="text-3xl font-black text-slate-400 mr-2">₹</span>
-                <input
-                  type="number"
-                  min="1"
-                  step="any"
-                  placeholder="0"
-                  value={amount}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === "" || Number(val) >= 0) {
-                      setAmount(val);
-                    }
-                  }}
-                  className="w-full text-3xl font-black text-slate-900 bg-transparent outline-none placeholder-slate-300"
-                  autoFocus
-                  required
-                />
+          {/* Quick Amount Chips */}
+          <div className="space-y-2.5">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+              Quick Select
+            </span>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              {quickAmounts.map((val) => {
+                const isActive = numericAmount === val;
+                return (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => setAmount(val.toString())}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                      isActive
+                        ? "bg-blue-600 text-white shadow-md"
+                        : "bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800"
+                    }`}
+                  >
+                    ₹{val}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Target Bank Destination Info */}
+          <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-600/20 text-cyan-300 flex items-center justify-center border border-blue-500/30">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-100">Destination Account</p>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">HDFC Bank •••• 8921</p>
               </div>
             </div>
+            <span className="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-md border border-emerald-500/20">
+              Verified
+            </span>
+          </div>
 
-            {/* Quick Amount Chips */}
-            <div className="space-y-2.5">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                Quick Select
-              </span>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                {quickAmounts.map((val) => {
-                  const isActive = numericAmount === val;
-                  return (
-                    <button
-                      key={val}
-                      type="button"
-                      onClick={() => setAmount(val.toString())}
-                      className={`py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
-                        isActive
-                          ? "bg-[#06244f] text-white shadow-sm"
-                          : "bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
-                      }`}
-                    >
-                      ₹{val}
-                    </button>
-                  );
-                })}
-              </div>
+          {/* Payment Summary Box */}
+          <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800 space-y-2.5 text-xs font-medium text-slate-400">
+            <div className="flex justify-between">
+              <span>Withdrawal Amount</span>
+              <span className="font-bold text-slate-100">₹{numericAmount.toFixed(2)}</span>
             </div>
-
-            {/* Target Bank Destination Info */}
-            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#06244f] flex items-center justify-center">
-                  <Building2 className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-800">Linked Bank Account</p>
-                  <p className="text-xs text-slate-500 font-mono mt-0.5">HDFC Bank •••• 8921</p>
-                </div>
-              </div>
-              <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md">Primary</span>
+            <div className="flex justify-between">
+              <span>Transfer Fee</span>
+              <span className="font-bold text-emerald-400">Free (₹0)</span>
             </div>
-
-            {/* Payment Summary Box */}
-            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 space-y-2.5 text-xs font-medium text-slate-600">
-              <div className="flex justify-between">
-                <span>Withdrawal Amount</span>
-                <span className="font-bold text-slate-900">₹{numericAmount.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Transfer Fee</span>
-                <span className="font-bold text-emerald-600">Free (₹0)</span>
-              </div>
-              <div className="h-px bg-slate-200 my-1" />
-              <div className="flex justify-between text-sm">
-                <span className="font-bold text-slate-900">Total Deduction</span>
-                <span className="font-black text-[#06244f]">₹{totalDeduction.toFixed(2)}</span>
-              </div>
+            <div className="h-px bg-slate-800 my-1" />
+            <div className="flex justify-between text-sm">
+              <span className="font-bold text-slate-200">Total Deduction</span>
+              <span className="font-extrabold text-cyan-400">₹{totalDeduction.toFixed(2)}</span>
             </div>
+          </div>
 
-            {/* Information Card */}
-            <div className="bg-cyan-50/60 border border-cyan-100 rounded-2xl p-4 flex items-start gap-3.5">
-              <div className="w-8 h-8 rounded-xl bg-cyan-100 text-[#00baf2] flex items-center justify-center shrink-0 mt-0.5">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <div className="text-xs text-slate-600 space-y-1 font-medium leading-relaxed">
-                <p>Funds will be transferred directly to your primary verified HDFC Bank account instantaneously.</p>
-                <p className="text-slate-400">Standard IMPS/NEFT routing rules apply.</p>
-              </div>
+          {/* Information Card */}
+          <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 flex items-start gap-3.5">
+            <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-cyan-300 flex items-center justify-center shrink-0 mt-0.5">
+              <ShieldCheck className="w-4 h-4" />
             </div>
-
-            {/* Bottom Action Buttons */}
-            <div className="pt-2 flex flex-col sm:flex-row gap-3">
-              <button
-                type="button"
-                onClick={() => router.push("/dashboard")}
-                className="sm:w-auto px-6 py-3.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-sm transition-all duration-200 cursor-pointer text-center"
-              >
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                disabled={numericAmount <= 0 || loading}
-                className="flex-1 bg-[#00baf2] hover:bg-[#00a3d5] active:scale-[0.99] text-white font-bold py-3.5 px-6 rounded-xl shadow-md shadow-cyan-500/10 transition-all duration-200 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              >
-                <span>{loading ? "Processing Transfer..." : "Confirm Withdrawal"}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+            <div className="text-xs text-slate-300 space-y-1 font-medium leading-relaxed">
+              <p>Funds will be transferred directly to your primary verified HDFC Bank account.</p>
+              <p className="text-slate-400">Redirects to HDFC Bank payout gateway.</p>
             </div>
+          </div>
 
-          </form>
+          {/* Bottom Action Buttons */}
+          <div className="pt-2 flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard")}
+              className="sm:w-auto px-6 py-3.5 rounded-xl border border-slate-700/80 text-slate-300 hover:bg-slate-800 font-bold text-sm transition-all cursor-pointer text-center"
+            >
+              Cancel
+            </button>
 
-        </div>
-      </main>
+            <button
+              type="submit"
+              disabled={numericAmount <= 0 || loading}
+              className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span>{loading ? "Processing..." : "Confirm Withdrawal"}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
 
-      {/* Footer */}
-      <footer className="w-full bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-400">
-        <p>© Paytm Wallet 2026. Secure PCI-DSS Compliant Infrastructure.</p>
-      </footer>
+        </form>
 
+      </div>
     </div>
   );
 }

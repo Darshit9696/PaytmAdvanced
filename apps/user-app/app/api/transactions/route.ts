@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (request : NextRequest) => {
     const session = await getServerSession(authOptions);
 
-    if(!session) return NextResponse.json({
+    if (!session || !session.user || session.user.role === "merchant") return NextResponse.json({
         msg : "User not authorized"
     },{
         status : 401,

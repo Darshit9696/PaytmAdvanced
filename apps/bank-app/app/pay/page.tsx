@@ -46,9 +46,7 @@ function HdfcPaymentGatewayContent({
         
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           setUserData(data);
-          console.log(userData);
         }
       } catch (err) {
         console.error("Failed to fetch transaction details", err);
@@ -125,7 +123,6 @@ function HdfcPaymentGatewayContent({
   const currentAmount = userData?.amount ?? amount;
   const currentAccountHolder = userData?.name ?? accountHolder;
   const currentMaskedAccount = getmaskAccount(userData?.bankAccount?.accountNumber) ?? maskedAccount;
-  console.log(currentMaskedAccount);
   
   const currentBalance = userData?.bankAccount?.balance ?? availableBalance;
   const currentTransactionToken = token ?? transactionToken;

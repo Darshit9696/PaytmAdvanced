@@ -27,7 +27,7 @@ import { prisma } from "@repo/db/client";
 export const POST = async (request: NextRequest) => {
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user || !session.user.id) {
+    if (!session || !session.user || !session.user.id || session.user.role === "merchant") {
         return NextResponse.json({
             error: "User not authorized"
         }, { status: 401 });

@@ -11,6 +11,10 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
+  if (session.user.role === "merchant") {
+    redirect("/dashboard/merchant");
+  }
+
   // Fetch the absolute source of truth directly from PostgreSQL on the server
   const dbUser = await prisma.user.findUnique({
     where: {

@@ -7,8 +7,8 @@ import { NextResponse } from "next/server";
 export const POST = async (request: Request) => {
     const session = await getServerSession(authOptions);
 
-    if (!session) {
-        return new NextResponse("Unauthorized", { status: 401 });
+    if (!session || !session.user || session.user.role === "merchant") {
+        return NextResponse.json({ message: "Merchants cannot perform personal user wallet transfers" }, { status: 403 });
     }
     const senderId = session.user?.id;
     
