@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { BarChart3, TrendingUp, Calendar } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { BarChart3, TrendingUp, TrendingDown, Calendar } from "lucide-react";
 
 interface DayData {
   day: string;
@@ -9,21 +9,69 @@ interface DayData {
   transactions: number;
 }
 
+const DEFAULT_DAYS: DayData[] = [
+  { day: "Mon", amount: 0, transactions: 0 },
+  { day: "Tue", amount: 0, transactions: 0 },
+  { day: "Wed", amount: 0, transactions: 0 },
+  { day: "Thu", amount: 0, transactions: 0 },
+  { day: "Fri", amount: 0, transactions: 0 },
+  { day: "Sat", amount: 0, transactions: 0 },
+  { day: "Sun", amount: 0, transactions: 0 },
+];
+
 export function RevenueChart() {
-  const [activeBar, setActiveBar] = useState<number | null>(5); // Default active to Saturday
+  const [data, setData] = useState<DayData[]>(DEFAULT_DAYS);
+  const [totalWeekly, setTotalWeekly] = useState<number>(0);
+  const [changePercentage, setChangePercentage] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeBar, setActiveBar] = useState<number | null>(null);
 
-  const data: DayData[] = [
-    { day: "Mon", amount: 500, transactions: 4 },
-    { day: "Tue", amount: 1200, transactions: 8 },
-    { day: "Wed", amount: 800, transactions: 6 },
-    { day: "Thu", amount: 1500, transactions: 11 },
-    { day: "Fri", amount: 900, transactions: 7 },
-    { day: "Sat", amount: 2000, transactions: 15 },
-    { day: "Sun", amount: 1250, transactions: 9 },
-  ];
+  useEffect(() => {
+    let isMounted = true;
 
-  const maxAmount = Math.max(...data.map((d) => d.amount));
-  const totalWeekly = data.reduce((sum, d) => sum + d.amount, 0);
+    const fetchRevenueData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch("/api/merchant/dashboard");
+        if (!res.ok) {
+          throw new Error(`Failed to fetch revenue data (${res.status})`);
+        }
+        const json = await res.json();
+        if (isMounted) {
+          if (Array.isArray(json.data) && json.data.length > 0) {
+            setData(json.data);
+          }
+          if (typeof json.totalWeekly === "number") {
+            setTotalWeekly(json.totalWeekly);
+          } else if (Array.isArray(json.data)) {
+            setTotalWeekly(
+              json.data.reduce((sum: number, d: DayData) => sum + (d.amount || 0), 0)
+            );
+          }
+          setChangePercentage(json.changePercentage ?? null);
+        }
+      } catch (err: any) {
+        if (isMounted) {
+          console.error("Failed to load revenue data:", err);
+          setError(err.message || "Failed to load revenue data");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchRevenueData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const maxAmount = Math.max(...data.map((d) => d.amount), 1);
 
   return (
     <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
@@ -44,11 +92,31 @@ export function RevenueChart() {
           <div className="flex items-center gap-1.5 text-slate-400">
             <Calendar className="w-3.5 h-3.5" />
             <span>This Week Total:</span>
-            <span className="text-white font-bold font-mono">₹{totalWeekly.toLocaleString("en-IN")}</span>
+            <span className="text-white font-bold font-mono">
+              {loading ? "..." : `₹${totalWeekly.toLocaleString("en-IN")}`}
+            </span>
           </div>
-          <span className="px-2.5 py-1 rounded-full text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> +18.4%
-          </span>
+          {loading ? (
+            <span className="px-2.5 py-1 rounded-full text-[11px] bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1 animate-pulse">
+              <TrendingUp className="w-3 h-3" /> ...
+            </span>
+          ) : changePercentage === null ? (
+            <span className="px-2.5 py-1 rounded-full text-[11px] bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1">
+              —
+            </span>
+          ) : changePercentage > 0 ? (
+            <span className="px-2.5 py-1 rounded-full text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" /> +{changePercentage}%
+            </span>
+          ) : changePercentage < 0 ? (
+            <span className="px-2.5 py-1 rounded-full text-[11px] bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1">
+              <TrendingDown className="w-3 h-3" /> {changePercentage}%
+            </span>
+          ) : (
+            <span className="px-2.5 py-1 rounded-full text-[11px] bg-slate-500/10 text-slate-400 border border-slate-500/20 flex items-center gap-1">
+              0.0%
+            </span>
+          )}
         </div>
       </div>
 
@@ -57,17 +125,26 @@ export function RevenueChart() {
         
         {/* Active Hover Detail Banner */}
         <div className="h-10 bg-slate-900 border border-slate-800 rounded-xl px-4 flex items-center justify-between text-xs">
-          {activeBar !== null ? (
+          {activeBar !== null && data[activeBar] ? (
             <>
               <span className="text-slate-400">
                 <strong className="text-white">{data[activeBar].day}</strong> Sales Volume:
               </span>
               <span className="font-bold text-indigo-400 font-mono">
-                ₹{data[activeBar].amount.toLocaleString("en-IN")} ({data[activeBar].transactions} payments)
+                ₹{data[activeBar].amount.toLocaleString("en-IN")} ({data[activeBar].transactions}{" "}
+                {data[activeBar].transactions === 1 ? "payment" : "payments"})
               </span>
             </>
           ) : (
-            <span className="text-slate-400">Hover over any bar to inspect daily sales detail</span>
+            <span className="text-slate-400">
+              {loading
+                ? "Loading sales data..."
+                : error
+                ? "Failed to load revenue data"
+                : totalWeekly === 0
+                ? "No sales recorded this week. Hover over any bar to inspect daily sales detail"
+                : "Hover over any bar to inspect daily sales detail"}
+            </span>
           )}
         </div>
 

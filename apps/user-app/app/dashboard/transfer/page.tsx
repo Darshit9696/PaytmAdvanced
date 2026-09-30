@@ -20,6 +20,7 @@ function SendMoneyContent() {
     const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
     const [amount, setAmount] = useState("");
     const [note, setNote] = useState("");
+    const [category, setCategory] = useState<string>("Food");
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
@@ -61,6 +62,7 @@ function SendMoneyContent() {
                     receiverId: selectedUser.id,
                     amount: Number(amount),
                     note: note.trim() || null,
+                    category: category || null,
                 }),
             });
 
@@ -203,6 +205,28 @@ function SendMoneyContent() {
                                 className="w-full text-2xl font-extrabold text-white bg-slate-900 p-3.5 rounded-xl border border-slate-800 outline-none focus:border-cyan-500/50 transition-all"
                                 required
                             />
+                        </div>
+
+                        <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                                Expense Category
+                            </label>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                {(["Food", "Shopping", "Travel", "Entertainment"] as const).map((cat) => (
+                                    <button
+                                        type="button"
+                                        key={cat}
+                                        onClick={() => setCategory(cat)}
+                                        className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                                            category === cat
+                                                ? "bg-blue-600/20 text-cyan-300 border-cyan-500/50 shadow-sm"
+                                                : "bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200"
+                                        }`}
+                                    >
+                                        {cat}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
                         <div>

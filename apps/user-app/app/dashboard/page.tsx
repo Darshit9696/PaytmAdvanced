@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@repo/db/client";
 import { SearchUsers } from "@/components/SearchUsers";
+import { DashboardAnalytics } from "@/components/DashboardAnalytics";
 import Link from "next/link";
 import { ArrowUpRight, ArrowDownLeft, Plus, Wallet, History, Send, QrCode } from "lucide-react";
 
@@ -137,7 +138,10 @@ export default async function DashboardPage() {
       {/* 2. Interactive Search Component */}
       <SearchUsers />
 
-      {/* 3. Bottom Grid Section */}
+      {/* 3. Real Backend-backed Analytics, Charts & Top Friends */}
+      <DashboardAnalytics />
+
+      {/* 4. Bottom Grid Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* Recent Transactions Card */}

@@ -24,7 +24,6 @@
 // This time, globalThis.prisma already exists! It completely skips the new PrismaClient() constructor and hand-delivers the original connection right back to your app.
 
 // Your active database connections stay locked at exactly 1, no matter how many hundreds of times you save your files.
-// >>>>>>> 8b77c0e (feat: add shared Zustand store and initial database setup)
 import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };

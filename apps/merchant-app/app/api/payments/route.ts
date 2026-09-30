@@ -20,25 +20,23 @@ import { Transaction, TransactionStatus } from "@prisma/client";
 export const GET = async (request: NextRequest) => {
     const session = await getServerSession(authOptions);
 
-
-    if (!session?.user?.merchantId) {
+    if (!session || !session.user) {
         return NextResponse.json(
             { message: "Unauthorized" },
             { status: 401 }
         );
     }
 
-    // 2. Make sure this is actually a merchant session
-    if (session.user.role !== "MERCHANT") {
+    if (session.user.role && session.user.role !== "MERCHANT") {
         return NextResponse.json(
             { message: "Forbidden" },
             { status: 403 }
         );
     }
 
-    const merchantId = Number(session.user.merchantId);
+    const merchantId = Number(session.user.merchantId || session.user.id);
 
-    if (isNaN(merchantId)) {
+    if (isNaN(merchantId) || merchantId <= 0) {
         return NextResponse.json(
             { message: "Invalid merchant ID" },
             { status: 400 }

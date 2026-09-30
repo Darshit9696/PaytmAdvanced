@@ -30,9 +30,26 @@ model User {
   onRampTransactions  OnRampTransaction[]
   offRampTransactions OffRampTransaction[]
   merchantTransactions MerchantTransaction[]
+  notifications Notification[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id Int @id@default(autoincrement())
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type NotificationType
+  title String
+  message String
+  
+  isRead Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model OffRampTransaction {
@@ -61,6 +78,7 @@ model Transaction {
 
   amount     Int
   note       String?
+  category   String?
 
   senderId   Int
   receiverId Int
@@ -149,4 +167,10 @@ enum TransactionStatus {
   PENDING
   SUCCESS
   FAILED
+}
+
+enum NotificationType {
+  TRANSFER_SENT
+  TRANSFER_RECEIVED
+  PAYMENT_FAILED
 }

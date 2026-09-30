@@ -11,7 +11,7 @@ export const POST = async (request: Request) => {
         return NextResponse.json({ message: "Merchants cannot perform personal user wallet transfers" }, { status: 403 });
     }
     const senderId = session.user?.id;
-    
+
     const body = await request.json();
     console.log(body);
     console.log(typeof body.amount);
@@ -19,21 +19,21 @@ export const POST = async (request: Request) => {
 
     const receiverId = body.receiverId;
     console.log(receiverId);
-    
+
     const requiredAmount = body.amount;
 
     const receiverWallet = await prisma.wallet.findUnique({
-        where : {
-            userId : Number(receiverId)
+        where: {
+            userId: Number(receiverId)
         }
     })
 
     if (!receiverWallet) {
-    return NextResponse.json(
-        { message: "Receiver wallet not found" },
-        { status: 404 }
-    );
-}
+        return NextResponse.json(
+            { message: "Receiver wallet not found" },
+            { status: 404 }
+        );
+    }
 
     if (requiredAmount <= 0) {
         return NextResponse.json(
@@ -71,7 +71,7 @@ export const POST = async (request: Request) => {
 
     if (senderWallet.balance! < requiredAmount) {
         return NextResponse.json(
-            { msg: "Insufficinent Amount" },
+            { msg: "Insufficient Amount" },
             { status: 400 }
         )
     }
@@ -88,6 +88,7 @@ export const POST = async (request: Request) => {
 
                 data: {
                     balance: {
+                        // increment the amount to the receiver wallet
                         increment: requiredAmount
                     }
                 }
@@ -100,6 +101,7 @@ export const POST = async (request: Request) => {
 
                 data: {
                     balance: {
+                        // decrement the amount from the sender wallet
                         decrement: requiredAmount
                     }
                 }
@@ -110,9 +112,55 @@ export const POST = async (request: Request) => {
                     senderId: Number(senderId),
                     receiverId: Number(receiverId),
                     amount: requiredAmount,
-                    note: body.note || null
+                    note: body.note || null,
+                    category: body.category || null,
                 }
             });
+
+            const users = await tx.user.findMany({
+                where: {
+                    id: {
+                        in: [
+                            Number(senderId),
+                            Number(receiverId)
+                        ]
+                    }
+                },
+                select: {
+                    id: true,
+                    name: true
+                }
+            });
+
+            const sender = users.find(
+                user => user.id === Number(senderId)
+            );
+
+            const receiver = users.find(
+                user => user.id === Number(receiverId)
+            );
+
+            if (!sender || !receiver) {
+                throw new Error("Sender or receiver not found");
+            }
+
+            // create the record for the receiver
+            await tx.notification.createMany({
+                data: [
+                    {
+                        userId: Number(receiverId),
+                        title: "Payment Received",
+                        type: "TRANSFER_RECEIVED",
+                        message: `You have successfully received ₹${Number(requiredAmount).toFixed(2)} from ${sender.name}`,
+                    },
+                    {
+                        userId: Number(senderId),
+                        title: "Transfer Successful",
+                        type: "TRANSFER_SENT",
+                        message: `You have successfully sent ₹${Number(requiredAmount).toFixed(2)} to ${receiver.name}`,
+                    }
+                ]
+            })
 
             return {
                 senderId: Number(senderId),
@@ -131,7 +179,7 @@ export const POST = async (request: Request) => {
         return NextResponse.json(
             {
                 message: "Transaction failed",
-                error : e instanceof Error ? e.message : "Unknown error"
+                error: e instanceof Error ? e.message : "Unknown error"
             },
             {
                 // something went wrong , not the user 's fault

@@ -36,15 +36,32 @@ interface MerchantData {
   createdAt: string;
 }
 
+interface DashboardStats {
+  todayRevenue: {
+    amount: number;
+    changePercentage: number | null;
+  };
+  thisMonth: {
+    amount: number;
+    changePercentage: number | null;
+  };
+  successfulPayments: {
+    count: number;
+    successRate: number;
+  };
+  pendingPayments: {
+    count: number;
+  };
+}
+
 export default function MerchantDashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   const [merchant, setMerchant] = useState<MerchantData | null>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
-  const [resStatus, setresStatus] =  useState<"SUCCESS" | "FAILED" | "PENDING">("SUCCESS");;
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -67,26 +84,29 @@ export default function MerchantDashboardPage() {
       setRefreshing(false);
     }
   };
-  
-  useEffect(() => {
+
+  const fetchDashboardStats = async () => {
     try {
-      const fetchPayments = async () => {
-        const res = await fetch(`/api/payments?status=${resStatus}`);
-        console.log(res);
-        console.log(await res.json());
-        
+      const res = await fetch("/api/merchant/dashboard");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.stats) {
+          setStats(data.stats);
+        }
       }
-
-      fetchPayments();
     } catch (err) {
-      console.error("Could not fetch the details " + err)
+      console.error("Failed to fetch dashboard stats", err);
     }
-  },[])
+  };
 
+  const handleRefresh = async () => {
+    await Promise.all([fetchMerchantProfile(), fetchDashboardStats()]);
+  };
 
   useEffect(() => {
     if (status === "authenticated") {
       fetchMerchantProfile();
+      fetchDashboardStats();
     }
   }, [status]);
 
@@ -135,7 +155,7 @@ export default function MerchantDashboardPage() {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={fetchMerchantProfile}
+            onClick={handleRefresh}
             disabled={refreshing}
             className="hidden sm:flex items-center gap-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-colors cursor-pointer"
             title="Refresh merchant balance"
@@ -202,27 +222,35 @@ export default function MerchantDashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             title="Today's Revenue"
-            value="₹2,450"
-            change="+12.4% vs yesterday"
-            isPositive={true}
+            value={stats ? `₹${stats.todayRevenue.amount.toLocaleString("en-IN")}` : "₹0"}
+            change={
+              stats?.todayRevenue.changePercentage !== null && stats?.todayRevenue.changePercentage !== undefined
+                ? `${stats.todayRevenue.changePercentage > 0 ? "+" : ""}${stats.todayRevenue.changePercentage}% vs yesterday`
+                : "— vs yesterday"
+            }
+            isPositive={(stats?.todayRevenue.changePercentage ?? 0) >= 0}
             icon={<DollarSign className="w-5 h-5 text-indigo-400" />}
           />
           <StatCard
             title="This Month"
-            value="₹38,200"
-            change="+18.2% vs last month"
-            isPositive={true}
+            value={stats ? `₹${stats.thisMonth.amount.toLocaleString("en-IN")}` : "₹0"}
+            change={
+              stats?.thisMonth.changePercentage !== null && stats?.thisMonth.changePercentage !== undefined
+                ? `${stats.thisMonth.changePercentage > 0 ? "+" : ""}${stats.thisMonth.changePercentage}% vs last month`
+                : "— vs last month"
+            }
+            isPositive={(stats?.thisMonth.changePercentage ?? 0) >= 0}
             icon={<TrendingUp className="w-5 h-5 text-emerald-400" />}
           />
           <StatCard
             title="Successful Payments"
-            value="127"
-            subtitle="100% processed successfully"
+            value={stats ? stats.successfulPayments.count.toLocaleString() : "0"}
+            subtitle={`${stats?.successfulPayments.successRate ?? 100}% processed successfully`}
             icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />}
           />
           <StatCard
             title="Pending Payments"
-            value="3"
+            value={stats ? stats.pendingPayments.count.toLocaleString() : "0"}
             subtitle="Awaiting customer completion"
             isPositive={false}
             icon={<Clock className="w-5 h-5 text-amber-400" />}

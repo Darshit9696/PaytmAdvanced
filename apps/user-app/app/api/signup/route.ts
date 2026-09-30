@@ -24,8 +24,6 @@ export const POST = async (request: Request) => {
         // 2. Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
         
-
-
         const accountNumber = Math.floor(
             100000000000 + Math.random() * 900000000000
         ).toString();

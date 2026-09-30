@@ -16,6 +16,7 @@ import {
   LogOut
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export default function DashboardLayout({
   children,
@@ -27,6 +28,31 @@ export default function DashboardLayout({
   const { data: session } = useSession();
 
   const userName = session?.user?.name || "User";
+
+  const getPageTitle = (path: string) => {
+    switch (path) {
+      case "/dashboard":
+        return "Dashboard";
+      case "/dashboard/scan":
+        return "Scan & Pay";
+      case "/dashboard/transfer":
+        return "Send Money";
+      case "/dashboard/transactions":
+        return "Transactions";
+      case "/dashboard/merchant":
+        return "Merchant";
+      case "/dashboard/profile":
+        return "Profile";
+      case "/dashboard/on-ramp":
+        return "Add Money";
+      case "/dashboard/withdraw":
+        return "Withdraw";
+      default:
+        return "Dashboard";
+    }
+  };
+
+  const pageTitle = getPageTitle(pathname);
 
   return (
     <div className="flex h-screen bg-[#090d16] text-slate-100 font-sans overflow-hidden">
@@ -115,9 +141,10 @@ export default function DashboardLayout({
       {/* Main Container Wrapper */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         
-        {/* Mobile Header Bar */}
-        <header className="md:hidden bg-[#0b101d] border-b border-slate-800/80 px-4 py-3.5 flex items-center justify-between z-40">
-          <Link href="/" className="flex items-center gap-2.5">
+        {/* Top Navbar / Header Bar */}
+        <header className="bg-[#0b101d] border-b border-slate-800/80 px-4 sm:px-6 md:px-8 py-3 flex items-center justify-between z-40 shrink-0">
+          {/* Mobile Brand Link */}
+          <Link href="/" className="flex items-center gap-2.5 md:hidden">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5">
               <div className="w-full h-full bg-[#090d16] rounded-[6px] flex items-center justify-center">
                 <Zap className="w-4 h-4 text-cyan-400" />
@@ -126,12 +153,25 @@ export default function DashboardLayout({
             <span className="text-base font-extrabold text-white">PayPulse</span>
           </Link>
 
-          <button
-            onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="p-2 text-slate-400 hover:text-white rounded-lg focus:outline-none"
-          >
-            {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Desktop Breadcrumb Context */}
+          <div className="hidden md:flex items-center gap-2 text-xs">
+            <span className="text-slate-400 font-medium">PayPulse</span>
+            <span className="text-slate-600">/</span>
+            <span className="text-cyan-400 font-semibold">{pageTitle}</span>
+          </div>
+
+          {/* Right Controls: Notification Bell + Mobile Toggle */}
+          <div className="flex items-center gap-3">
+            <NotificationBell />
+
+            <button
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              className="md:hidden p-2 text-slate-400 hover:text-white rounded-lg focus:outline-none cursor-pointer"
+              aria-label="Toggle menu"
+            >
+              {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </header>
 
         {/* Mobile Navigation Drawer Overlay */}
