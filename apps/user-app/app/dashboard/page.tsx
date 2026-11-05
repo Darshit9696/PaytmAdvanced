@@ -5,7 +5,7 @@ import { prisma } from "@repo/db/client";
 import { SearchUsers } from "@/components/SearchUsers";
 import { DashboardAnalytics } from "@/components/DashboardAnalytics";
 import Link from "next/link";
-import { ArrowUpRight, ArrowDownLeft, Plus, Wallet, History, Send, QrCode } from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft, Plus, Wallet, History, Send, QrCode, Scale } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -130,6 +130,15 @@ export default async function DashboardPage() {
             >
               <ArrowDownLeft className="w-4 h-4 text-slate-400" />
               <span>Withdraw</span>
+            </Link>
+
+            {/* Reconciliation Audit */}
+            <Link
+              href="/dashboard/reconciliation"
+              className="h-11 bg-blue-950/40 hover:bg-blue-900/40 text-cyan-300 border border-cyan-500/30 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+            >
+              <Scale className="w-4 h-4 text-cyan-400" />
+              <span>Audit Ledger</span>
             </Link>
           </div>
         </div>

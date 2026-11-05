@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { prisma } from "@repo/db/client";
+import { seedMerchantData } from "@/lib/seed-merchant";
 
 export const POST = async (request: Request) => {
   try {
@@ -87,9 +88,16 @@ export const POST = async (request: Request) => {
         phone: phoneClean,
         password: hashedPassword,
         authType: "CREDENTIALS",
-        balance: 0,
+        balance: 25000,
       },
     });
+
+    // 9. Auto-inject demo checkout transactions & starter revenue
+    try {
+      await seedMerchantData(merchant.id);
+    } catch (seedErr) {
+      console.error("Auto-seeding demo data failed for new merchant:", seedErr);
+    }
 
     return NextResponse.json(
       {

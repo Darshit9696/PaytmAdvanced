@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Send, Search, User, CheckCircle2, AlertCircle } from "lucide-react";
 
@@ -8,6 +8,20 @@ interface UserType {
     id: number;
     name: string;
     number: string;
+}
+
+// When the user starts a transfer, the browser makes a random ID (the key) and attaches it to the request.
+// If the same transfer has to be sent again (double-click, bad network, lost response), the browser sends the same ID, so the server knows it’s a repeat and doesn’t move money twice.
+// Once the transfer has a final answer (success, or a clear rejection like “insufficient balance”), the browser makes a new ID for the next transfer.
+function generateIdempotencyKey(): string {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+        return crypto.randomUUID();
+    }
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
 }
 
 function SendMoneyContent() {
@@ -24,15 +38,45 @@ function SendMoneyContent() {
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
+    // Idempotency key, redirect timer, and in-flight guard
+    const isSubmittingRef = useRef(false);
+    // This stores the current key in a useRef, so changing it does not re-render the component.
+    const idempotencyKeyRef = useRef<string>(generateIdempotencyKey());
+    const redirectTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const prevIntentRef = useRef<{ receiverId: number | undefined; amount: string }>({
+        receiverId: selectedUser?.id,
+        amount,
+    });
+
+    // Clean up redirect timer on unmount
+    useEffect(() => {
+        return () => {
+            if (redirectTimerRef.current) {
+                clearTimeout(redirectTimerRef.current);
+            }
+        };
+    }, []);
+
+    // Generate a new idempotency key ONLY when the core transfer intent details change (receiver or amount)
+    useEffect(() => {
+        if (
+            prevIntentRef.current.receiverId !== selectedUser?.id ||
+            prevIntentRef.current.amount !== amount
+        ) {
+            prevIntentRef.current = { receiverId: selectedUser?.id, amount };
+            idempotencyKeyRef.current = generateIdempotencyKey();
+        }
+    }, [selectedUser?.id, amount]);
+
     // Fetch matching users on search query change
     useEffect(() => {
         const fetchUsers = async (query: string) => {
-            if (!searchQuery.trim()) {
+            if (!query.trim()) {
                 setUsers([]);
                 return;
             }
             try {
-                const res = await fetch(`/api/users/search?query=${encodeURIComponent(searchQuery)}`);
+                const res = await fetch(`/api/users/search?query=${encodeURIComponent(query)}`);
                 
                 if (res.ok) {
                     const data = await res.json();
@@ -49,45 +93,69 @@ function SendMoneyContent() {
 
     const handleTransfer = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedUser || !amount || Number(amount) <= 0) return;
 
+        // Synchronous in-flight guard to prevent rapid duplicate submissions
+        if (isSubmittingRef.current) return;
+        const parsedAmount = Number(amount);
+        if (!selectedUser || !Number.isFinite(parsedAmount) || parsedAmount <= 0) return;
+
+        isSubmittingRef.current = true;
         setLoading(true);
         setStatus(null);
 
         try {
             const res = await fetch("/api/transfer", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Idempotency-Key": idempotencyKeyRef.current,
+                },
                 body: JSON.stringify({
                     receiverId: selectedUser.id,
-                    amount: Number(amount),
+                    amount: parsedAmount,
                     note: note.trim() || null,
                     category: category || null,
                 }),
             });
 
-            const data = await res.json();
+            const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                throw new Error(data.message || "Transaction failed");
+                const message = data.message || (res.status >= 500 ? "Transaction failed. Please try again." : "Transaction failed");
+                setStatus({ type: "error", message });
+
+                // After a client error (except 409 Conflict which indicates a transfer in progress), generate a new key
+                if (res.status >= 400 && res.status < 500 && res.status !== 409) {
+                    idempotencyKeyRef.current = generateIdempotencyKey();
+                }
+                // For server 5xx errors or 409, keep the key stable for retrying
+                return;
             }
 
             setStatus({ 
                 type: "success", 
-                message: `Successfully sent ₹${amount} to ${selectedUser.name}` 
+                message: `Successfully sent ₹${amount} to ${selectedUser.name}. Double-entry ledger recorded (1 Debit & 1 Credit committed).` 
             });
 
+            // After a successful response, generate a new key for the next transfer and clear the form
             setAmount("");
             setNote("");
             setSelectedUser(null);
+            idempotencyKeyRef.current = generateIdempotencyKey();
+            prevIntentRef.current = {
+                receiverId: undefined,
+                amount: "",
+            };
 
-            setTimeout(() => {
+            redirectTimerRef.current = setTimeout(() => {
                 router.push("/dashboard");
             }, 2000);
 
         } catch (err: any) {
-            setStatus({ type: "error", message: err.message || "Something went wrong" });
+            // Network error / timeout: outcome may be unknown, keep key stable for retry
+            setStatus({ type: "error", message: err.message || "Network error. Please try again." });
         } finally {
+            isSubmittingRef.current = false;
             setLoading(false);
         }
     };

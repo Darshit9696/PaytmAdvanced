@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ShieldCheck, Wallet, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 
@@ -8,6 +8,17 @@ interface Reciever {
     id: number;
     name: string;
     number: string;
+}
+
+function generateIdempotencyKey(): string {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+        return crypto.randomUUID();
+    }
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
 }
 
 function TransactionContent() {
@@ -26,6 +37,27 @@ function TransactionContent() {
     const [errorMessage, setErrorMessage] = useState("");
     const receiverId = searchParams.get("id");
     const [receiver, setReceiver] = useState<Reciever>();
+
+    // Idempotency key and in-flight guard
+    const isSubmittingRef = useRef(false);
+    const idempotencyKeyRef = useRef<string>(generateIdempotencyKey());
+    const prevIntentRef = useRef<{ receiverId: string | null; amount: string }>({
+        receiverId,
+        amount,
+    });
+
+    useEffect(() => {
+        if (
+            prevIntentRef.current.receiverId !== receiverId ||
+            prevIntentRef.current.amount !== amount
+        ) {
+            prevIntentRef.current = {
+                receiverId,
+                amount,
+            };
+            idempotencyKeyRef.current = generateIdempotencyKey();
+        }
+    }, [receiverId, amount]);
 
 
 
@@ -49,10 +81,12 @@ function TransactionContent() {
 
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
-        const parsedAmount = parseFloat(amount);
+        if (isSubmittingRef.current) return;
+
+        const parsedAmount = Number(amount);
 
         // Initial Guard Checks
-        if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
             setErrorMessage("Please enter a valid amount");
             setStatus("error");
             return;
@@ -64,6 +98,7 @@ function TransactionContent() {
             return;
         }
 
+        isSubmittingRef.current = true;
         setLoading(true);
         setStatus("idle");
         setErrorMessage("");
@@ -72,27 +107,41 @@ function TransactionContent() {
             const res = await fetch("/api/transfer", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Idempotency-Key": idempotencyKeyRef.current,
                 },
                 body: JSON.stringify({
                     receiverId,
-                    amount: parsedAmount
+                    amount: parsedAmount,
+                    note: note.trim() || null,
                 })
             });
 
-            const data = await res.json();
+            const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                alert(data.message);
+                const message = data.message || (res.status >= 500 ? "Transaction failed. Please try again." : "Transaction failed");
+                setErrorMessage(message);
+                setStatus("error");
+
+                if (res.status >= 400 && res.status < 500 && res.status !== 409) {
+                    idempotencyKeyRef.current = generateIdempotencyKey();
+                }
                 return;
             }
 
-            setStatus("success")
+            setStatus("success");
+            idempotencyKeyRef.current = generateIdempotencyKey();
+            prevIntentRef.current = {
+                receiverId,
+                amount: "",
+            };
 
-        } catch (err) {
-            setErrorMessage("Transaction failed. Please try again.");
+        } catch (err: any) {
+            setErrorMessage(err.message || "Transaction failed. Please try again.");
             setStatus("error");
         } finally {
+            isSubmittingRef.current = false;
             setLoading(false);
         }
     };
@@ -115,6 +164,10 @@ function TransactionContent() {
                         <div className="flex justify-between font-sans items-baseline mt-2">
                             <span className="text-sm font-semibold text-slate-700">Amount Sent:</span>
                             <span className="text-2xl font-black text-slate-900">₹{parseFloat(amount).toFixed(2)}</span>
+                        </div>
+                        <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-emerald-600 font-sans font-semibold">
+                            <span>Double-Entry Ledger:</span>
+                            <span className="bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">1 Debit & 1 Credit Recorded</span>
                         </div>
                     </div>
 

@@ -13,7 +13,8 @@ import {
   Zap,
   Menu,
   X,
-  LogOut
+  LogOut,
+  Scale
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -39,6 +40,8 @@ export default function DashboardLayout({
         return "Send Money";
       case "/dashboard/transactions":
         return "Transactions";
+      case "/dashboard/reconciliation":
+        return "Ledger & Reconciliation";
       case "/dashboard/merchant":
         return "Merchant";
       case "/dashboard/profile":
@@ -102,6 +105,12 @@ export default function DashboardLayout({
             icon={<History className="w-5 h-5" />}
             label="Transactions"
             active={pathname === "/dashboard/transactions"}
+          />
+          <SidebarItem
+            href="/dashboard/reconciliation"
+            icon={<Scale className="w-5 h-5" />}
+            label="Reconciliation"
+            active={pathname === "/dashboard/reconciliation"}
           />
           <SidebarItem
             href="/dashboard/merchant"
@@ -203,6 +212,13 @@ export default function DashboardLayout({
               icon={<History className="w-5 h-5" />}
               label="Transactions"
               active={pathname === "/dashboard/transactions"}
+              onClick={() => setIsMobileOpen(false)}
+            />
+            <SidebarItem
+              href="/dashboard/reconciliation"
+              icon={<Scale className="w-5 h-5" />}
+              label="Reconciliation"
+              active={pathname === "/dashboard/reconciliation"}
               onClick={() => setIsMobileOpen(false)}
             />
             <SidebarItem

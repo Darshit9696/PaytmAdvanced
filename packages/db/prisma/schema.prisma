@@ -69,6 +69,8 @@ model Wallet {
   
   balance  Int @default(10000)
 
+  ledgerEntries LedgerEntry[]
+
   user User @relation(fields: [userId], references: [id])
   userId Int @unique
 }
@@ -80,8 +82,13 @@ model Transaction {
   note       String?
   category   String?
 
+  ledgerEntries LedgerEntry[]
+
   senderId   Int
   receiverId Int
+
+  idempotencyKey String @default(uuid())
+  @@unique([senderId, idempotencyKey])
 
   sender   User @relation("Sender", fields: [senderId], references: [id])
   receiver User @relation("Receiver", fields: [receiverId], references: [id])
@@ -105,6 +112,25 @@ model Merchant {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+model LedgerEntry {
+  id             String   @id @default(cuid())
+  
+  transactionId  Int?
+  walletId       Int
+
+  direction      Direction // DEBIT or CREDIT
+  amount         Int       // store paise/cents, not floats
+  createdAt      DateTime @default(now())
+
+  transaction Transaction? @relation(fields: [transactionId], references: [id])
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
+  @@unique([transactionId, walletId])
+  @@map("ledger_entries")
+}
+
 
 model MerchantTransaction {
   id         Int      @id @default(autoincrement())
@@ -167,6 +193,11 @@ enum TransactionStatus {
   PENDING
   SUCCESS
   FAILED
+}
+
+enum Direction {
+  DEBIT
+  CREDIT
 }
 
 enum NotificationType {
