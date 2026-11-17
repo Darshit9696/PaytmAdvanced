@@ -2,6 +2,7 @@ import { prisma } from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { type AuthOptions } from "next-auth";
+import { seedMerchantData } from "@/lib/seed-merchant";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -47,7 +48,14 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
-        // 3. Return authenticated merchant object
+        // 3. Ensure starter demo data is injected on sign in
+        try {
+          await seedMerchantData(existingMerchant.id);
+        } catch (seedErr) {
+          console.error("Auto-seeding merchant data on sign-in error:", seedErr);
+        }
+
+        // 4. Return authenticated merchant object
         return {
           id: existingMerchant.id.toString(),
           merchantId: existingMerchant.id.toString(),

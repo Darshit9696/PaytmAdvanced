@@ -12,15 +12,22 @@ import crypto from "crypto";
  * - Notification bell alerts and On-Ramp deposit history
  */
 export async function seedUserData(userId: number) {
-  // 1. Guard against duplicate injection
-  const existingTxCount = await prisma.transaction.count({
+  const now = new Date();
+  const currentDay = now.getDate();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const startOfMonth = new Date(currentYear, currentMonth, 1, 0, 0, 0, 0);
+
+  // 1. Guard against duplicate injection for active current month
+  const currentMonthTxCount = await prisma.transaction.count({
     where: {
       OR: [{ senderId: userId }, { receiverId: userId }],
+      createdAt: { gte: startOfMonth },
     },
   });
 
-  if (existingTxCount > 0) {
-    return; // Already has transactions, no need to inject
+  if (currentMonthTxCount >= 4) {
+    return; // Already has active current-month transactions
   }
 
   // 2. Fetch or create partner contacts for realistic P2P interactions
@@ -61,11 +68,6 @@ export async function seedUserData(userId: number) {
   const p2 = partners[1] || partners[0];
   const p3 = partners[2] || partners[0];
   const p4 = partners[3] || partners[0];
-
-  const now = new Date();
-  const currentDay = now.getDate();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
 
   // Helper: date strictly inside current calendar month (for monthly KPIs, categories, daily chart)
   const inCurrentMonth = (daysAgo: number, hour: number = 12, min: number = 30) => {
@@ -307,9 +309,14 @@ export async function seedUserData(userId: number) {
     });
   }
 
-  // 7. Update wallet balance to a healthy consistent demo amount (₹18,500)
-  await prisma.wallet.updateMany({
+  // 7. Ensure wallet balance is a healthy consistent demo amount (₹18,500) if below 10,000
+  const currentWallet = await prisma.wallet.findFirst({
     where: { userId },
-    data: { balance: 18500 },
   });
+  if (!currentWallet || currentWallet.balance < 10000) {
+    await prisma.wallet.updateMany({
+      where: { userId },
+      data: { balance: 18500 },
+    });
+  }
 }

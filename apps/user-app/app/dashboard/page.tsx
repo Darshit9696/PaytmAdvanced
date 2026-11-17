@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@repo/db/client";
+import { seedUserData } from "@/lib/seed-user";
 import { SearchUsers } from "@/components/SearchUsers";
 import { DashboardAnalytics } from "@/components/DashboardAnalytics";
 import Link from "next/link";
@@ -34,6 +35,13 @@ export default async function DashboardPage() {
 
   if (isNaN(userId) || userId <= 0) {
     redirect("/login");
+  }
+
+  // Ensure default demo data is populated on dashboard visit if needed
+  try {
+    await seedUserData(userId);
+  } catch (seedErr) {
+    console.error("Dashboard auto-seed error:", seedErr);
   }
 
   // Fetch user profile + wallet balance + recent real DB transactions

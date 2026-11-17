@@ -6,12 +6,21 @@ import crypto from "crypto";
  * Automatically injects starter checkout transactions and active stats for newly created Merchant accounts.
  */
 export async function seedMerchantData(merchantId: number) {
-  // 1. Guard against duplicate injection
-  const existingCount = await prisma.merchantTransaction.count({
-    where: { merchantId },
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const currentDate = now.getDate();
+  const startOfMonth = new Date(currentYear, currentMonth, 1, 0, 0, 0, 0);
+
+  // 1. Guard against duplicate injection for active current month
+  const currentMonthCount = await prisma.merchantTransaction.count({
+    where: {
+      merchantId,
+      createdAt: { gte: startOfMonth },
+    },
   });
 
-  if (existingCount > 0) {
+  if (currentMonthCount >= 4) {
     return;
   }
 
@@ -25,11 +34,6 @@ export async function seedMerchantData(merchantId: number) {
   const c1 = customers[0]?.id || null;
   const c2 = customers[1]?.id || null;
   const c3 = customers[2]?.id || null;
-
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth();
-  const currentDate = now.getDate();
 
   const dayOfWeek = now.getDay();
   const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;

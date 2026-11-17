@@ -2,6 +2,7 @@ import { prisma } from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { type AuthOptions } from "next-auth";
+import { seedUserData } from "@/lib/seed-user";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -47,7 +48,14 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
-        // 3. Login successful
+        // 3. Ensure starter demo data is injected on sign in
+        try {
+          await seedUserData(existingUser.id);
+        } catch (seedErr) {
+          console.error("Auto-seeding demo data on sign-in error:", seedErr);
+        }
+
+        // 4. Login successful
         return {
           id: existingUser.id.toString(),
           userId: existingUser.id.toString(),
