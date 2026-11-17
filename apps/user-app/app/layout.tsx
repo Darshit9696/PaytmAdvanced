@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { Providers } from "../provider";
-import "./globals.css"; 
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "PayPulse | Personal Digital Wallet",
+  description: "Instant peer-to-peer transfers, protected digital wallet, and store payments.",
+};
 
 export default function RootLayout({
   children,
@@ -8,11 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        {/* "Every component in my application should have access to the authentication session." */}
-        <Providers>
-            {children}
-        </Providers>
+      <body className="antialiased min-h-screen bg-bg text-text font-sans">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

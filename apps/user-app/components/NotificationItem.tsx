@@ -23,12 +23,12 @@ export function formatRelativeTime(dateString: string): string {
 
     const diffInMinutes = Math.floor(diffInSeconds / 60);
     if (diffInMinutes < 60) {
-      return `${diffInMinutes} ${diffInMinutes === 1 ? "minute" : "minutes"} ago`;
+      return `${diffInMinutes}m ago`;
     }
 
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) {
-      return `${diffInHours} ${diffInHours === 1 ? "hour" : "hours"} ago`;
+      return `${diffInHours}h ago`;
     }
 
     const diffInDays = Math.floor(diffInHours / 24);
@@ -37,7 +37,7 @@ export function formatRelativeTime(dateString: string): string {
     }
 
     if (diffInDays < 7) {
-      return `${diffInDays} days ago`;
+      return `${diffInDays}d ago`;
     }
 
     return date.toLocaleDateString("en-IN", {
@@ -55,19 +55,19 @@ function getNotificationTypeDetails(type: NotificationType) {
   switch (type) {
     case "TRANSFER_SENT":
       return {
-        icon: <ArrowUpRight className="w-4 h-4 text-rose-400" />,
-        containerClass: "bg-rose-500/10 border-rose-500/20 text-rose-400",
+        icon: <ArrowUpRight className="w-3.5 h-3.5 text-danger" />,
+        containerClass: "bg-danger-tint border-danger-border text-danger",
       };
     case "TRANSFER_RECEIVED":
       return {
-        icon: <ArrowDownLeft className="w-4 h-4 text-emerald-400" />,
-        containerClass: "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
+        icon: <ArrowDownLeft className="w-3.5 h-3.5 text-success" />,
+        containerClass: "bg-success-tint border-success-border text-success",
       };
     case "PAYMENT_FAILED":
     default:
       return {
-        icon: <AlertCircle className="w-4 h-4 text-amber-400" />,
-        containerClass: "bg-amber-500/10 border-amber-500/20 text-amber-400",
+        icon: <AlertCircle className="w-3.5 h-3.5 text-warning" />,
+        containerClass: "bg-warning-tint border-warning-border text-warning",
       };
   }
 }
@@ -81,40 +81,40 @@ export function NotificationItem({ notification, onMarkAsRead }: NotificationIte
       onClick={() => onMarkAsRead?.(notification.id)}
       className={`p-3.5 transition-colors flex items-start gap-3 relative cursor-pointer ${
         isUnread
-          ? "bg-slate-800/40 hover:bg-slate-800/60"
-          : "bg-transparent hover:bg-slate-850/30"
+          ? "bg-surface-subtle/80 hover:bg-surface-subtle"
+          : "bg-surface hover:bg-surface-subtle/50"
       }`}
     >
-      {/* Visual type icon badge */}
+      {/* Type Icon Chip */}
       <div
-        className={`w-8 h-8 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${containerClass}`}
+        className={`w-7 h-7 rounded-sm border flex items-center justify-center shrink-0 mt-0.5 ${containerClass}`}
       >
         {icon}
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 pr-2">
+      <div className="flex-1 min-w-0 pr-1">
         <div className="flex items-center gap-1.5">
           {isUnread && (
             <span
-              className="w-2 h-2 rounded-full bg-cyan-400 shrink-0 shadow-sm shadow-cyan-400/50"
+              className="w-1.5 h-1.5 rounded-full bg-accent shrink-0"
               title="Unread"
             />
           )}
           <h4
             className={`text-xs tracking-tight truncate ${
-              isUnread ? "font-bold text-white" : "font-medium text-slate-300"
+              isUnread ? "font-semibold text-text" : "font-normal text-text-muted"
             }`}
           >
             {notification.title}
           </h4>
         </div>
 
-        <p className="text-[11px] text-slate-300/90 leading-relaxed mt-1 line-clamp-2 break-words">
+        <p className="text-[11px] text-text-muted leading-relaxed mt-0.5 line-clamp-2 break-words">
           {notification.message}
         </p>
 
-        <span className="text-[10px] text-slate-400 font-mono mt-1.5 block">
+        <span className="text-[10px] text-text-faint font-mono tabular-nums mt-1 block">
           {formatRelativeTime(notification.createdAt)}
         </span>
       </div>

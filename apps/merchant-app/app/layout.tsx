@@ -3,8 +3,8 @@ import { Providers } from "./provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Paytm Merchant Portal",
-  description: "Merchant Dashboard & Payment Portal",
+  title: "PayPulse Merchant Portal",
+  description: "Merchant Dashboard & Commercial Payment Portal",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased min-h-screen bg-slate-50">
+      <body className="antialiased min-h-screen bg-bg text-text font-sans">
         <Providers>{children}</Providers>
       </body>
     </html>
