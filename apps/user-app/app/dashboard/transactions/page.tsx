@@ -114,7 +114,7 @@ export default function TransactionHistory() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 font-sans">
+    <div className="max-w-[1100px] w-full space-y-6 font-sans">
       {/* Top Header Card */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div className="flex items-center gap-3">
@@ -234,8 +234,8 @@ export default function TransactionHistory() {
                       size="md"
                       weight="semibold"
                     />
-                    <p className="text-[10px] text-text-faint tracking-wider font-mono uppercase mt-0.5">
-                      {isSent ? "DEBIT" : "CREDIT"}
+                    <p className="text-[10px] text-text-faint font-mono mt-0.5">
+                      {isSent ? "Debit" : "Credit"}
                     </p>
                   </div>
                 </div>

@@ -190,33 +190,33 @@ export default function LandingPage() {
                     <Wallet className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-text">Consumer Ledger</h3>
-                    <p className="text-[11px] text-text-muted font-mono">Personal Wallet #{`1042`}</p>
+                    <h3 className="text-sm font-semibold text-text">Consumer ledger</h3>
+                    <p className="text-[11px] text-text-muted font-mono">Personal wallet #1042</p>
                   </div>
                 </div>
                 <span className="px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-medium bg-accent/20 text-primary border border-accent/40">
-                  BALANCED
+                  Balanced
                 </span>
               </div>
 
               {/* Balance Amount Display */}
               <div className="space-y-1">
-                <p className="text-[11px] text-text-muted uppercase tracking-wider font-semibold">
-                  Verified Wallet Balance
+                <p className="text-xs text-text-muted font-medium">
+                  Ledger balance
                 </p>
                 <div>
                   <Amount value={124500.0} size="3xl" weight="semibold" />
                 </div>
               </div>
 
-              {/* Real Component Activity Preview */}
+              {/* Real Component Activity Preview (Flat dividers) */}
               <div className="space-y-2 pt-1 border-t border-border">
-                <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider block">
-                  Recent Ledger Entries
+                <span className="text-xs font-medium text-text-muted block">
+                  Recent activity
                 </span>
 
-                <div className="divide-y divide-border border border-border rounded-[8px] overflow-hidden bg-surface-subtle">
-                  <div className="p-2.5 flex items-center justify-between text-xs">
+                <div className="divide-y divide-border border-t border-b border-border">
+                  <div className="py-2.5 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-success-subtle/50 text-success flex items-center justify-center border border-success/30">
                         <ArrowDownLeft className="w-3 h-3" />
@@ -229,7 +229,7 @@ export default function LandingPage() {
                     <Amount value={4500.0} sign="positive" variant="success" size="xs" weight="semibold" />
                   </div>
 
-                  <div className="p-2.5 flex items-center justify-between text-xs">
+                  <div className="py-2.5 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-danger-subtle/50 text-danger flex items-center justify-center border border-danger/30">
                         <ArrowUpRight className="w-3 h-3" />
@@ -244,10 +244,10 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Cryptographic Footnote */}
-              <div className="bg-surface-subtle rounded-[6px] p-2.5 border border-border flex items-center justify-between text-[11px] text-text-muted">
+              {/* Footnote */}
+              <div className="pt-1 flex items-center justify-between text-[11px] text-text-muted">
                 <span className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-success" /> Invariant Verified
+                  <ShieldCheck className="w-3.5 h-3.5 text-primary" /> Verified
                 </span>
                 <span className="font-mono text-text">Debits == Credits</span>
               </div>
@@ -262,8 +262,8 @@ export default function LandingPage() {
       <section id="features" className="py-20 bg-surface border-y border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-              Fintech Infrastructure
+            <span className="text-xs font-medium text-primary">
+              Financial infrastructure
             </span>
             <h2 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight">
               Quietly premium, mathematically sound.
@@ -324,8 +324,8 @@ export default function LandingPage() {
       {/* --------------------------------------------------------------------- */}
       <section id="account-choice" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-            Account Architecture
+          <span className="text-xs font-medium text-primary">
+            Account options
           </span>
           <h2 className="text-2xl sm:text-3xl font-semibold text-text tracking-tight">
             Designed for consumers and merchants

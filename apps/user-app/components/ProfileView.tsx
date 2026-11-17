@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { signOut } from "next-auth/react";
-import { User, Phone, Mail, ShieldCheck, LogOut, Key, Copy, Check } from "lucide-react";
+import { ShieldCheck, LogOut, Key, Copy, Check } from "lucide-react";
 import { Avatar, Button } from "@repo/ui";
 
 interface ProfileViewProps {
@@ -29,22 +29,17 @@ export default function ProfileView({ user }: ProfileViewProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 font-sans">
+    <div className="max-w-[1100px] w-full space-y-6 font-sans">
       {/* 1. Profile Header Banner */}
       <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center gap-5">
           <Avatar name={userName} size="xl" />
 
           <div className="text-center sm:text-left space-y-1">
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h2 className="text-xl font-semibold tracking-tight text-text">{userName}</h2>
-              <span className="flex items-center gap-1 text-[11px] bg-success-subtle/50 text-success px-2.5 py-0.5 rounded-full font-medium border border-success/30">
-                <ShieldCheck className="w-3.5 h-3.5" /> Verified User
-              </span>
-            </div>
+            <h2 className="text-xl font-semibold tracking-tight text-text">{userName}</h2>
 
             <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-text-muted font-mono">
-              <span>Wallet Ledger ID: {userId}</span>
+              <span>Wallet ID: {userId}</span>
               <button
                 onClick={handleCopyId}
                 className="p-1 hover:bg-surface-subtle rounded transition-colors text-primary cursor-pointer border border-border"
@@ -61,64 +56,41 @@ export default function ProfileView({ user }: ProfileViewProps) {
         </div>
       </div>
 
-      {/* 2. Personal Information Grid */}
+      {/* 2. Personal Information Definition List */}
       <div className="bg-surface rounded-[10px] border border-border shadow-xs p-6 space-y-4">
-        <h3 className="font-semibold text-text-muted text-xs uppercase tracking-wider">
-          Personal Information
+        <h3 className="font-medium text-text-muted text-xs">
+          Personal details
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-          <div className="p-3.5 bg-surface-subtle rounded-[8px] border border-border flex items-center gap-3">
-            <div className="p-2 bg-surface rounded-[6px] text-primary border border-border">
-              <User className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
-                Full Name
-              </p>
-              <p className="text-sm font-medium text-text mt-0.5">{userName}</p>
-            </div>
+        <dl className="divide-y divide-border">
+          <div className="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 first:pt-0">
+            <dt className="text-xs text-text-muted">Mobile phone</dt>
+            <dd className="text-sm text-text font-mono tabular-nums">+91 {userPhone}</dd>
           </div>
-
-          <div className="p-3.5 bg-surface-subtle rounded-[8px] border border-border flex items-center gap-3">
-            <div className="p-2 bg-surface rounded-[6px] text-primary border border-border">
-              <Phone className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
-                Mobile Number
-              </p>
-              <p className="text-sm font-medium text-text mt-0.5 font-mono">+91 {userPhone}</p>
-            </div>
+          <div className="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+            <dt className="text-xs text-text-muted">Email address</dt>
+            <dd className="text-sm text-text">{userEmail}</dd>
           </div>
-
-          <div className="p-3.5 bg-surface-subtle rounded-[8px] border border-border flex items-center gap-3 md:col-span-2">
-            <div className="p-2 bg-surface rounded-[6px] text-primary border border-border">
-              <Mail className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
-                Email Address
-              </p>
-              <p className="text-sm font-medium text-text mt-0.5">{userEmail}</p>
-            </div>
+          <div className="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 last:pb-0">
+            <dt className="text-xs text-text-muted">Wallet account ID</dt>
+            <dd className="text-sm text-text font-mono tabular-nums">#{userId}</dd>
           </div>
-        </div>
+        </dl>
       </div>
 
       {/* 3. Security & Session */}
       <div className="bg-surface rounded-[10px] border border-border shadow-xs p-6 space-y-4">
-        <h3 className="font-semibold text-text-muted text-xs uppercase tracking-wider">
-          Security & Session
+        <h3 className="font-medium text-text-muted text-xs">
+          Security and session
         </h3>
 
         <div className="divide-y divide-border">
           <div className="flex items-center justify-between py-3 first:pt-0">
             <div className="flex items-center gap-3">
-              <ShieldCheck className="w-4 h-4 text-success" />
+              <ShieldCheck className="w-4 h-4 text-primary" />
               <div>
-                <p className="text-sm font-medium text-text">Double-Entry Cryptographic Balance</p>
-                <p className="text-xs text-text-muted">Balance enforced via balanced database ledger.</p>
+                <p className="text-sm font-medium text-text">Ledger-verified balance</p>
+                <p className="text-xs text-text-muted">All transactions are balanced and verified against the ledger.</p>
               </div>
             </div>
           </div>
@@ -127,13 +99,10 @@ export default function ProfileView({ user }: ProfileViewProps) {
             <div className="flex items-center gap-3">
               <Key className="w-4 h-4 text-text-muted" />
               <div>
-                <p className="text-sm font-medium text-text">Authentication Protocol</p>
-                <p className="text-xs text-text-muted">Secure JWT session token encrypted via NextAuth.</p>
+                <p className="text-sm font-medium text-text">Signed in with email and password</p>
+                <p className="text-xs text-text-muted">Session secured via encrypted credentials.</p>
               </div>
             </div>
-            <span className="text-xs font-semibold text-primary font-mono bg-primary/10 px-2 py-0.5 rounded-[4px] border border-primary/20">
-              Active
-            </span>
           </div>
 
           <div className="flex items-center justify-between py-3 last:pb-0">
@@ -141,13 +110,14 @@ export default function ProfileView({ user }: ProfileViewProps) {
               <LogOut className="w-4 h-4 text-danger" />
               <div>
                 <p className="text-sm font-medium text-text">Sign Out</p>
-                <p className="text-xs text-text-muted">Terminate active session credentials from this device.</p>
+                <p className="text-xs text-text-muted">Sign out of this device.</p>
               </div>
             </div>
             <Button
-              variant="danger"
+              variant="outline"
               size="sm"
               onClick={() => signOut({ callbackUrl: "/login" })}
+              className="text-danger hover:bg-danger-subtle hover:border-danger/30 border-border"
             >
               Sign Out
             </Button>

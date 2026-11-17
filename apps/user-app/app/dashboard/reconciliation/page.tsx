@@ -205,7 +205,7 @@ export default function ReconciliationPage() {
   const isBalanced = report?.status === "BALANCED";
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 font-sans pb-16">
+    <div className="max-w-[1100px] w-full space-y-8 font-sans pb-16">
       {/* Toast Notification Banner */}
       {toastMessage && (
         <div
@@ -306,13 +306,13 @@ export default function ReconciliationPage() {
                   {isBalanced ? "Ledger Perfectly Balanced" : "Audit Discrepancies Present"}
                 </h2>
                 <span
-                  className={`px-2.5 py-0.5 rounded-[4px] text-[10px] font-medium tracking-wide uppercase border font-mono ${
+                  className={`px-2.5 py-0.5 rounded-[4px] text-xs font-medium border font-mono ${
                     isBalanced
                       ? "bg-success-subtle/50 text-success border-success/30"
                       : "bg-warning-subtle/50 text-warning border-warning/30"
                   }`}
                 >
-                  {isBalanced ? "Verified Balanced" : "Action Required"}
+                  {isBalanced ? "Balanced" : "Action required"}
                 </span>
               </div>
               <p className="text-xs text-text-muted mt-1 leading-relaxed">
@@ -328,7 +328,7 @@ export default function ReconciliationPage() {
           </div>
 
           <div className="text-right text-xs text-text-muted">
-            <span>Last Audit Run</span>
+            <span>Last audit run</span>
             <p className="text-text font-mono text-[11px] mt-0.5">
               {report?.timestamp
                 ? new Date(report.timestamp).toLocaleString("en-IN")
@@ -337,33 +337,33 @@ export default function ReconciliationPage() {
           </div>
         </div>
 
-        {/* 4 KPI Metrics Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mt-6 pt-5 border-t border-border">
-          <div className="bg-surface-subtle p-4 rounded-[8px] border border-border">
-            <div className="flex items-center justify-between text-xs text-text-muted mb-1">
-              <span>Total Debits</span>
+        {/* 4 KPI Metrics Grid (Flat, no card-in-card) */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-5 border-t border-border">
+          <div className="flex flex-col space-y-1">
+            <div className="flex items-center justify-between text-xs text-text-muted">
+              <span>Total debits</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-danger" />
             </div>
             <div className="text-lg font-semibold text-text">
               <Amount value={report?.globalCheck.totalDebits || 0} size="lg" weight="semibold" />
             </div>
-            <span className="text-[10px] text-text-faint font-mono">All money out legs</span>
+            <span className="text-[11px] text-text-faint font-mono">All money out legs</span>
           </div>
 
-          <div className="bg-surface-subtle p-4 rounded-[8px] border border-border">
-            <div className="flex items-center justify-between text-xs text-text-muted mb-1">
-              <span>Total Credits</span>
+          <div className="flex flex-col space-y-1">
+            <div className="flex items-center justify-between text-xs text-text-muted">
+              <span>Total credits</span>
               <ArrowDownLeft className="w-3.5 h-3.5 text-success" />
             </div>
             <div className="text-lg font-semibold text-text">
               <Amount value={report?.globalCheck.totalCredits || 0} size="lg" weight="semibold" />
             </div>
-            <span className="text-[10px] text-text-faint font-mono">All money in legs</span>
+            <span className="text-[11px] text-text-faint font-mono">All money in legs</span>
           </div>
 
-          <div className="bg-surface-subtle p-4 rounded-[8px] border border-border">
-            <div className="flex items-center justify-between text-xs text-text-muted mb-1">
-              <span>Global Variance</span>
+          <div className="flex flex-col space-y-1">
+            <div className="flex items-center justify-between text-xs text-text-muted">
+              <span>Global variance</span>
               <Scale className="w-3.5 h-3.5 text-primary" />
             </div>
             <div className="text-lg font-semibold">
@@ -374,20 +374,20 @@ export default function ReconciliationPage() {
                 weight="semibold"
               />
             </div>
-            <span className="text-[10px] text-text-faint font-mono">
-              {report?.globalCheck.isBalanced ? "✓ Debits == Credits" : "Variance detected"}
+            <span className="text-[11px] text-text-faint font-mono">
+              {report?.globalCheck.isBalanced ? "Debits match credits" : "Variance detected"}
             </span>
           </div>
 
-          <div className="bg-surface-subtle p-4 rounded-[8px] border border-border">
-            <div className="flex items-center justify-between text-xs text-text-muted mb-1">
-              <span>Transfers Verified</span>
+          <div className="flex flex-col space-y-1">
+            <div className="flex items-center justify-between text-xs text-text-muted">
+              <span>Transfers verified</span>
               <ShieldCheck className="w-3.5 h-3.5 text-primary" />
             </div>
             <p className="text-lg font-semibold font-mono text-text">
               {report?.transactionCheck.totalTransactionsChecked || 0}
             </p>
-            <span className="text-[10px] text-text-faint font-mono">
+            <span className="text-[11px] text-text-faint font-mono">
               {report?.transactionCheck.unbalancedCount === 0
                 ? "100% paired legs"
                 : `${report?.transactionCheck.unbalancedCount} unbalanced`}
@@ -417,13 +417,13 @@ export default function ReconciliationPage() {
 
           <div className="overflow-x-auto border border-border rounded-[8px]">
             <table className="w-full text-left text-xs">
-              <thead className="bg-surface-subtle text-text-muted uppercase text-[10px] tracking-wider border-b border-border">
+              <thead className="bg-surface-subtle text-text-muted text-xs font-medium border-b border-border">
                 <tr>
                   <th className="py-2.5 px-3.5">User</th>
                   <th className="py-2.5 px-3.5">Wallet ID</th>
-                  <th className="py-2.5 px-3.5">Stated Balance</th>
-                  <th className="py-2.5 px-3.5">Ledger Sum</th>
-                  <th className="py-2.5 px-3.5">Drift Difference</th>
+                  <th className="py-2.5 px-3.5">Stated balance</th>
+                  <th className="py-2.5 px-3.5">Ledger sum</th>
+                  <th className="py-2.5 px-3.5">Drift difference</th>
                   <th className="py-2.5 px-3.5">Status</th>
                 </tr>
               </thead>
@@ -549,14 +549,14 @@ export default function ReconciliationPage() {
         {/* Ledger Table */}
         <div className="overflow-x-auto border border-border rounded-[8px]">
           <table className="w-full text-left text-xs">
-            <thead className="bg-surface-subtle text-text-muted uppercase text-[10px] tracking-wider border-b border-border">
+            <thead className="bg-surface-subtle text-text-muted text-xs font-medium border-b border-border">
               <tr>
                 <th className="py-2.5 px-3.5">Entry ID</th>
-                <th className="py-2.5 px-3.5">Date & Time</th>
+                <th className="py-2.5 px-3.5">Date & time</th>
                 <th className="py-2.5 px-3.5">Direction</th>
                 <th className="py-2.5 px-3.5">Amount</th>
-                <th className="py-2.5 px-3.5">Wallet / Account Holder</th>
-                <th className="py-2.5 px-3.5">Transfer Ref</th>
+                <th className="py-2.5 px-3.5">Wallet / account holder</th>
+                <th className="py-2.5 px-3.5">Transfer ref</th>
                 <th className="py-2.5 px-3.5">Verification</th>
               </tr>
             </thead>

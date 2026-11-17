@@ -186,193 +186,190 @@ function SendMoneyContent() {
   };
 
   return (
-    <div className="max-w-xl mx-auto space-y-6 font-sans">
-      {/* Top Header Card */}
-      <div className="flex items-center justify-between pb-2 border-b border-border">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="p-2 hover:bg-surface-subtle text-text-muted hover:text-text rounded-[6px] border border-border transition-colors cursor-pointer shadow-xs"
+    <div className="max-w-[1100px] w-full space-y-6 font-sans">
+      <div className="max-w-xl space-y-6">
+        {/* Top Header */}
+        <div className="flex items-center justify-between pb-2 border-b border-border">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="p-2 hover:bg-surface-subtle text-text-muted hover:text-text rounded-[6px] border border-border transition-colors cursor-pointer shadow-xs"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight text-text">Send money</h1>
+              <p className="text-xs text-text-muted">Direct peer-to-peer ledger transfer</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Status Notification */}
+        {status && (
+          <div
+            className={`p-4 rounded-[10px] flex items-center gap-3 text-xs font-medium border shadow-xs ${
+              status.type === "success"
+                ? "bg-success-subtle/40 text-success border-success/30"
+                : "bg-danger-subtle/40 text-danger border-danger/30"
+            }`}
           >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight text-text">Send Money</h1>
-            <p className="text-xs text-text-muted">Direct peer-to-peer ledger transfer</p>
+            {status.type === "success" ? (
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+            ) : (
+              <AlertCircle className="w-4 h-4 shrink-0" />
+            )}
+            <p>{status.message}</p>
           </div>
-        </div>
+        )}
 
-        <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-text-muted bg-surface-subtle border border-border px-3 py-1 rounded-full">
-          <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-          <span>Idempotent</span>
-        </div>
-      </div>
-
-      {/* Status Notification */}
-      {status && (
-        <div
-          className={`p-4 rounded-[10px] flex items-center gap-3 text-xs font-medium border shadow-xs ${
-            status.type === "success"
-              ? "bg-success-subtle/40 text-success border-success/30"
-              : "bg-danger-subtle/40 text-danger border-danger/30"
-          }`}
-        >
-          {status.type === "success" ? (
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-          ) : (
-            <AlertCircle className="w-4 h-4 shrink-0" />
-          )}
-          <p>{status.message}</p>
-        </div>
-      )}
-
-      {/* Main Card */}
-      <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-6">
-        {/* Step 1: Select Recipient */}
-        {!selectedUser ? (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">
-                1. Select Recipient
-              </label>
-              <span className="text-[11px] text-text-faint">Search by name or number</span>
-            </div>
-
-            <div className="bg-surface-subtle border border-border p-2 rounded-[8px] flex items-center gap-3 px-3.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-xs">
-              <Search className="w-4 h-4 text-text-muted shrink-0" />
-              <input
-                type="text"
-                placeholder="Search recipient name or mobile number..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent outline-none text-text placeholder-text-faint text-sm py-1"
-                autoFocus
-              />
-            </div>
-
-            {/* Search Results */}
-            <div className="divide-y divide-border border border-border rounded-[8px] overflow-hidden max-h-60 overflow-y-auto bg-surface">
-              {users.map((u) => (
-                <div
-                  key={u.id}
-                  onClick={() => setSelectedUser(u)}
-                  className="p-3 hover:bg-surface-subtle cursor-pointer flex items-center justify-between transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <Avatar name={u.name} size="md" />
-                    <div>
-                      <p className="text-sm font-medium text-text">{u.name}</p>
-                      <p className="text-xs text-text-muted font-mono">+91 {u.number}</p>
-                    </div>
-                  </div>
-                  <Send className="w-3.5 h-3.5 text-primary" />
-                </div>
-              ))}
-              {searchQuery && users.length === 0 && (
-                <p className="text-xs text-text-muted text-center py-6">
-                  No registered contact found matching "{searchQuery}"
-                </p>
-              )}
-              {!searchQuery && (
-                <p className="text-xs text-text-faint text-center py-6">
-                  Type a name or phone number above to select a recipient.
-                </p>
-              )}
-            </div>
-          </div>
-        ) : (
-          /* Step 2: Payment Form */
-          <form onSubmit={handleTransfer} className="space-y-5">
-            {/* Recipient summary banner */}
-            <div className="flex items-center justify-between bg-surface-subtle p-3.5 rounded-[8px] border border-border">
-              <div className="flex items-center gap-3">
-                <Avatar name={selectedUser.name} size="md" />
-                <div>
-                  <p className="text-sm font-semibold text-text">{selectedUser.name}</p>
-                  <p className="text-xs text-text-muted font-mono">+91 {selectedUser.number}</p>
-                </div>
+        {/* Main Card */}
+        <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-6">
+          {/* Step 1: Select Recipient */}
+          {!selectedUser ? (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className="text-xs font-medium text-text-muted">
+                  1. Select recipient
+                </label>
+                <span className="text-[11px] text-text-faint">Search by name or number</span>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelectedUser(null)}
-                className="text-xs font-medium text-primary hover:underline cursor-pointer"
-              >
-                Change
-              </button>
-            </div>
 
-            {/* Amount Input */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-                Transfer Amount
-              </label>
-              <div className="flex items-center bg-surface border border-border rounded-[8px] px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-xs">
-                <span className="text-2xl font-mono text-text-muted mr-2 font-medium">₹</span>
+              <div className="bg-surface-subtle border border-border p-2 rounded-[8px] flex items-center gap-3 px-3.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-xs">
+                <Search className="w-4 h-4 text-text-muted shrink-0" />
                 <input
-                  type="number"
-                  placeholder="0.00"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  min="1"
-                  step="any"
-                  className="w-full text-2xl font-semibold font-mono tabular-nums text-text bg-transparent outline-none placeholder-text-faint"
-                  required
+                  type="text"
+                  placeholder="Search recipient name or mobile number..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-transparent outline-none text-text placeholder-text-faint text-sm py-1"
                   autoFocus
                 />
               </div>
-            </div>
 
-            {/* Category selection */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-                Expense Category
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {(["Food", "Shopping", "Travel", "Entertainment"] as const).map((cat) => (
-                  <button
-                    type="button"
-                    key={cat}
-                    onClick={() => setCategory(cat)}
-                    className={`py-2 px-3 rounded-[6px] text-xs font-medium border transition-all cursor-pointer ${
-                      category === cat
-                        ? "bg-primary text-white border-primary shadow-xs"
-                        : "bg-surface-subtle text-text-muted border-border hover:text-text hover:bg-surface"
-                    }`}
+              {/* Search Results */}
+              <div className="divide-y divide-border border border-border rounded-[8px] overflow-hidden max-h-60 overflow-y-auto bg-surface">
+                {users.map((u) => (
+                  <div
+                    key={u.id}
+                    onClick={() => setSelectedUser(u)}
+                    className="p-3 hover:bg-surface-subtle cursor-pointer flex items-center justify-between transition-colors"
                   >
-                    {cat}
-                  </button>
+                    <div className="flex items-center gap-3">
+                      <Avatar name={u.name} size="md" />
+                      <div>
+                        <p className="text-sm font-medium text-text">{u.name}</p>
+                        <p className="text-xs text-text-muted font-mono">+91 {u.number}</p>
+                      </div>
+                    </div>
+                    <Send className="w-3.5 h-3.5 text-primary" />
+                  </div>
                 ))}
+                {searchQuery && users.length === 0 && (
+                  <p className="text-xs text-text-muted text-center py-6">
+                    No registered contact found matching "{searchQuery}"
+                  </p>
+                )}
+                {!searchQuery && (
+                  <p className="text-xs text-text-faint text-center py-6">
+                    Type a name or phone number above to select a recipient.
+                  </p>
+                )}
               </div>
             </div>
+          ) : (
+            /* Step 2: Payment Form */
+            <form onSubmit={handleTransfer} className="space-y-5">
+              {/* Recipient summary (Flat divider, no card-in-card) */}
+              <div className="flex items-center justify-between pb-4 border-b border-border">
+                <div className="flex items-center gap-3">
+                  <Avatar name={selectedUser.name} size="md" />
+                  <div>
+                    <p className="text-sm font-medium text-text">{selectedUser.name}</p>
+                    <p className="text-xs text-text-muted font-mono">+91 {selectedUser.number}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedUser(null)}
+                  className="text-xs font-medium text-primary hover:underline cursor-pointer"
+                >
+                  Change
+                </button>
+              </div>
 
-            {/* Note / Remarks */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-                Remarks / Reference (Optional)
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Dinner share, Rent payment"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                className="w-full text-sm text-text bg-surface p-3 rounded-[8px] border border-border outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all shadow-xs placeholder-text-faint"
-              />
-            </div>
+              {/* Amount Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-text-muted block">
+                  Transfer amount
+                </label>
+                <div className="flex items-center bg-surface border border-border rounded-[8px] px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-xs">
+                  <span className="text-2xl font-mono text-text-muted mr-2 font-medium">₹</span>
+                  <input
+                    type="number"
+                    placeholder="0.00"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    min="1"
+                    step="any"
+                    className="w-full text-2xl font-semibold font-mono tabular-nums text-text bg-transparent outline-none placeholder-text-faint"
+                    required
+                    autoFocus
+                  />
+                </div>
+              </div>
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              className="w-full"
-              loading={loading}
-              disabled={loading || !amount}
-            >
-              <Send className="w-4 h-4 mr-1.5" />
-              <span>{loading ? "Committing Ledger Transfer..." : `Transfer ₹${amount || "0"}`}</span>
-            </Button>
-          </form>
-        )}
+              {/* Category selection */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-text-muted block">
+                  Expense category
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {(["Food", "Shopping", "Travel", "Entertainment"] as const).map((cat) => (
+                    <button
+                      type="button"
+                      key={cat}
+                      onClick={() => setCategory(cat)}
+                      className={`py-2 px-3 rounded-[6px] text-xs font-medium border transition-all cursor-pointer ${
+                        category === cat
+                          ? "bg-primary text-white border-primary shadow-xs"
+                          : "bg-surface-subtle text-text-muted border-border hover:text-text hover:bg-surface"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Note / Remarks */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-text-muted block">
+                  Remarks / reference (optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Dinner share, Rent payment"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  className="w-full text-sm text-text bg-surface p-3 rounded-[8px] border border-border outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all shadow-xs placeholder-text-faint"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="w-full"
+                loading={loading}
+                disabled={loading || !amount}
+              >
+                <Send className="w-4 h-4 mr-1.5" />
+                <span>{loading ? "Committing Ledger Transfer..." : `Transfer ₹${amount || "0"}`}</span>
+              </Button>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -148,26 +148,25 @@ function TransactionContent() {
             <CheckCircle2 className="w-6 h-6" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold text-text">Transfer Confirmed</h2>
+            <h2 className="text-lg font-semibold text-text">Transfer confirmed</h2>
             <p className="text-xs text-text-muted">Recorded securely in the double-entry ledger</p>
           </div>
 
-          <div className="bg-surface-subtle w-full rounded-[8px] p-4 border border-border font-mono text-left space-y-2 text-xs">
-            <div className="flex justify-between text-text-muted">
-              <span>PAID TO</span>
+          <div className="w-full divide-y divide-border border-t border-b border-border py-2 font-mono text-left space-y-2 text-xs">
+            <div className="flex justify-between text-text-muted pt-1">
+              <span>Paid to</span>
               <span className="font-sans font-medium text-text">{receiver?.name || recipientName}</span>
             </div>
-            <div className="flex justify-between text-text-muted">
-              <span>PHONE</span>
-              <span className="text-text">+91 {receiver?.number || recipientPhone}</span>
+            <div className="flex justify-between text-text-muted pt-2">
+              <span>Phone</span>
+              <span className="text-text tabular-nums">+91 {receiver?.number || recipientPhone}</span>
             </div>
-            <div className="border-t border-border my-2" />
-            <div className="flex justify-between items-baseline pt-1 font-sans">
-              <span className="text-xs font-medium text-text-muted">Amount Sent:</span>
+            <div className="flex justify-between items-baseline pt-2 font-sans">
+              <span className="text-xs font-medium text-text-muted">Amount sent:</span>
               <Amount value={parseFloat(amount)} size="lg" weight="semibold" />
             </div>
-            <div className="pt-2 border-t border-border flex items-center justify-between text-[11px] font-sans">
-              <span className="text-text-muted">Ledger Verification:</span>
+            <div className="pt-2 flex items-center justify-between text-[11px] font-sans">
+              <span className="text-text-muted">Ledger verification:</span>
               <span className="bg-success-subtle/50 text-success px-2 py-0.5 rounded-[4px] border border-success/30 font-medium">
                 1 Debit & 1 Credit Committed
               </span>
@@ -199,20 +198,18 @@ function TransactionContent() {
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <span className="text-xs font-semibold tracking-wider uppercase text-text">Send Money</span>
-          <span className="flex items-center gap-1 text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">
-            <ShieldCheck className="w-3 h-3" /> Idempotent
-          </span>
+          <span className="text-xs font-medium text-text">Send money</span>
+          <div className="w-4" />
         </div>
 
         {/* Form Body */}
         <form onSubmit={handlePayment} className="p-6 space-y-5">
-          {/* Recipient Profile Summary Card */}
-          <div className="flex items-center gap-3.5 p-3.5 bg-surface-subtle rounded-[8px] border border-border">
+          {/* Recipient Profile Summary (Flat row, no card-in-card) */}
+          <div className="flex items-center gap-3.5 pb-4 border-b border-border">
             <Avatar name={recipientName} size="md" />
             <div>
               <h3 className="text-sm font-semibold text-text">{recipientName}</h3>
-              <p className="text-xs text-text-muted font-mono">+91 {recipientPhone}</p>
+              <p className="text-xs text-text-muted font-mono tabular-nums">+91 {recipientPhone}</p>
             </div>
           </div>
 
@@ -226,8 +223,8 @@ function TransactionContent() {
 
           {/* Hero Amount Input Section */}
           <div className="text-center space-y-2">
-            <label className="block text-xs font-semibold text-text-muted uppercase tracking-wider">
-              Transfer Amount
+            <label className="block text-xs font-medium text-text-muted">
+              Transfer amount
             </label>
             <div className="relative flex items-center justify-center">
               <span className="text-2xl font-mono text-text-muted mr-1.5 select-none font-medium">₹</span>

@@ -173,13 +173,13 @@ export function DashboardAnalytics() {
         {/* Monthly Spending Card */}
         <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs flex flex-col justify-between space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <div className="w-7 h-7 rounded-[6px] bg-danger-subtle/50 text-danger border border-danger/20 flex items-center justify-center">
                 <ArrowUpRight className="w-4 h-4" />
               </div>
-              <span>Monthly Spending</span>
+              <span>Monthly spending</span>
             </div>
-            <span className="text-[11px] font-medium text-text-muted bg-surface-subtle px-2 py-0.5 rounded-[6px] border border-border">
+            <span className="text-[11px] font-medium text-text-muted bg-surface-subtle px-2 py-0.5 rounded-[6px] border border-border font-mono">
               {monthlySpending.transactionCount}{" "}
               {monthlySpending.transactionCount === 1 ? "payment" : "payments"}
             </span>
@@ -196,13 +196,13 @@ export function DashboardAnalytics() {
         {/* Monthly Income Card */}
         <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs flex flex-col justify-between space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <div className="w-7 h-7 rounded-[6px] bg-success-subtle/50 text-success border border-success/20 flex items-center justify-center">
                 <ArrowDownLeft className="w-4 h-4" />
               </div>
-              <span>Monthly Income</span>
+              <span>Monthly income</span>
             </div>
-            <span className="text-[11px] font-medium text-text-muted bg-surface-subtle px-2 py-0.5 rounded-[6px] border border-border">
+            <span className="text-[11px] font-medium text-text-muted bg-surface-subtle px-2 py-0.5 rounded-[6px] border border-border font-mono">
               {monthlyIncome.transactionCount}{" "}
               {monthlyIncome.transactionCount === 1 ? "received" : "received"}
             </span>
@@ -217,7 +217,7 @@ export function DashboardAnalytics() {
         </div>
       </div>
 
-      {/* 2. Spending Categories Breakdown */}
+      {/* 2. Spending Categories Breakdown (No nested cards) */}
       <div className="bg-surface border border-border rounded-[10px] p-5 sm:p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-border">
           <div className="flex items-center gap-2.5">
@@ -225,7 +225,7 @@ export function DashboardAnalytics() {
               <PieChart className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-text">Expense Categories</h3>
+              <h3 className="text-sm font-semibold text-text">Expense categories</h3>
               <p className="text-[11px] text-text-muted">Monthly spending breakdown by tag</p>
             </div>
           </div>
@@ -236,8 +236,8 @@ export function DashboardAnalytics() {
           </div>
         </div>
 
-        {/* 4-Category Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {/* 4-Category Flat Grid (No cards inside card) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
           {categories.map((item) => {
             const icon = CATEGORY_ICONS[item.category] || (
               <ShoppingBag className="w-4 h-4 text-primary" />
@@ -250,23 +250,21 @@ export function DashboardAnalytics() {
             return (
               <div
                 key={item.category}
-                className="bg-surface-subtle border border-border hover:border-border-strong rounded-[10px] p-4 transition-all flex flex-col justify-between space-y-3"
+                className="flex flex-col justify-between space-y-2 py-1"
               >
                 <div className="flex items-center justify-between">
-                  <div className="w-7 h-7 rounded-[6px] bg-surface border border-border flex items-center justify-center">
-                    {icon}
+                  <div className="flex items-center gap-2">
+                    <span className="text-text-muted">{icon}</span>
+                    <span className="text-xs font-medium text-text">{item.category}</span>
                   </div>
-                  <span className="text-[10px] font-medium text-text-muted bg-surface px-1.5 py-0.5 rounded-[4px] border border-border font-mono">
+                  <span className="text-[11px] text-text-muted font-mono">
                     {percentage}%
                   </span>
                 </div>
 
                 <div>
-                  <p className="text-xs font-medium text-text-muted">{item.category}</p>
-                  <div className="mt-0.5">
-                    <Amount value={item.amount} size="md" weight="semibold" />
-                  </div>
-                  <p className="text-[10px] text-text-faint font-mono mt-0.5">
+                  <Amount value={item.amount} size="md" weight="semibold" />
+                  <p className="text-[11px] text-text-faint font-mono mt-0.5">
                     {item.transactionCount}{" "}
                     {item.transactionCount === 1 ? "payment" : "payments"}
                   </p>
@@ -424,11 +422,11 @@ export function DashboardAnalytics() {
         {/* Most Paid Contact */}
         <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs space-y-4 flex flex-col justify-between">
           <div className="flex items-center justify-between pb-3 border-b border-border">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <Users className="w-3.5 h-3.5 text-danger" />
-              <span>Most Paid Contact</span>
+              <span>Most paid contact</span>
             </div>
-            <span className="text-[10px] font-medium text-danger bg-danger-subtle/50 px-2 py-0.5 rounded-[4px] border border-danger/20">
+            <span className="text-[10px] font-medium text-danger bg-danger-subtle/50 px-2 py-0.5 rounded-[4px] border border-danger/20 font-mono">
               Top Outgoing
             </span>
           </div>
@@ -472,11 +470,11 @@ export function DashboardAnalytics() {
         {/* Top Income Source */}
         <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs space-y-4 flex flex-col justify-between">
           <div className="flex items-center justify-between pb-3 border-b border-border">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <Sparkles className="w-3.5 h-3.5 text-success" />
-              <span>Top Income Source</span>
+              <span>Top income source</span>
             </div>
-            <span className="text-[10px] font-medium text-success bg-success-subtle/50 px-2 py-0.5 rounded-[4px] border border-success/20">
+            <span className="text-[10px] font-medium text-success bg-success-subtle/50 px-2 py-0.5 rounded-[4px] border border-success/20 font-mono">
               Top Incoming
             </span>
           </div>
