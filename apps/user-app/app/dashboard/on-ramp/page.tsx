@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Wallet, ShieldCheck, ArrowRight, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Amount, Button } from "@repo/ui";
 
 export default function AddMoneyPage() {
   const router = useRouter();
@@ -52,55 +53,57 @@ export default function AddMoneyPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 font-sans">
-      
-      {/* Top App Header */}
-      <div className="flex items-center justify-between">
+    <div className="max-w-xl mx-auto space-y-6 font-sans">
+      {/* Top Header Card */}
+      <div className="flex items-center justify-between pb-2 border-b border-border">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/dashboard")}
-            className="p-2 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-colors cursor-pointer"
+            className="p-2 hover:bg-surface-subtle text-text-muted hover:text-text rounded-[6px] border border-border transition-colors cursor-pointer shadow-xs"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">Add Money to Wallet</h1>
-            <p className="text-xs text-slate-400">On-ramp bank deposit simulation</p>
+            <h1 className="text-xl font-semibold tracking-tight text-text">Add Money</h1>
+            <p className="text-xs text-text-muted">Deposit funds via linked bank gateway</p>
           </div>
+        </div>
+
+        <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-text-muted bg-surface-subtle border border-border px-3 py-1 rounded-full">
+          <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+          <span>NetBanking Secured</span>
         </div>
       </div>
 
       {/* Main Container Card */}
-      <div className="bg-[#0f172a] border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
-        
+      <div className="bg-surface border border-border rounded-[10px] overflow-hidden shadow-xs">
         {/* Banner */}
-        <div className="bg-slate-900 border-b border-slate-800 p-6 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-cyan-400 shrink-0">
-            <Wallet className="w-6 h-6" />
+        <div className="bg-surface-subtle border-b border-border p-5 flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-[8px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+            <Wallet className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">Deposit Funds</h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Select or enter the amount to transfer from your linked bank account.
+            <h2 className="text-sm font-semibold text-text">On-Ramp Deposit</h2>
+            <p className="text-xs text-text-muted mt-0.5">
+              Select or type the amount to deposit from your linked bank account into your ledger wallet.
             </p>
           </div>
         </div>
 
         {/* Form Content */}
-        <form onSubmit={handleProceed} className="p-6 sm:p-8 space-y-6">
-          
+        <form onSubmit={handleProceed} className="p-6 space-y-5">
           {/* Amount Input Section */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-              Enter Amount
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
+              Deposit Amount
             </label>
-            <div className="relative flex items-center bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 focus-within:border-cyan-500/50 transition-all">
-              <span className="text-3xl font-extrabold text-slate-400 mr-2">₹</span>
+            <div className="relative flex items-center bg-surface border border-border rounded-[8px] px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-xs">
+              <span className="text-2xl font-mono text-text-muted mr-2 font-medium">₹</span>
               <input
                 type="number"
                 min="1"
                 step="any"
-                placeholder="0"
+                placeholder="0.00"
                 value={amount}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -108,7 +111,7 @@ export default function AddMoneyPage() {
                     setAmount(val);
                   }
                 }}
-                className="w-full text-3xl font-extrabold text-white bg-transparent outline-none placeholder-slate-600"
+                className="w-full text-2xl font-semibold font-mono tabular-nums text-text bg-transparent outline-none placeholder-text-faint"
                 autoFocus
                 required
               />
@@ -116,8 +119,8 @@ export default function AddMoneyPage() {
           </div>
 
           {/* Quick Amount Chips */}
-          <div className="space-y-2.5">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+          <div className="space-y-1.5">
+            <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
               Quick Select
             </span>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
@@ -128,10 +131,10 @@ export default function AddMoneyPage() {
                     key={val}
                     type="button"
                     onClick={() => setAmount(val.toString())}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                    className={`py-2 px-3 rounded-[6px] text-xs font-mono font-medium transition-all cursor-pointer ${
                       isActive
-                        ? "bg-blue-600 text-white shadow-md"
-                        : "bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800"
+                        ? "bg-primary text-white shadow-xs border border-primary"
+                        : "bg-surface-subtle text-text border border-border hover:bg-surface"
                     }`}
                   >
                     ₹{val}
@@ -142,55 +145,62 @@ export default function AddMoneyPage() {
           </div>
 
           {/* Payment Summary Box */}
-          <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800 space-y-2.5 text-xs font-medium text-slate-400">
-            <div className="flex justify-between">
+          <div className="bg-surface-subtle rounded-[8px] p-4 border border-border space-y-2 text-xs font-medium text-text-muted">
+            <div className="flex justify-between items-center">
               <span>Amount to Add</span>
-              <span className="font-bold text-slate-100">₹{numericAmount.toFixed(2)}</span>
+              <span className="font-mono text-text">
+                <Amount value={numericAmount} size="sm" weight="semibold" />
+              </span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span>Processing Fee</span>
-              <span className="font-bold text-emerald-400">Free (₹0)</span>
+              <span className="font-medium text-success">Free (₹0.00)</span>
             </div>
-            <div className="h-px bg-slate-800 my-1" />
-            <div className="flex justify-between text-sm">
-              <span className="font-bold text-slate-200">Total Payable</span>
-              <span className="font-extrabold text-cyan-400">₹{totalAmount.toFixed(2)}</span>
+            <div className="h-px bg-border my-1" />
+            <div className="flex justify-between items-center text-sm pt-0.5">
+              <span className="font-semibold text-text">Total Payable</span>
+              <span className="text-primary">
+                <Amount value={totalAmount} size="md" weight="semibold" />
+              </span>
             </div>
           </div>
 
           {/* Information Card */}
-          <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 flex items-start gap-3.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-cyan-300 flex items-center justify-center shrink-0 mt-0.5">
+          <div className="bg-surface-subtle border border-border rounded-[8px] p-3.5 flex items-start gap-3">
+            <div className="w-7 h-7 rounded-[6px] bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5 border border-primary/20">
               <ShieldCheck className="w-4 h-4" />
             </div>
-            <div className="text-xs text-slate-300 space-y-1 font-medium leading-relaxed">
-              <p>Funds will be transferred securely from your linked HDFC Bank account into your personal wallet.</p>
-              <p className="text-slate-400">Redirects to HDFC Bank secure simulation.</p>
+            <div className="text-xs text-text-muted space-y-0.5 leading-relaxed">
+              <p className="font-medium text-text">Simulated HDFC NetBanking Gateway</p>
+              <p className="text-[11px] text-text-faint">
+                You will be redirected to the bank test portal to authorize the transaction.
+              </p>
             </div>
           </div>
 
           {/* Bottom Action Buttons */}
           <div className="pt-2 flex flex-col sm:flex-row gap-3">
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={() => router.push("/dashboard")}
-              className="sm:w-auto px-6 py-3.5 rounded-xl border border-slate-700/80 text-slate-300 hover:bg-slate-800 font-bold text-sm transition-all cursor-pointer text-center"
+              className="sm:w-auto"
             >
               Cancel
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
+              variant="primary"
               disabled={numericAmount <= 0 || loading}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              loading={loading}
+              className="flex-1"
             >
-              <span>{loading ? "Initializing..." : "Proceed to HDFC Bank Gateway"}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              <span>{loading ? "Initializing..." : "Proceed to Bank Gateway"}</span>
+              <ArrowRight className="w-4 h-4 ml-1.5" />
+            </Button>
           </div>
-
         </form>
-
       </div>
     </div>
   );

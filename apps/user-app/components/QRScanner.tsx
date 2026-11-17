@@ -595,20 +595,19 @@ export function QRScanner() {
   }, [stopAllMediaTracks, stopAndClearScanner]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Scanner Viewport Box */}
-      <div className="relative bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden">
-        
+      <div className="relative bg-surface border border-border rounded-[10px] p-6 sm:p-8 shadow-xs overflow-hidden">
         {/* Top Instructions / Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center">
-              <ScanLine className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
+              <ScanLine className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">QR Code Viewfinder</h2>
-              <p className="text-xs text-slate-400">
-                {activeCameraLabel ? `Active: ${activeCameraLabel}` : "Position the merchant QR code within the frame"}
+              <h2 className="text-sm font-semibold text-text">QR Viewfinder</h2>
+              <p className="text-xs text-text-muted">
+                {activeCameraLabel ? `Active: ${activeCameraLabel}` : "Position merchant QR code within the frame"}
               </p>
             </div>
           </div>
@@ -617,7 +616,7 @@ export function QRScanner() {
             <button
               onClick={() => startScanner()}
               disabled={isLoading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-surface-subtle hover:bg-surface text-text text-xs font-medium border border-border transition-all cursor-pointer disabled:opacity-50 shadow-xs"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
               <span>Restart Camera</span>
@@ -625,10 +624,10 @@ export function QRScanner() {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-xs font-semibold border border-cyan-500/20 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-primary hover:bg-primary-hover text-white text-xs font-medium transition-all cursor-pointer shadow-xs"
             >
               <Upload className="w-3.5 h-3.5" />
-              <span>Upload QR</span>
+              <span>Upload Image</span>
             </button>
             <input
               ref={fileInputRef}
@@ -642,61 +641,60 @@ export function QRScanner() {
 
         {/* Camera Display Region */}
         <div className="mt-6 flex flex-col items-center justify-center">
-          <div className="relative w-full max-w-sm aspect-square bg-slate-950 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-inner flex items-center justify-center">
-            
+          <div className="relative w-full max-w-sm aspect-square bg-[#0E1512] rounded-[10px] overflow-hidden border border-border shadow-inner flex items-center justify-center">
             {/* HTML5 QR Container */}
             <div
               id={containerId}
-              className="w-full h-full [&>video]:w-full [&>video]:h-full [&>video]:object-cover [&>video]:rounded-xl"
+              className="w-full h-full [&>video]:w-full [&>video]:h-full [&>video]:object-cover [&>video]:rounded-[10px]"
             />
 
             {/* Viewfinder Target Overlay (Visible when scanning) */}
             {isScanning && !scannedTxId && !errorMessage && (
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <div className="w-60 h-60 relative">
-                  {/* Corner Borders */}
-                  <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-cyan-400 rounded-tl-lg" />
-                  <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-cyan-400 rounded-tr-lg" />
-                  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-cyan-400 rounded-bl-lg" />
-                  <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-cyan-400 rounded-br-lg" />
-                  
+                <div className="w-56 h-56 relative">
+                  {/* Corner Borders in Signal Lime / Accent */}
+                  <div className="absolute top-0 left-0 w-7 h-7 border-t-3 border-l-3 border-[#C8F169] rounded-tl-md" />
+                  <div className="absolute top-0 right-0 w-7 h-7 border-t-3 border-r-3 border-[#C8F169] rounded-tr-md" />
+                  <div className="absolute bottom-0 left-0 w-7 h-7 border-b-3 border-l-3 border-[#C8F169] rounded-bl-md" />
+                  <div className="absolute bottom-0 right-0 w-7 h-7 border-b-3 border-r-3 border-[#C8F169] rounded-br-md" />
+
                   {/* Scanning Animation Bar */}
-                  <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_#22d3ee] animate-pulse" />
+                  <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-[#C8F169] to-transparent shadow-[0_0_8px_#C8F169] animate-pulse" />
                 </div>
               </div>
             )}
 
             {/* Loading State */}
             {isLoading && (
-              <div className="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-6 text-center space-y-3 z-10">
-                <RefreshCw className="w-8 h-8 text-cyan-400 animate-spin" />
-                <p className="text-sm font-semibold text-white">Starting camera...</p>
-                <p className="text-xs text-slate-400">Requesting permission and starting video feed</p>
+              <div className="absolute inset-0 bg-[#0E1512]/90 flex flex-col items-center justify-center p-6 text-center space-y-3 z-10">
+                <RefreshCw className="w-7 h-7 text-[#C8F169] animate-spin" />
+                <p className="text-xs font-semibold text-white">Starting camera...</p>
+                <p className="text-[11px] text-slate-400">Requesting device permission and video stream</p>
               </div>
             )}
 
             {/* Camera Permission / Error State */}
             {errorMessage && !isLoading && (
-              <div className="absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center space-y-4 z-20">
-                <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center">
-                  <CameraOff className="w-6 h-6" />
+              <div className="absolute inset-0 bg-[#0E1512]/95 flex flex-col items-center justify-center p-6 text-center space-y-3.5 z-20">
+                <div className="w-10 h-10 rounded-[6px] bg-danger-subtle/20 border border-danger/30 text-danger flex items-center justify-center">
+                  <CameraOff className="w-5 h-5" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-sm font-bold text-white">Camera Access Error</h3>
-                  <p className="text-xs text-slate-300 max-w-xs">{errorMessage}</p>
+                  <h3 className="text-xs font-semibold text-white">Camera Access Error</h3>
+                  <p className="text-[11px] text-slate-300 max-w-xs">{errorMessage}</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 pt-2">
                   <button
                     onClick={() => startScanner()}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-cyan-500/20 cursor-pointer"
+                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-[6px] text-xs font-medium transition-all shadow-xs cursor-pointer"
                   >
                     Grant Permission & Retry
                   </button>
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                    className="px-3.5 py-1.5 bg-surface text-text border border-border rounded-[6px] text-xs font-medium hover:bg-surface-subtle transition-all cursor-pointer"
                   >
-                    Upload QR Image Instead
+                    Upload QR Image
                   </button>
                 </div>
               </div>
@@ -704,58 +702,56 @@ export function QRScanner() {
 
             {/* Scanned Success State */}
             {scannedTxId && (
-              <div className="absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center space-y-3 z-30 animate-in fade-in zoom-in duration-200">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                  <CheckCircle2 className="w-8 h-8" />
+              <div className="absolute inset-0 bg-[#0E1512]/95 flex flex-col items-center justify-center p-6 text-center space-y-3 z-30">
+                <div className="w-12 h-12 rounded-[8px] bg-success-subtle/30 border border-success/40 text-success flex items-center justify-center">
+                  <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-base font-bold text-white">Payment Request Detected!</h3>
-                  <p className="text-xs text-slate-400 font-mono">ID: {scannedTxId}</p>
+                <div className="space-y-0.5">
+                  <h3 className="text-sm font-semibold text-white">Payment Request Verified!</h3>
+                  <p className="text-xs text-slate-300 font-mono">Ref: {scannedTxId}</p>
                 </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-xs font-medium">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-subtle/30 text-success border border-success/30 text-[11px] font-medium">
+                  <RefreshCw className="w-3 h-3 animate-spin" />
                   <span>Redirecting to Checkout...</span>
                 </div>
               </div>
             )}
-
           </div>
 
           {/* Invalid QR Warning Message */}
           {invalidQrMessage && (
-            <div className="mt-4 w-full max-w-sm flex items-start gap-2.5 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs animate-in fade-in duration-200">
-              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="mt-4 w-full max-w-sm flex items-start gap-2.5 p-3 rounded-[6px] bg-warning-subtle/50 border border-warning/30 text-warning text-xs">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <p className="leading-relaxed">{invalidQrMessage}</p>
             </div>
           )}
 
           {/* Helper Caption */}
-          <p className="text-xs text-slate-400 mt-4 text-center">
-            Point camera at any PayPulse Merchant QR code with URL format <code className="text-cyan-400 font-mono">/pay?transactionId=...</code>
+          <p className="text-xs text-text-muted mt-3 text-center">
+            Point camera at any PayPulse Merchant QR code with link <code className="text-primary font-mono text-[11px]">/pay?transactionId=...</code>
           </p>
         </div>
-
       </div>
 
       {/* Security & Verification Footer */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-cyan-400 flex items-center justify-center shrink-0">
-            <ShieldCheck className="w-5 h-5" />
+        <div className="bg-surface border border-border rounded-[10px] p-4 flex items-center gap-3 shadow-xs">
+          <div className="w-8 h-8 rounded-[6px] bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">Secure Merchant Validation</h4>
-            <p className="text-[11px] text-slate-400">Transactions are verified directly with database records.</p>
+            <h4 className="text-xs font-semibold text-text">Direct Database Verification</h4>
+            <p className="text-[11px] text-text-muted">Payment requests are confirmed directly against merchant records.</p>
           </div>
         </div>
 
-        <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
-            <Zap className="w-5 h-5" />
+        <div className="bg-surface border border-border rounded-[10px] p-4 flex items-center gap-3 shadow-xs">
+          <div className="w-8 h-8 rounded-[6px] bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
+            <Zap className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">Instant Routing</h4>
-            <p className="text-[11px] text-slate-400">Scanned QR automatically resolves and prepares the payment checkout screen.</p>
+            <h4 className="text-xs font-semibold text-text">Instant Payment Routing</h4>
+            <p className="text-[11px] text-text-muted">Scanned QR automatically navigates to authorization checkout.</p>
           </div>
         </div>
       </div>

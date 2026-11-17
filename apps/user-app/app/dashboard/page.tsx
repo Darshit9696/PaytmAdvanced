@@ -5,7 +5,18 @@ import { prisma } from "@repo/db/client";
 import { SearchUsers } from "@/components/SearchUsers";
 import { DashboardAnalytics } from "@/components/DashboardAnalytics";
 import Link from "next/link";
-import { ArrowUpRight, ArrowDownLeft, Plus, Wallet, History, Send, QrCode, Scale } from "lucide-react";
+import {
+  ArrowUpRight,
+  ArrowDownLeft,
+  Plus,
+  Wallet,
+  History,
+  Send,
+  QrCode,
+  Scale,
+  Sparkles,
+} from "lucide-react";
+import { Amount, Avatar, Card, CardHeader, CardTitle, CardContent } from "@repo/ui";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -52,121 +63,134 @@ export default async function DashboardPage() {
     },
   });
 
-  // Simple query to get distinct people you've interacted with for "Quick Send"
+  // Query to get distinct people interacted with for "Quick Send"
   const recentInteractions = await prisma.transaction.findMany({
     where: { senderId: userId },
-    take: 5,
+    take: 6,
     orderBy: { createdAt: "desc" },
     distinct: ["receiverId"],
     include: { receiver: true },
   });
 
+  const walletBalance = user?.wallet?.balance ?? 0;
+
   return (
-    <div className="max-w-5xl mx-auto space-y-6 font-sans">
-      
-      {/* Header Greeting */}
+    <div className="max-w-6xl mx-auto space-y-6 font-sans">
+      {/* 1. Header Greeting & Session Status */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-text">
             Welcome back, {user.name}
           </h1>
-          <p className="text-slate-400 text-sm mt-0.5">
-            Overview of your personal wallet balance and recent activity.
+          <p className="text-text-muted text-sm mt-0.5">
+            Your personal wallet ledger, activity, and cash flow overview.
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-cyan-400 border border-blue-500/20 text-xs font-semibold self-start sm:self-auto">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-border text-xs font-medium text-text-muted self-start sm:self-auto shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
           <span>Active Session</span>
         </div>
       </div>
 
-      {/* 1. Wallet Balance & Action Card */}
-      <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-lg relative overflow-hidden">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              <Wallet className="w-4 h-4 text-cyan-400" />
+      {/* 2. Calm Ledger Balance Hero Card */}
+      <div className="bg-surface border border-border rounded-[10px] p-6 sm:p-8 shadow-xs relative overflow-hidden">
+        {/* Subtle accent highlight bar on top */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs font-medium text-text-muted uppercase tracking-wider">
+              <Wallet className="w-3.5 h-3.5 text-primary" />
               <span>Available Wallet Balance</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              ₹{(user?.wallet?.balance ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </h2>
+            <div className="flex items-baseline gap-3">
+              <Amount value={walletBalance} size="4xl" weight="semibold" />
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-accent/20 text-primary px-2.5 py-0.5 rounded-md border border-accent/40">
+                <Sparkles className="w-3 h-3" /> Ledger Verified
+              </span>
+            </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap gap-2.5 w-full lg:w-auto">
             {/* Scan & Pay */}
             <Link
               href="/dashboard/scan"
-              className="h-11 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-5 rounded-xl text-sm font-bold transition-all shadow-md shadow-cyan-500/20 flex items-center justify-center gap-2"
+              className="h-10 bg-accent text-primary hover:bg-accent-hover px-4 rounded-[10px] text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer border border-accent/60"
             >
               <QrCode className="w-4 h-4" />
               <span>Scan & Pay</span>
             </Link>
 
-            {/* Add Money */}
-            <Link
-              href="/dashboard/on-ramp"
-              className="h-11 bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 px-5 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
-            >
-              <Plus className="w-4 h-4 text-cyan-400" />
-              <span>Add Money</span>
-            </Link>
-
             {/* Send Money */}
             <Link
               href="/dashboard/transfer"
-              className="h-11 bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 px-5 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+              className="h-10 bg-primary hover:bg-primary-hover text-white px-4 rounded-[10px] text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
             >
-              <Send className="w-4 h-4 text-cyan-400" />
+              <Send className="w-4 h-4" />
               <span>Send Money</span>
+            </Link>
+
+            {/* Add Money */}
+            <Link
+              href="/dashboard/on-ramp"
+              className="h-10 bg-surface-subtle hover:bg-surface text-text border border-border hover:border-border-strong px-4 rounded-[10px] text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+            >
+              <Plus className="w-4 h-4 text-primary" />
+              <span>Add Money</span>
             </Link>
 
             {/* Withdraw */}
             <Link
               href="/dashboard/withdraw"
-              className="h-11 bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/80 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+              className="h-10 bg-surface-subtle hover:bg-surface text-text border border-border hover:border-border-strong px-4 rounded-[10px] text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
             >
-              <ArrowDownLeft className="w-4 h-4 text-slate-400" />
+              <ArrowDownLeft className="w-4 h-4 text-text-muted" />
               <span>Withdraw</span>
             </Link>
 
-            {/* Reconciliation Audit */}
+            {/* Ledger Audit */}
             <Link
               href="/dashboard/reconciliation"
-              className="h-11 bg-blue-950/40 hover:bg-blue-900/40 text-cyan-300 border border-cyan-500/30 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+              className="h-10 bg-surface-subtle hover:bg-surface text-primary border border-border hover:border-primary/40 px-3.5 rounded-[10px] text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+              title="Continuous double-entry ledger audit"
             >
-              <Scale className="w-4 h-4 text-cyan-400" />
+              <Scale className="w-4 h-4" />
               <span>Audit Ledger</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* 2. Interactive Search Component */}
+      {/* 3. Search Users */}
       <SearchUsers />
 
-      {/* 3. Real Backend-backed Analytics, Charts & Top Friends */}
+      {/* 4. Analytics, Chart & Breakdown */}
       <DashboardAnalytics />
 
-      {/* 4. Bottom Grid Section */}
+      {/* 5. Bottom Section: Recent Activity & Quick Transfers */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
         {/* Recent Transactions Card */}
-        <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 flex items-center gap-2">
-              <History className="w-4 h-4 text-cyan-400" /> Recent Activity
+        <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-4">
+          <div className="flex justify-between items-center pb-3 border-b border-border">
+            <h3 className="font-semibold text-xs uppercase tracking-wider text-text-muted flex items-center gap-2">
+              <History className="w-3.5 h-3.5 text-primary" />
+              <span>Recent Activity</span>
             </h3>
-            <Link href="/dashboard/transactions" className="text-xs text-cyan-400 font-semibold hover:underline">
-              View All
+            <Link
+              href="/dashboard/transactions"
+              className="text-xs text-primary font-medium hover:underline"
+            >
+              View statement →
             </Link>
           </div>
 
-          <div className="space-y-1 divide-y divide-slate-800/80">
+          <div className="space-y-1 divide-y divide-border">
             {dbTransactions.length === 0 ? (
-              <p className="text-xs text-slate-400 py-6 text-center">No recent wallet transactions found.</p>
+              <p className="text-xs text-text-muted py-8 text-center">
+                No recent wallet transactions found.
+              </p>
             ) : (
               dbTransactions.map((tx) => {
                 const isSent = tx.senderId === userId;
@@ -174,7 +198,7 @@ export default async function DashboardPage() {
                 return (
                   <TransactionItem
                     key={tx.id}
-                    name={displayUser.name}
+                    name={displayUser.name || "PayPulse User"}
                     isSent={isSent}
                     amount={tx.amount}
                     date={new Date(tx.createdAt).toLocaleDateString("en-IN", {
@@ -191,23 +215,30 @@ export default async function DashboardPage() {
         </div>
 
         {/* Quick Send Favorites Card */}
-        <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
-          <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400">Quick Transfers</h3>
+        <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-4">
+          <div className="flex justify-between items-center pb-3 border-b border-border">
+            <h3 className="font-semibold text-xs uppercase tracking-wider text-text-muted">
+              Quick Transfers
+            </h3>
+            <span className="text-[11px] text-text-faint">Frequent contacts</span>
+          </div>
+
           <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
             {recentInteractions.length === 0 ? (
-              <p className="text-xs text-slate-400 py-6 w-full text-center">People you pay will appear here.</p>
+              <p className="text-xs text-text-muted py-8 w-full text-center">
+                People you pay will appear here.
+              </p>
             ) : (
               recentInteractions.map((interaction) => (
                 <QuickUser
                   key={interaction.id}
-                  name={interaction.receiver.name}
+                  name={interaction.receiver.name || "Contact"}
                   phone={interaction.receiver.number}
                 />
               ))
             )}
           </div>
         </div>
-
       </div>
     </div>
   );
@@ -226,25 +257,29 @@ function TransactionItem({
   date: string;
 }) {
   return (
-    <div className="flex justify-between items-center py-3.5 first:pt-0 last:pb-0 transition-colors">
+    <div className="flex justify-between items-center py-3 first:pt-0 last:pb-0">
       <div className="flex items-center gap-3">
         <div
-          className={`w-9 h-9 rounded-full flex items-center justify-center border ${
-            isSent 
-              ? "bg-rose-500/10 border-rose-500/20 text-rose-400" 
-              : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs ${
+            isSent
+              ? "bg-danger-subtle/40 border-danger/20 text-danger"
+              : "bg-success-subtle/40 border-success/20 text-success"
           }`}
         >
-          {isSent ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownLeft className="w-4 h-4" />}
+          {isSent ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownLeft className="w-3.5 h-3.5" />}
         </div>
         <div>
-          <p className="text-sm font-semibold text-slate-100">{name}</p>
-          <p className="text-[11px] text-slate-400 font-mono">{date}</p>
+          <p className="text-sm font-medium text-text">{name}</p>
+          <p className="text-[11px] text-text-muted font-mono">{date}</p>
         </div>
       </div>
-      <span className={`text-sm font-semibold ${isSent ? "text-rose-400" : "text-emerald-400"}`}>
-        {isSent ? `-${amount.toLocaleString("en-IN")}` : `+${amount.toLocaleString("en-IN")}`}
-      </span>
+      <Amount
+        value={amount}
+        sign={isSent ? "negative" : "positive"}
+        variant={isSent ? "danger" : "success"}
+        size="sm"
+        weight="semibold"
+      />
     </div>
   );
 }
@@ -254,12 +289,12 @@ function QuickUser({ name, phone }: { name: string; phone: string }) {
   return (
     <Link
       href={`/dashboard/transfer?name=${encodeURIComponent(name)}&phone=${phone}`}
-      className="flex flex-col items-center gap-2 p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-cyan-500/40 hover:bg-slate-800/80 transition-all min-w-[88px] text-center group"
+      className="flex flex-col items-center gap-2 p-3 rounded-[10px] border border-border bg-surface-subtle hover:bg-surface hover:border-border-strong transition-all min-w-[88px] text-center group shadow-xs"
     >
-      <div className="w-11 h-11 bg-blue-600/20 border border-blue-500/30 rounded-full flex items-center justify-center text-cyan-300 font-bold text-xs uppercase group-hover:scale-105 transition-transform">
-        {name[0]}
-      </div>
-      <span className="text-[11px] font-semibold text-slate-300 truncate max-w-[72px]">{name.split(" ")[0]}</span>
+      <Avatar name={name} size="md" />
+      <span className="text-[11px] font-medium text-text truncate max-w-[72px]">
+        {name.split(" ")[0]}
+      </span>
     </Link>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { signOut } from "next-auth/react";
 import { User, Phone, Mail, ShieldCheck, LogOut, Key, Copy, Check } from "lucide-react";
+import { Avatar, Button } from "@repo/ui";
 
 interface ProfileViewProps {
   user: {
@@ -28,120 +29,131 @@ export default function ProfileView({ user }: ProfileViewProps) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 font-sans">
-      
-      {/* 1. Profile Top Banner */}
-      <div className="bg-[#0f172a] text-white rounded-2xl p-6 shadow-xl relative overflow-hidden border border-slate-800">
-        <div className="flex flex-col sm:flex-row items-center gap-5 relative z-10">
-          <div className="w-20 h-20 bg-blue-600/20 border-2 border-cyan-400 rounded-full flex items-center justify-center text-cyan-300 font-extrabold text-3xl uppercase shadow-md">
-            {userName[0]}
-          </div>
-          
+    <div className="max-w-2xl mx-auto space-y-6 font-sans">
+      {/* 1. Profile Header Banner */}
+      <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row items-center gap-5">
+          <Avatar name={userName} size="xl" />
+
           <div className="text-center sm:text-left space-y-1">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h2 className="text-2xl font-bold tracking-tight text-white">{userName}</h2>
-              <span className="flex items-center gap-1 text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full font-semibold border border-emerald-500/20 uppercase tracking-wider">
-                Verified Account
+              <h2 className="text-xl font-semibold tracking-tight text-text">{userName}</h2>
+              <span className="flex items-center gap-1 text-[11px] bg-success-subtle/50 text-success px-2.5 py-0.5 rounded-full font-medium border border-success/30">
+                <ShieldCheck className="w-3.5 h-3.5" /> Verified User
               </span>
             </div>
-            
-            <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-slate-400 font-mono">
-              <span>Wallet ID: {userId}</span>
-              <button 
+
+            <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-text-muted font-mono">
+              <span>Wallet Ledger ID: {userId}</span>
+              <button
                 onClick={handleCopyId}
-                className="p-1 hover:bg-slate-800 rounded transition-colors text-cyan-400 cursor-pointer"
+                className="p-1 hover:bg-surface-subtle rounded transition-colors text-primary cursor-pointer border border-border"
                 title="Copy Wallet ID"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? (
+                  <Check className="w-3.5 h-3.5 text-success" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 2. Main Details Form Grid */}
-      <div className="bg-[#0f172a] rounded-2xl border border-slate-800 shadow-sm p-6 space-y-5">
-        <h3 className="font-bold text-slate-400 text-xs uppercase tracking-wider mb-2">Personal Information</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 flex items-center gap-3.5">
-            <div className="p-2.5 bg-slate-800 rounded-lg text-cyan-400 border border-slate-700">
-              <User className="w-5 h-5" />
+      {/* 2. Personal Information Grid */}
+      <div className="bg-surface rounded-[10px] border border-border shadow-xs p-6 space-y-4">
+        <h3 className="font-semibold text-text-muted text-xs uppercase tracking-wider">
+          Personal Information
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <div className="p-3.5 bg-surface-subtle rounded-[8px] border border-border flex items-center gap-3">
+            <div className="p-2 bg-surface rounded-[6px] text-primary border border-border">
+              <User className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Full Name</p>
-              <p className="text-sm font-bold text-slate-100 mt-0.5">{userName}</p>
+              <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+                Full Name
+              </p>
+              <p className="text-sm font-medium text-text mt-0.5">{userName}</p>
             </div>
           </div>
 
-          <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 flex items-center gap-3.5">
-            <div className="p-2.5 bg-slate-800 rounded-lg text-cyan-400 border border-slate-700">
-              <Phone className="w-5 h-5" />
+          <div className="p-3.5 bg-surface-subtle rounded-[8px] border border-border flex items-center gap-3">
+            <div className="p-2 bg-surface rounded-[6px] text-primary border border-border">
+              <Phone className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mobile Number</p>
-              <p className="text-sm font-bold text-slate-100 mt-0.5 font-mono">+91 {userPhone}</p>
+              <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+                Mobile Number
+              </p>
+              <p className="text-sm font-medium text-text mt-0.5 font-mono">+91 {userPhone}</p>
             </div>
           </div>
 
-          <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 flex items-center gap-3.5 md:col-span-2">
-            <div className="p-2.5 bg-slate-800 rounded-lg text-cyan-400 border border-slate-700">
-              <Mail className="w-5 h-5" />
+          <div className="p-3.5 bg-surface-subtle rounded-[8px] border border-border flex items-center gap-3 md:col-span-2">
+            <div className="p-2 bg-surface rounded-[6px] text-primary border border-border">
+              <Mail className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Address</p>
-              <p className="text-sm font-bold text-slate-100 mt-0.5">{userEmail}</p>
+              <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+                Email Address
+              </p>
+              <p className="text-sm font-medium text-text mt-0.5">{userEmail}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3. Account Actions / Security Panel */}
-      <div className="bg-[#0f172a] rounded-2xl border border-slate-800 shadow-sm p-6 space-y-4">
-        <h3 className="font-bold text-slate-400 text-xs uppercase tracking-wider">Security & Session</h3>
-        
-        <div className="divide-y divide-slate-800/80">
-          <div className="flex items-center justify-between py-3.5 first:pt-0">
+      {/* 3. Security & Session */}
+      <div className="bg-surface rounded-[10px] border border-border shadow-xs p-6 space-y-4">
+        <h3 className="font-semibold text-text-muted text-xs uppercase tracking-wider">
+          Security & Session
+        </h3>
+
+        <div className="divide-y divide-border">
+          <div className="flex items-center justify-between py-3 first:pt-0">
             <div className="flex items-center gap-3">
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+              <ShieldCheck className="w-4 h-4 text-success" />
               <div>
-                <p className="text-sm font-bold text-slate-100">Wallet Encryption</p>
-                <p className="text-xs text-slate-400">Authenticated user session active.</p>
+                <p className="text-sm font-medium text-text">Double-Entry Cryptographic Balance</p>
+                <p className="text-xs text-text-muted">Balance enforced via balanced database ledger.</p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between py-3.5">
+          <div className="flex items-center justify-between py-3">
             <div className="flex items-center gap-3">
-              <Key className="w-5 h-5 text-slate-400" />
+              <Key className="w-4 h-4 text-text-muted" />
               <div>
-                <p className="text-sm font-bold text-slate-100">Account Security</p>
-                <p className="text-xs text-slate-400">Credentials encrypted via NextAuth.</p>
+                <p className="text-sm font-medium text-text">Authentication Protocol</p>
+                <p className="text-xs text-text-muted">Secure JWT session token encrypted via NextAuth.</p>
               </div>
             </div>
-            <span className="text-xs font-semibold text-cyan-400">
+            <span className="text-xs font-semibold text-primary font-mono bg-primary/10 px-2 py-0.5 rounded-[4px] border border-primary/20">
               Active
             </span>
           </div>
 
-          <div className="flex items-center justify-between py-3.5 last:pb-0">
+          <div className="flex items-center justify-between py-3 last:pb-0">
             <div className="flex items-center gap-3">
-              <LogOut className="w-5 h-5 text-rose-400" />
+              <LogOut className="w-4 h-4 text-danger" />
               <div>
-                <p className="text-sm font-bold text-slate-100">Sign Out</p>
-                <p className="text-xs text-slate-400">Log out cleanly from this user session.</p>
+                <p className="text-sm font-medium text-text">Sign Out</p>
+                <p className="text-xs text-text-muted">Terminate active session credentials from this device.</p>
               </div>
             </div>
-            <button 
+            <Button
+              variant="danger"
+              size="sm"
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="px-4 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm"
             >
               Sign Out
-            </button>
+            </Button>
           </div>
         </div>
       </div>
-
     </div>
   );
 }

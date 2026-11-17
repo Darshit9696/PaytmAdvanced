@@ -18,13 +18,10 @@ import {
   Lock,
   Wallet,
   RefreshCw,
-  Clock,
   LogIn,
 } from "lucide-react";
+import { Amount, Avatar, Button } from "@repo/ui";
 
-/**
- * Type definition for the payment transaction returned by GET /api/payment
- */
 interface PaymentTransactionDetails {
   transactionId: string;
   amount: number;
@@ -41,19 +38,14 @@ function PayContent() {
   const { data: session, status: authStatus } = useSession();
   const transactionId = searchParams.get("transactionId");
 
-  // React states for transaction details, loading, and errors
   const [txDetails, setTxDetails] = useState<PaymentTransactionDetails | null>(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState<boolean>(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
 
-  // Payment execution state: "idle" | "processing" | "success"
   const [paymentState, setPaymentState] = useState<"idle" | "processing" | "success">("idle");
   const [copied, setCopied] = useState(false);
 
-  /**
-   * Fetch real transaction details from GET /api/payment?transactionId=<id>
-   */
   const fetchTxDetails = useCallback(async (id: string) => {
     setIsLoadingDetails(true);
     setFetchError(null);
@@ -76,7 +68,6 @@ function PayContent() {
 
       const data = await res.json();
 
-      // Ensure data has valid structure before setting state
       if (!data || !data.transactionId) {
         setFetchError("Invalid payment request. The transaction data could not be verified.");
         setTxDetails(null);
@@ -84,7 +75,6 @@ function PayContent() {
         return;
       }
 
-      // Safe normalization for merchant data
       const normalizedData: PaymentTransactionDetails = {
         transactionId: data.transactionId,
         amount: typeof data.amount === "number" ? data.amount : Number(data.amount || 0),
@@ -105,7 +95,6 @@ function PayContent() {
     }
   }, []);
 
-  // Fetch transaction details on mount whenever transactionId changes
   useEffect(() => {
     if (transactionId && transactionId.trim().length > 0) {
       fetchTxDetails(transactionId.trim());
@@ -116,7 +105,6 @@ function PayContent() {
     }
   }, [transactionId, fetchTxDetails]);
 
-  // Copy transaction ID helper
   const handleCopyTransactionId = () => {
     const idToCopy = txDetails?.transactionId || transactionId;
     if (!idToCopy) return;
@@ -125,14 +113,9 @@ function PayContent() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  /**
-   * Execute real backend payment processing.
-   * Sends ONLY { transactionId } to POST /api/payment.
-   */
   const handleConfirmPayment = async () => {
     if (!txDetails || paymentState === "processing") return;
 
-    // Check if user is authenticated
     if (authStatus === "unauthenticated") {
       router.push(`/login?callbackUrl=/pay?transactionId=${encodeURIComponent(txDetails.transactionId)}`);
       return;
@@ -162,7 +145,6 @@ function PayContent() {
         return;
       }
 
-      // Update local state with finalized transaction from database
       if (data?.transaction) {
         setTxDetails((prev) => ({
           transactionId: data.transaction.transactionId || prev?.transactionId || txDetails.transactionId,
@@ -185,40 +167,16 @@ function PayContent() {
     }
   };
 
-  // ---------------------------------------------------------------------------
-  // 1. LOADING STATE (Fetching real transaction details from API)
-  // ---------------------------------------------------------------------------
+  // 1. LOADING STATE
   if (isLoadingDetails) {
     return (
-      <div className="min-h-screen bg-[#090d16] text-slate-100 font-sans flex flex-col items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-lg space-y-6">
-          {/* Brand Header */}
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5 shadow-md group-hover:scale-105 transition-transform">
-                <div className="w-full h-full bg-[#090d16] rounded-[9px] flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-cyan-400" />
-                </div>
-              </div>
-              <span className="text-base font-extrabold text-white">PayPulse</span>
-            </Link>
-          </div>
-
-          {/* Loading Container */}
-          <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center mx-auto shadow-lg shadow-cyan-500/10">
-              <RefreshCw className="w-8 h-8 animate-spin" />
-            </div>
-
-            <div className="space-y-1.5">
-              <h2 className="text-lg font-bold text-white">Loading Payment Details</h2>
-              <p className="text-xs text-slate-400">Verifying merchant transaction with database...</p>
-            </div>
-
-            {/* Skeleton shimmer preview */}
-            <div className="space-y-3 pt-2">
-              <div className="h-16 bg-slate-900/80 rounded-2xl border border-slate-800/80 animate-pulse" />
-              <div className="h-24 bg-slate-900/80 rounded-2xl border border-slate-800/80 animate-pulse" />
+      <div className="min-h-screen bg-bg text-text font-sans flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-4">
+          <div className="bg-surface border border-border rounded-[10px] p-8 text-center space-y-4 shadow-xs">
+            <RefreshCw className="w-6 h-6 text-primary animate-spin mx-auto" />
+            <div className="space-y-1">
+              <h2 className="text-sm font-semibold text-text">Loading Payment Request</h2>
+              <p className="text-xs text-text-muted">Verifying merchant transaction ledger...</p>
             </div>
           </div>
         </div>
@@ -226,64 +184,37 @@ function PayContent() {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // 2. ERROR / INVALID / NOT FOUND TRANSACTION STATE
-  // ---------------------------------------------------------------------------
+  // 2. ERROR / INVALID
   if (fetchError || !txDetails) {
     return (
-      <div className="min-h-screen bg-[#090d16] text-slate-100 font-sans flex flex-col items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-md space-y-6">
-          {/* Brand Header */}
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5 shadow-md group-hover:scale-105 transition-transform">
-                <div className="w-full h-full bg-[#090d16] rounded-[9px] flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-cyan-400" />
-                </div>
-              </div>
-              <span className="text-base font-extrabold text-white">PayPulse</span>
-            </Link>
-          </div>
-
-          {/* Error Card */}
-          <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto shadow-lg shadow-rose-500/10">
-              <AlertTriangle className="w-7 h-7" />
+      <div className="min-h-screen bg-bg text-text font-sans flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-4">
+          <div className="bg-surface border border-border rounded-[10px] p-8 text-center space-y-5 shadow-xs">
+            <div className="w-12 h-12 rounded-[8px] bg-danger-subtle/50 border border-danger/30 text-danger flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-6 h-6" />
             </div>
 
-            <div className="space-y-2">
-              <h1 className="text-lg font-bold text-white">Payment Request Unavailable</h1>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+            <div className="space-y-1.5">
+              <h1 className="text-base font-semibold text-text">Payment Request Unavailable</h1>
+              <p className="text-xs text-text-muted leading-relaxed">
                 {fetchError || "Could not retrieve valid transaction details for this payment request."}
               </p>
             </div>
 
-            {/* Error Actions */}
-            <div className="space-y-2.5 pt-2">
-              {transactionId && (
-                <button
-                  type="button"
-                  onClick={() => fetchTxDetails(transactionId)}
-                  className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 px-4 rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
-                >
-                  <RefreshCw className="w-4 h-4 text-cyan-400" />
-                  <span>Retry Verification</span>
-                </button>
-              )}
-
+            <div className="space-y-2 pt-2">
               <Link
                 href="/dashboard/scan"
-                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-medium py-2.5 px-4 rounded-[6px] text-xs transition-all shadow-xs"
               >
-                <QrCode className="w-4 h-4" />
+                <QrCode className="w-3.5 h-3.5" />
                 <span>Scan Merchant QR Code</span>
               </Link>
 
               <Link
                 href="/dashboard"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 font-semibold py-2.5 px-4 rounded-xl border border-slate-800 transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-surface hover:bg-surface-subtle text-text font-medium py-2 px-4 rounded-[6px] border border-border text-xs transition-all"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Return to Dashboard</span>
               </Link>
             </div>
@@ -293,265 +224,206 @@ function PayContent() {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // 3. PAYMENT CONFIRMATION SUCCESS RECEIPT STATE (Real Completed Database State)
-  // ---------------------------------------------------------------------------
+  // 3. SUCCESS RECEIPT STATE
   if (paymentState === "success") {
     const businessName = txDetails?.merchant?.businessName || "Verified Merchant";
-    const amountVal = Number(txDetails?.amount || 0).toFixed(2);
     const resolvedTxId = txDetails?.transactionId || transactionId || "TXN_UNKNOWN";
 
     return (
-      <div className="min-h-screen bg-[#090d16] text-slate-100 font-sans flex flex-col items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in duration-200">
-        <div className="w-full max-w-md space-y-6">
-          {/* Brand Header */}
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5 shadow-md group-hover:scale-105 transition-transform">
-                <div className="w-full h-full bg-[#090d16] rounded-[9px] flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-cyan-400" />
-                </div>
-              </div>
-              <span className="text-base font-extrabold text-white">PayPulse</span>
-            </Link>
-          </div>
-
-          {/* Receipt Card */}
-          <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
-            {/* Top decorative accent */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400" />
+      <div className="min-h-screen bg-bg text-text font-sans flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-4">
+          <div className="bg-surface border border-border rounded-[10px] p-6 sm:p-8 shadow-xs space-y-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-600" />
 
             {/* Success Icon & Header */}
-            <div className="text-center space-y-3 pt-2">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10">
-                <CheckCircle2 className="w-8 h-8" />
+            <div className="text-center space-y-2 pt-2">
+              <div className="w-12 h-12 rounded-full bg-success-subtle/50 border border-success/30 text-success flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-xl font-extrabold text-white">Payment Successful</h1>
-                <p className="text-xs text-emerald-400 font-medium mt-0.5">Transaction debited and confirmed</p>
+                <h1 className="text-lg font-semibold text-text">Payment Confirmed</h1>
+                <p className="text-xs text-success font-medium">Debited from wallet ledger</p>
               </div>
             </div>
 
             {/* Amount Paid Display */}
-            <div className="text-center bg-slate-900/90 border border-slate-800 rounded-2xl py-4 px-6 space-y-1">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Amount Paid</span>
-              <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
-                ₹{amountVal}
+            <div className="text-center bg-surface-subtle border border-border rounded-[8px] py-4 px-6 space-y-1">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Amount Paid</span>
+              <div>
+                <Amount value={txDetails.amount} size="3xl" weight="semibold" />
               </div>
             </div>
 
             {/* Summary Details */}
-            <div className="space-y-3 bg-slate-900/50 border border-slate-800/80 rounded-2xl p-4 text-xs">
-              <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-                <span className="text-slate-400">Paid To</span>
-                <span className="font-bold text-slate-100 flex items-center gap-1.5">
-                  <Store className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="space-y-2.5 bg-surface-subtle border border-border rounded-[8px] p-4 text-xs">
+              <div className="flex items-center justify-between py-1 border-b border-border">
+                <span className="text-text-muted">Paid To</span>
+                <span className="font-semibold text-text flex items-center gap-1.5">
+                  <Store className="w-3.5 h-3.5 text-primary" />
                   {businessName}
                 </span>
               </div>
 
               {txDetails.note && (
-                <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-                  <span className="text-slate-400">Note</span>
-                  <span className="font-medium text-slate-200">{txDetails.note}</span>
+                <div className="flex items-center justify-between py-1 border-b border-border">
+                  <span className="text-text-muted">Reference Note</span>
+                  <span className="font-medium text-text">{txDetails.note}</span>
                 </div>
               )}
 
-              <div className="flex items-start justify-between py-1 border-b border-slate-800/60 gap-2">
-                <span className="text-slate-400 shrink-0">Transaction ID</span>
-                <span className="font-mono text-[11px] text-cyan-300 break-all text-right">
+              <div className="flex items-start justify-between py-1 border-b border-border gap-2">
+                <span className="text-text-muted shrink-0">Transaction ID</span>
+                <span className="font-mono text-[11px] text-text break-all text-right">
                   {resolvedTxId}
                 </span>
               </div>
 
               <div className="flex items-center justify-between py-1">
-                <span className="text-slate-400">Status</span>
-                <span className="font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-                  SUCCESS
+                <span className="text-text-muted">Status</span>
+                <span className="font-medium text-success bg-success-subtle/50 px-2 py-0.5 rounded-[4px] border border-success/30 text-[10px] font-mono">
+                  CONFIRMED
                 </span>
               </div>
             </div>
 
-            {/* Information Notice */}
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-3.5 flex items-start gap-2.5 text-emerald-300 text-[11px] leading-relaxed">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <p>
-                Your wallet balance has been updated and the payment has been settled into the merchant&apos;s account.
-              </p>
-            </div>
-
             {/* Action Buttons */}
-            <div className="space-y-2.5 pt-2">
+            <div className="space-y-2 pt-2">
               <Link
                 href="/dashboard"
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-medium py-2.5 px-4 rounded-[6px] text-xs transition-all shadow-xs"
               >
                 <span>Return to Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
 
               <Link
                 href="/dashboard/scan"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-2.5 px-4 rounded-xl border border-slate-800 transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-surface hover:bg-surface-subtle text-text font-medium py-2 px-4 rounded-[6px] border border-border text-xs transition-all"
               >
-                <QrCode className="w-4 h-4 text-cyan-400" />
-                <span>Scan Another Merchant QR</span>
+                <QrCode className="w-3.5 h-3.5 text-primary" />
+                <span>Scan Another QR</span>
               </Link>
             </div>
           </div>
-
-          <p className="text-center text-[11px] text-slate-500">
-            PayPulse Personal App • Verified Merchant Settlement
-          </p>
         </div>
       </div>
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // 4. MAIN PAYMENT CHECKOUT FORM (Real Fetched Backend Data)
-  // ---------------------------------------------------------------------------
+  // 4. MAIN CHECKOUT FORM
   const businessName = txDetails?.merchant?.businessName || "Verified Merchant";
-  const displayAmount = Number(txDetails?.amount || 0).toFixed(2);
-  const merchantInitial = businessName.length > 0 ? businessName[0]?.toUpperCase() || "M" : "M";
-
-  // Check if transaction is already completed before user pays
   const isAlreadyPaid = txDetails?.status === "SUCCESS";
   const isUnauthenticated = authStatus === "unauthenticated";
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 font-sans flex flex-col items-center justify-center p-4 sm:p-6">
-      <div className="w-full max-w-lg space-y-6">
-        {/* Brand & Top Navigation Header */}
-        <div className="flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5 shadow-md group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[#090d16] rounded-[9px] flex items-center justify-center">
-                <Zap className="w-4 h-4 text-cyan-400" />
-              </div>
-            </div>
-            <span className="text-base font-extrabold text-white">PayPulse</span>
-          </Link>
-
-          <Link
-            href="/dashboard/scan"
-            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-cyan-400 transition-colors"
-          >
-            <QrCode className="w-4 h-4" />
-            <span>Scan Different QR</span>
-          </Link>
-        </div>
-
-        {/* Main Payment Checkout Card */}
-        <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
+    <div className="min-h-screen bg-bg text-text font-sans flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-4">
+        {/* Main Card */}
+        <div className="bg-surface border border-border rounded-[10px] p-6 sm:p-8 shadow-xs space-y-6 relative overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div className="flex items-center justify-between pb-4 border-b border-border">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
-                <Store className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-[6px] bg-primary/10 border border-primary/20 text-primary flex items-center justify-center">
+                <Store className="w-4 h-4" />
               </div>
               <div>
-                <h1 className="text-base font-bold text-white">Merchant Checkout</h1>
-                <p className="text-xs text-slate-400">Review and authorize payment</p>
+                <h1 className="text-sm font-semibold text-text">Merchant Authorization</h1>
+                <p className="text-xs text-text-muted">Verify checkout payment details</p>
               </div>
             </div>
 
-            <span className="text-[11px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Verified Merchant
+            <span className="text-[11px] font-medium bg-success-subtle/50 text-success border border-success/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3" /> Verified
             </span>
           </div>
 
           {/* Unauthenticated Alert */}
           {isUnauthenticated && (
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex items-center justify-between gap-3 text-xs text-amber-200 animate-in fade-in duration-200">
-              <div className="flex items-center gap-2.5">
-                <LogIn className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>You must sign in to authorize this payment.</span>
+            <div className="bg-warning-subtle/50 border border-warning/30 rounded-[8px] p-3.5 flex items-center justify-between gap-3 text-xs text-text">
+              <div className="flex items-center gap-2">
+                <LogIn className="w-4 h-4 text-warning shrink-0" />
+                <span>Please sign in to authorize this payment.</span>
               </div>
               <Link
                 href={`/login?callbackUrl=/pay?transactionId=${encodeURIComponent(txDetails?.transactionId || transactionId || "")}`}
-                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors shrink-0"
+                className="bg-primary hover:bg-primary-hover text-white font-medium px-3 py-1 rounded-[4px] text-xs transition-colors shrink-0"
               >
                 Sign In
               </Link>
             </div>
           )}
 
-          {/* Merchant "Paying to" Presentation */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-3">
+          {/* Merchant Card */}
+          <div className="bg-surface-subtle border border-border rounded-[8px] p-4 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Paying to</span>
-              <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded-md border border-slate-800">
-                Verified Store
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+                Paying Merchant
+              </span>
+              <span className="text-[10px] font-mono text-text-muted bg-surface px-1.5 py-0.5 rounded border border-border">
+                Store Terminal
               </span>
             </div>
 
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 text-white font-extrabold text-lg flex items-center justify-center shadow-md shrink-0">
-                {merchantInitial}
-              </div>
+            <div className="flex items-center gap-3">
+              <Avatar name={businessName} size="lg" />
               <div>
-                <h2 className="text-base sm:text-lg font-extrabold text-white tracking-tight">
-                  {businessName}
-                </h2>
-                <p className="text-xs text-slate-400">Merchant Payment Request</p>
+                <h2 className="text-sm font-semibold text-text">{businessName}</h2>
+                <p className="text-xs text-text-muted">Merchant Checkout Direct</p>
               </div>
             </div>
           </div>
 
-          {/* Prominent Amount Card */}
-          <div className="text-center bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 space-y-1.5 relative overflow-hidden">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Payment Amount</span>
-            <div className="text-4xl sm:text-5xl font-black text-white font-mono tracking-tight flex items-center justify-center gap-1">
-              <span className="text-2xl sm:text-3xl text-cyan-400 font-sans">₹</span>
-              <span>{displayAmount}</span>
+          {/* Amount Card */}
+          <div className="text-center bg-surface-subtle border border-border rounded-[8px] p-5 space-y-1">
+            <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
+              Payable Amount
+            </span>
+            <div className="py-1">
+              <Amount value={txDetails.amount} size="3xl" weight="semibold" />
             </div>
             {txDetails?.note && (
-              <p className="text-xs text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full inline-block font-medium mt-1">
-                {txDetails.note}
+              <p className="text-xs text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-md inline-block font-medium">
+                Ref: {txDetails.note}
               </p>
             )}
           </div>
 
-          {/* Payment & Transaction Metadata Summary */}
-          <div className="space-y-3 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 text-xs">
-            {/* Transaction ID */}
-            <div className="flex items-center justify-between gap-2 py-1 border-b border-slate-800/60">
-              <span className="text-slate-400 shrink-0">Transaction ID</span>
+          {/* Metadata Summary */}
+          <div className="space-y-2.5 bg-surface-subtle border border-border rounded-[8px] p-3.5 text-xs">
+            <div className="flex items-center justify-between gap-2 py-1 border-b border-border">
+              <span className="text-text-muted shrink-0">Transaction ID</span>
               <div className="flex items-center gap-1.5 overflow-hidden">
-                <span className="font-mono text-[11px] text-slate-200 truncate max-w-[200px] sm:max-w-[240px]">
+                <span className="font-mono text-[11px] text-text truncate max-w-[200px]">
                   {txDetails?.transactionId || transactionId}
                 </span>
                 <button
                   type="button"
                   onClick={handleCopyTransactionId}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1 hover:bg-surface rounded text-text-muted hover:text-text transition-colors cursor-pointer"
                   title="Copy Transaction ID"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+                  {copied ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
                 </button>
               </div>
             </div>
 
-            {/* Payment Method */}
-            <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Payment Method</span>
-              <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                <Wallet className="w-3.5 h-3.5 text-cyan-400" />
-                PayPulse Personal Wallet
+            <div className="flex items-center justify-between py-1 border-b border-border">
+              <span className="text-text-muted">Payment Source</span>
+              <span className="font-medium text-text flex items-center gap-1.5">
+                <Wallet className="w-3.5 h-3.5 text-primary" />
+                Personal Wallet Ledger
               </span>
             </div>
 
-            {/* Status */}
             <div className="flex items-center justify-between py-1">
-              <span className="text-slate-400">Status</span>
+              <span className="text-text-muted">Status</span>
               <span
-                className={`font-bold px-2.5 py-0.5 rounded-full text-[11px] uppercase ${
+                className={`font-medium px-2 py-0.5 rounded-[4px] text-[10px] uppercase font-mono border ${
                   txDetails?.status === "SUCCESS"
-                    ? "text-emerald-400 bg-emerald-500/10 border border-emerald-500/20"
+                    ? "text-success bg-success-subtle/50 border-success/30"
                     : txDetails?.status === "FAILED"
-                      ? "text-rose-400 bg-rose-500/10 border border-rose-500/20"
-                      : "text-amber-300 bg-amber-500/10 border border-amber-500/20"
+                    ? "text-danger bg-danger-subtle/50 border-danger/30"
+                    : "text-warning bg-warning-subtle/50 border-warning/30"
                 }`}
               >
                 {txDetails?.status || "PENDING"}
@@ -561,70 +433,46 @@ function PayContent() {
 
           {/* Payment Error Alert Banner */}
           {paymentError && (
-            <div className="bg-rose-500/10 border border-rose-500/20 text-rose-300 rounded-2xl p-4 flex items-start gap-3 text-xs animate-in fade-in duration-200">
-              <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="font-bold text-rose-200">Payment Unsuccessful</p>
-                <p className="leading-relaxed text-slate-300">{paymentError}</p>
+            <div className="bg-danger-subtle/50 border border-danger/30 text-danger rounded-[8px] p-3.5 flex items-start gap-2.5 text-xs">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <p className="font-semibold">Payment Unsuccessful</p>
+                <p className="leading-relaxed">{paymentError}</p>
               </div>
             </div>
           )}
 
           {/* Action Buttons */}
-          <div className="space-y-3 pt-2">
-            {/* Primary Confirm Button */}
-            <button
-              type="button"
+          <div className="space-y-2 pt-1">
+            <Button
+              variant="primary"
+              size="lg"
               onClick={handleConfirmPayment}
               disabled={paymentState === "processing" || isAlreadyPaid}
-              className={`w-full font-extrabold py-4 px-6 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2.5 text-sm ${
-                isAlreadyPaid
-                  ? "bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 cursor-not-allowed"
-                  : "bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-cyan-500/20 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-              }`}
+              loading={paymentState === "processing"}
+              className="w-full"
             >
               {paymentState === "processing" ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin text-cyan-200" />
-                  <span>Authorizing & Debiting Payment...</span>
-                </>
+                <span>Authorizing & Debiting Wallet...</span>
               ) : isAlreadyPaid ? (
-                <>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Transaction Already Paid</span>
-                </>
+                <span>Transaction Already Paid</span>
               ) : (
-                <>
-                  <Lock className="w-4 h-4 text-cyan-200" />
-                  <span>Pay ₹{displayAmount}</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </>
+                <span>Authorize ₹{Number(txDetails.amount).toFixed(2)}</span>
               )}
-            </button>
+            </Button>
 
-            {/* Cancel & Back Button */}
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="md"
               onClick={() => router.push("/dashboard")}
               disabled={paymentState === "processing"}
-              className="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 font-semibold py-3 px-4 rounded-xl border border-slate-800 transition-all flex items-center justify-center gap-2 text-xs cursor-pointer disabled:opacity-50"
+              className="w-full"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
               <span>Cancel Payment</span>
-            </button>
-          </div>
-
-          {/* Security Assurance Footer */}
-          <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 font-medium pt-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-            <span>256-Bit Encrypted Secure Merchant Transaction</span>
+            </Button>
           </div>
         </div>
-
-        {/* Global Footer Note */}
-        <p className="text-center text-xs text-slate-500">
-          PayPulse Personal App • Secure Checkout Platform
-        </p>
       </div>
     </div>
   );
@@ -634,8 +482,8 @@ export default function PayPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#090d16] flex items-center justify-center p-4">
-          <div className="text-cyan-400 text-sm font-semibold animate-pulse">
+        <div className="min-h-screen bg-bg flex items-center justify-center p-4">
+          <div className="text-primary text-xs font-medium animate-pulse">
             Loading Payment Request...
           </div>
         </div>
