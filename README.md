@@ -1,8 +1,44 @@
 # PayPulse
 
+> [!IMPORTANT]
+> ### ⚠️ SIMULATOR ENVIRONMENT — NO REAL MONEY INVOLVED
+> **PayPulse is a full-stack payments systems simulator and educational fintech prototype.**
+> All digital wallets, rupee balances (`₹`), transaction ledgers, bank accounts, and merchant settlements are **purely virtual mock representations** designed for architecture exploration and testing.
+> - **Zero real financial institutions** or actual payment gateways are connected.
+> - **Zero real money** is debited, transferred, or credited.
+> - **No real credit/debit cards or sensitive banking secrets** should ever be entered into the system.
+
 PayPulse is a full-stack digital payments platform inspired by applications such as Paytm, designed to explore wallet transactions, merchant payments, simulated banking integrations, analytics, and payment-system engineering. Built as a TypeScript monorepo using Turborepo, Next.js, and PostgreSQL, the project models real-world payment lifecycles across distinct consumer, merchant, and banking domains.
 
 **Repository:** [https://github.com/Darshit9696/PaytmAdvanced](https://github.com/Darshit9696/PaytmAdvanced)
+
+---
+
+## ⚡ Demo Accounts (No Sign Up Required)
+
+Pre-seeded accounts are provided for instant testing of all consumer wallet, peer transfer, and merchant portal features. **Both login pages include one-click auto-fill buttons** so you do not even have to type credentials manually.
+
+### 📱 Consumer Wallet App (`http://localhost:3000/login`)
+
+| User Name | Mobile Number | Password | Starting Wallet | Linked Bank Account | Purpose / Best For |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Aryan Patel** *(Primary)* | `9876543210` | `demo123` | **₹18,500** | HDFC (`ACC123456789012`, ₹50k) | Main wallet user, populated spending categories, analytics, P2P transfers |
+| **Neha Sharma** *(Peer)* | `8765432109` | `demo123` | **₹12,400** | ICICI (`ACC987654321098`, ₹40k) | Transfer recipient, peer testing in separate browser / incognito window |
+| **Rahul Verma** *(Peer)* | `7654321098` | `demo123` | **₹8,500** | SBI (`ACC112233445566`, ₹30k) | Group split peer, contact list interactions |
+| **Priya Mehta** *(Peer)* | `6543210987` | `demo123` | **₹9,500** | Axis (`ACC445566778899`, ₹25k) | Additional peer recipient for transfer history testing |
+
+### 🏪 Merchant Business Portal (`http://localhost:3002/login`)
+
+| Business Name | Owner Name | Email | Password | Starting Balance | Purpose / Best For |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Apex Electronics & Retail** | Rajesh Keshwala | `merchant@paypulse.demo` | `demo123` | **₹25,000** | Primary merchant portal, dynamic QR generator, 7-day revenue charts |
+| **Campus Cafe & Lounge** | Priya Mehta | `cafe@paypulse.demo` | `demo123` | **₹15,000** | Secondary merchant terminal for multi-vendor checkout simulation |
+
+> [!TIP]
+> **To re-seed or reset all demo accounts to their default balances at any time:**
+> ```bash
+> npm run db:seed
+> ```
 
 ---
 
@@ -165,6 +201,32 @@ Rather than mutating wallet balances directly from the client after a bank page 
 ### Prisma Connection Pooling via Singleton Pattern
 Next.js development mode uses Fast Refresh, re-evaluating modules on hot reload. Uncontrolled instantiation (`new PrismaClient()`) would spawn new database connection pools on each reload, exhausting PostgreSQL connection limits. [`packages/db/src/index.ts`](file:///d:/paytm-advanced-app/packages/db/src/index.ts) caches the Prisma client on `globalThis`, pinning the pool to a single persistent instance in development.
 
+### In-Memory Sliding Window Rate Limiting
+To protect financial mutation endpoints and prevent credential abuse in this multi-tenant simulation, an in-memory sliding window rate limiter protects all key API routes:
+- **Financial Actions (`/api/transfer`, `/api/payment`, `/api/onramp`, `/api/off-ramp`):** Capped at 15 requests per minute per IP / session.
+- **Merchant Payment Requests (`/api/merchant/transaction`):** Capped at 30 requests per minute.
+- **Authentication & Signup (`/api/signup`, `/api/merchant/signup`):** Capped at 6 requests per minute.
+- **Bank Gateway (`/api/pay`, `/api/payout`):** Capped at 20 requests per minute.
+
+When a client breaches these thresholds, the API returns standard `HTTP 429 Too Many Requests` along with standard RFC compliance headers:
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 42
+X-RateLimit-Limit: 15
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1731837600
+Content-Type: application/json
+
+{
+  "message": "Too many requests. Please slow down and try again.",
+  "error": "Rate limit exceeded",
+  "retryAfter": 42
+}
+```
+
+### Zero Secrets Repository Hygiene
+No production credentials, actual API keys, database passwords, or private keys are stored in the repository. All `.env` and `.env.local` files are strictly excluded via root and package-level `.gitignore` configurations. Standardized `.env.example` template files are provided at the root and inside each application workspace (`apps/user-app`, `apps/merchant-app`, `apps/bank-app`, `packages/db`) so that developers can quickly configure local development environments without credential exposure.
+
 ### Monorepo Architecture with Turborepo
 Common logic is extracted into shared packages:
 - `@repo/db`: Single source of truth for the database schema, Prisma migrations, and typed client exports.
@@ -181,6 +243,8 @@ A critical part of payments engineering is understanding system boundaries and f
 - [x] Turborepo monorepo setup with shared `@repo/db` client singleton
 - [x] Dual-portal NextAuth authentication (phone + password for users, email + password for merchants)
 - [x] Cookie and session role isolation between user and merchant portals
+- [x] Pre-seeded demo user and merchant accounts with one-click login auto-fill
+- [x] In-memory sliding window rate limiting on financial, authentication, merchant, and bank endpoints
 - [x] P2P wallet transfers with atomic sender decrement and receiver increment
 - [x] Real-time transaction notifications (`TRANSFER_SENT`, `TRANSFER_RECEIVED`)
 - [x] Simulated bank on-ramp with token creation, bank net banking gateway, and webhook listener
@@ -191,6 +255,7 @@ A critical part of payments engineering is understanding system boundaries and f
 - [x] Offset-paginated transaction history and case-insensitive user search
 - [x] User personal spending analytics (monthly spending/income, category breakdown, top peers)
 - [x] Merchant dashboard analytics (7-day revenue velocity chart, success rate, day/month comparisons)
+- [x] Secret-free repository architecture with dedicated `.env.example` templates
 
 ### In Progress
 - [ ] **Shared State Store Adoption (`@repo/store`):** The Zustand store package exists, but UI pages currently manage balance state via server components and route queries.
@@ -202,7 +267,7 @@ A critical part of payments engineering is understanding system boundaries and f
 - [ ] **Cryptographic Webhook Signatures (HMAC-SHA256):** Replace token-based webhook payloads with cryptographically signed payloads and replay-resistant timestamps.
 - [ ] **Append-Only Double-Entry Ledger:** Transition from mutable balance columns to an immutable ledger where balances are computed from credits and debits.
 - [ ] **Automated Test Suite:** Add unit tests for monetary calculations, concurrency integration tests, and Playwright E2E flows for the QR checkout lifecycle.
-- [ ] **API Rate Limiting:** Implement token-bucket rate limiting via Redis/Upstash on transfer, payment, and authentication endpoints.
+- [ ] **Redis Rate Limiting Backend:** Optional distributed Redis/Upstash token-bucket adapter for multi-instance deployments.
 - [ ] **Docker Orchestration & CI Pipeline:** Containerize applications with `docker-compose` and set up GitHub Actions for automated type-checking, linting, and migration tests.
 
 ---
@@ -286,7 +351,7 @@ NEXTAUTH_URL="http://localhost:3002"
 NEXTAUTH_SECRET="your-development-merchant-nextauth-secret"
 ```
 
-### 3. Generate Prisma Client & Run Migrations
+### 3. Generate Prisma Client, Apply Migrations & Seed Demo Accounts
 
 From the repository root:
 
@@ -296,6 +361,9 @@ npm run --workspace=@repo/db db:generate
 
 # Apply database migrations
 npm run --workspace=@repo/db db:migrate
+
+# Seed demo user and merchant accounts (Aryan, Neha, Apex Electronics, etc.)
+npm run db:seed
 ```
 
 ### 4. Run Development Servers

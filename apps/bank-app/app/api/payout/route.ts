@@ -1,8 +1,15 @@
 import { prisma } from "@repo/db/client";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 // Process payout: Deduct wallet balance, credit bank account balance, and set OffRampTransaction status to Success
 export const POST = async (request: NextRequest) => {
+    // 0. Rate limiting check (max 20 payout settlements/min)
+    const rateLimitCheck = checkRateLimit(request, rateLimitPresets.settlement);
+    if (!rateLimitCheck.success && rateLimitCheck.response) {
+        return rateLimitCheck.response;
+    }
+
     const { token } = await request.json();
 
     if (!token) {

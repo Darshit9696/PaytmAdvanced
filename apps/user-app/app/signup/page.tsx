@@ -125,9 +125,12 @@ export default function SignupPage() {
           <div className="max-w-sm w-full mx-auto space-y-5">
             
             <div>
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-[10px] font-semibold text-amber-700 dark:text-amber-300 uppercase tracking-wider mb-2">
+                <span>Simulator • No Real Money</span>
+              </div>
               <h2 className="text-xl font-bold tracking-tight text-text">Create personal account</h2>
               <p className="text-xs text-text-muted mt-1">
-                Enter your details to create an authenticated wallet.
+                Enter your details to create a virtual test wallet, or use demo accounts on the login page.
               </p>
             </div>
 

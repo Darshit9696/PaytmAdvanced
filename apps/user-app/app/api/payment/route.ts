@@ -2,6 +2,7 @@ import { prisma } from "@repo/db/client";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 export const GET = async (request: NextRequest) => {
     const transactionId = request.nextUrl.searchParams.get("transactionId");
@@ -43,6 +44,12 @@ export const GET = async (request: NextRequest) => {
 };
 
 export const POST = async (request: NextRequest) => {
+    // 0. Rate limit check (max 15 checkout payments/min)
+    const rateLimitCheck = checkRateLimit(request, rateLimitPresets.financial);
+    if (!rateLimitCheck.success && rateLimitCheck.response) {
+        return rateLimitCheck.response;
+    }
+
     // 1. Authenticate user session
     const session = await getServerSession(authOptions);
 

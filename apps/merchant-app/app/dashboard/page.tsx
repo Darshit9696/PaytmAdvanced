@@ -311,6 +311,11 @@ export default function MerchantDashboardPage() {
           </div>
 
           <div className="flex items-center gap-2.5 self-start sm:self-auto">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-[11px] font-medium text-amber-700 dark:text-amber-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span>Simulator • No Real Money</span>
+            </div>
+
             <button
               onClick={handleRefresh}
               disabled={refreshing}

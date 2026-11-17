@@ -88,6 +88,10 @@ export default function LoginPage() {
               <Check className="w-3.5 h-3.5 text-accent" />
               <span>Protected NetBanking simulation</span>
             </div>
+            <div className="flex items-center gap-2 text-accent/90">
+              <Check className="w-3.5 h-3.5 text-accent" />
+              <span>Simulation environment • No real money</span>
+            </div>
           </div>
         </div>
 
@@ -96,10 +100,47 @@ export default function LoginPage() {
           <div className="max-w-sm w-full mx-auto space-y-6">
             
             <div>
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-[10px] font-semibold text-amber-700 dark:text-amber-300 uppercase tracking-wider mb-2">
+                <span>Simulator • No Real Money</span>
+              </div>
               <h2 className="text-xl font-bold tracking-tight text-text">Sign in to your wallet</h2>
               <p className="text-xs text-text-muted mt-1">
-                Enter your mobile number and password to access your dashboard.
+                Enter your mobile number and password, or click a demo account below.
               </p>
+            </div>
+
+            {/* Quick Demo Credentials Card */}
+            <div className="p-3 bg-surface-subtle border border-border rounded-md text-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-text text-[11px] uppercase tracking-wider">Demo Accounts (Instant Fill)</span>
+                <span className="text-[10px] text-text-faint">No signup needed</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPhone("9876543210");
+                    setPassword("demo123");
+                  }}
+                  className="p-2 text-left bg-surface hover:bg-primary-tint border border-border hover:border-primary/40 rounded transition-all cursor-pointer group"
+                >
+                  <p className="font-medium text-text group-hover:text-primary text-[11px] truncate">Aryan Patel</p>
+                  <p className="text-[10px] text-text-muted">9876543210</p>
+                  <p className="text-[9px] text-primary font-mono mt-0.5">Password: demo123</p>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPhone("8765432109");
+                    setPassword("demo123");
+                  }}
+                  className="p-2 text-left bg-surface hover:bg-primary-tint border border-border hover:border-primary/40 rounded transition-all cursor-pointer group"
+                >
+                  <p className="font-medium text-text group-hover:text-primary text-[11px] truncate">Neha Sharma</p>
+                  <p className="text-[10px] text-text-muted">8765432109</p>
+                  <p className="text-[9px] text-primary font-mono mt-0.5">Password: demo123</p>
+                </button>
+              </div>
             </div>
 
             {error && (

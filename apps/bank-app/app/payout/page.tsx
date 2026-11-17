@@ -103,6 +103,11 @@ function PayoutGatewayContent() {
 
   return (
     <div className="min-h-screen bg-bg text-text font-sans flex flex-col justify-between">
+      {/* Simulator Warning Bar */}
+      <div className="bg-amber-500/10 border-b border-amber-500/20 py-1.5 px-4 text-center text-[11px] font-medium text-amber-700 dark:text-amber-300">
+        ⚠️ Simulated Core Banking Gateway — Internal Test Network (No Real Money)
+      </div>
+
       {/* Top Header */}
       <header className="w-full bg-surface border-b border-border py-4 px-6 md:px-12 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">

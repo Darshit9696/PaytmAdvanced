@@ -134,9 +134,9 @@ export default function LandingPage() {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
           {/* Left Hero Content */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-xs font-medium text-text-muted shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-600" />
-              <span>Double-Entry Precision Financial System</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-xs font-medium text-amber-700 dark:text-amber-300 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              <span>Payments Simulator • Virtual Ledger (No Real Money)</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-text leading-[1.12]">
@@ -160,9 +160,10 @@ export default function LandingPage() {
 
               <Link
                 href="/login"
-                className="w-full sm:w-auto px-6 py-3 text-xs font-medium text-text bg-surface border border-border hover:bg-surface-subtle rounded-[6px] shadow-xs transition-all flex items-center justify-center"
+                className="w-full sm:w-auto px-6 py-3 text-xs font-medium text-text bg-surface border border-border hover:bg-surface-subtle rounded-[6px] shadow-xs transition-all flex items-center justify-center gap-1.5"
               >
-                Sign In
+                <span>Instant Demo Login</span>
+                <span className="text-[10px] text-amber-700 dark:text-amber-300 bg-amber-500/15 px-1.5 py-0.5 rounded font-mono">No Signup</span>
               </Link>
             </div>
 

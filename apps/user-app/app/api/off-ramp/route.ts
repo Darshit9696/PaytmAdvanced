@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@repo/db/client";
+import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 // User initiates withdrawal (Off-Ramp)
 //         │
@@ -25,6 +26,11 @@ import { prisma } from "@repo/db/client";
 // Return token + redirect URL (bank payout gateway)
 
 export const POST = async (request: NextRequest) => {
+    const rateLimitCheck = checkRateLimit(request, rateLimitPresets.financial);
+    if (!rateLimitCheck.success && rateLimitCheck.response) {
+        return rateLimitCheck.response;
+    }
+
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user || !session.user.id || session.user.role === "merchant") {

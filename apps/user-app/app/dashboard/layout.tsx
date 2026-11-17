@@ -158,25 +158,31 @@ export default function DashboardLayout({
         </nav>
 
         {/* Bottom User Profile Card & Logout */}
-        <div className="pt-3 border-t border-border flex items-center justify-between">
-          <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-8 h-8 rounded-full bg-primary-tint text-primary font-bold text-xs flex items-center justify-center shrink-0 border border-primary/20">
-              {userName.charAt(0).toUpperCase()}
+        <div className="pt-3 border-t border-border flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5 overflow-hidden">
+              <div className="w-8 h-8 rounded-full bg-primary-tint text-primary font-bold text-xs flex items-center justify-center shrink-0 border border-primary/20">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              <div className="truncate">
+                <p className="text-xs font-semibold text-text truncate">{userName}</p>
+                <p className="text-[10px] text-text-faint font-mono">Personal Account</p>
+              </div>
             </div>
-            <div className="truncate">
-              <p className="text-xs font-semibold text-text truncate">{userName}</p>
-              <p className="text-[10px] text-text-faint font-mono">Personal</p>
-            </div>
+
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="p-1.5 text-text-faint hover:text-danger hover:bg-danger-tint rounded-sm transition-colors cursor-pointer"
+              title="Sign out"
+              aria-label="Sign out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
 
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="p-1.5 text-text-faint hover:text-danger hover:bg-danger-tint rounded-sm transition-colors cursor-pointer"
-            title="Sign out"
-            aria-label="Sign out"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+          <div className="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-700 dark:text-amber-300 font-medium text-center">
+            Simulator Mode • No Real Money
+          </div>
         </div>
       </aside>
 
@@ -199,6 +205,12 @@ export default function DashboardLayout({
             <span className="text-text-muted font-medium">PayPulse</span>
             <span className="text-text-faint">/</span>
             <span className="text-text font-semibold">{pageTitle}</span>
+          </div>
+
+          {/* Simulator Status Badge */}
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-[11px] font-medium text-amber-700 dark:text-amber-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+            <span>Simulator • Virtual Balances (No Real Money)</span>
           </div>
 
           {/* Right Header Controls */}

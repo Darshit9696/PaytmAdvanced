@@ -1,7 +1,8 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@repo/db/client";
-import { getServerSession } from "next-auth"
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 
 class TransferError extends Error {
@@ -11,6 +12,11 @@ class TransferError extends Error {
 }
 
 export const POST = async (request: Request) => {
+    // 0. Rate limiting check (max 15 transfers/min per IP/user)
+    const rateLimitCheck = checkRateLimit(request, rateLimitPresets.financial);
+    if (!rateLimitCheck.success && rateLimitCheck.response) {
+        return rateLimitCheck.response;
+    }
 
     const session = await getServerSession(authOptions);
 

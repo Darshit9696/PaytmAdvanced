@@ -2,8 +2,15 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { prisma } from "@repo/db/client";
 import { seedMerchantData } from "@/lib/seed-merchant";
+import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 export const POST = async (request: Request) => {
+  // 0. Rate limiting check (max 6 merchant registrations/min)
+  const rateLimitCheck = checkRateLimit(request, rateLimitPresets.auth);
+  if (!rateLimitCheck.success && rateLimitCheck.response) {
+    return rateLimitCheck.response;
+  }
+
   try {
     const body = await request.json();
     const { businessName, ownerName, email, phone, password, confirmPassword } = body;

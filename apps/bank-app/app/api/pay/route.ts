@@ -1,9 +1,15 @@
 // transaction : 
 import { prisma } from "@repo/db/client";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 // deduct the amt from the bank acc and add to the wallet acc
 export const POST = async (request: NextRequest) => {
+    // 0. Rate limiting check (max 20 settlements/min)
+    const rateLimitCheck = checkRateLimit(request, rateLimitPresets.settlement);
+    if (!rateLimitCheck.success && rateLimitCheck.response) {
+        return rateLimitCheck.response;
+    }
 
     // get the token
     const { token } = await request.json();

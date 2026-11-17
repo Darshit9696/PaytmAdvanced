@@ -3,8 +3,15 @@ import bcrypt from "bcrypt";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@repo/db/client";
 import { seedUserData } from "@/lib/seed-user";
+import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 export const POST = async (request: Request) => {
+  // 0. Rate limiting check (max 6 signup requests/min)
+  const rateLimitCheck = checkRateLimit(request, rateLimitPresets.auth);
+  if (!rateLimitCheck.success && rateLimitCheck.response) {
+    return rateLimitCheck.response;
+  }
+
   try {
     // 1. Safely parse JSON body
     const body: unknown = await request.json().catch(() => null);
