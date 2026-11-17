@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { Lock, ShieldCheck, CheckCircle2, ArrowRight, Loader2, Building2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Amount, Button } from "@repo/ui";
+import { Amount, Button, ThemeToggle } from "@repo/ui";
 
 interface UserPayoutData {
   name: string;
@@ -120,9 +120,12 @@ function PayoutGatewayContent() {
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 text-xs text-text-muted">
-          <Lock className="w-3.5 h-3.5 text-primary" />
-          <span>Automated clearing house</span>
+        <div className="flex items-center gap-2">
+          <ThemeToggle variant="icon" />
+          <div className="flex items-center gap-1.5 text-xs text-text-muted">
+            <Lock className="w-3.5 h-3.5 text-primary" />
+            <span>Automated clearing house</span>
+          </div>
         </div>
       </header>
 

@@ -21,3 +21,5 @@ export * from "./table";
 export * from "./tabs";
 export * from "./textarea";
 export * from "./toast";
+export * from "./theme-provider";
+export * from "./theme-toggle";

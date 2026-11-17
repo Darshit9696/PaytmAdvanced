@@ -19,6 +19,7 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { BottomTabBar, TabBarItem } from "@repo/ui/bottom-tab-bar";
+import { ThemeToggle } from "@repo/ui";
 
 export default function DashboardLayout({
   children,
@@ -214,7 +215,8 @@ export default function DashboardLayout({
           </div>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
+            <ThemeToggle variant="icon" />
             <NotificationBell />
 
             {/* Mobile Drawer Menu Toggle */}
@@ -282,6 +284,11 @@ export default function DashboardLayout({
             />
 
             <div className="pt-2 mt-2 border-t border-border flex items-center justify-between text-xs">
+              <span className="text-text-muted">Color theme</span>
+              <ThemeToggle variant="segmented" />
+            </div>
+
+            <div className="pt-2 border-t border-border flex items-center justify-between text-xs">
               <span className="text-text-muted truncate">Signed in as {userName}</span>
               <button
                 onClick={() => signOut({ callbackUrl: "/login" })}

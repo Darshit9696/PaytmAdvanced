@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Building2, ShieldCheck, Lock, ArrowRight } from "lucide-react";
-import { Button } from "@repo/ui";
+import { Button, ThemeToggle } from "@repo/ui";
 
 export default function BankAppHome() {
   return (
@@ -18,9 +18,12 @@ export default function BankAppHome() {
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 text-xs text-text-muted bg-surface-subtle border border-border px-3 py-1 rounded-full">
-          <Lock className="w-3.5 h-3.5 text-primary" />
-          <span>256-bit Encrypted Session</span>
+        <div className="flex items-center gap-2">
+          <ThemeToggle variant="icon" />
+          <div className="flex items-center gap-1.5 text-xs text-text-muted bg-surface-subtle border border-border px-3 py-1 rounded-full">
+            <Lock className="w-3.5 h-3.5 text-primary" />
+            <span>256-bit Encrypted Session</span>
+          </div>
         </div>
       </header>
 

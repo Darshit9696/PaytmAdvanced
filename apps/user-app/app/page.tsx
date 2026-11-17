@@ -22,7 +22,7 @@ import {
   Scale,
   Sparkles,
 } from "lucide-react";
-import { Amount, Avatar, Button } from "@repo/ui";
+import { Amount, Avatar, Button, ThemeToggle } from "@repo/ui";
 
 export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -59,6 +59,7 @@ export default function LandingPage() {
 
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex items-center gap-2.5">
+            <ThemeToggle variant="icon" />
             <Link
               href="/login"
               className="px-3.5 py-1.5 text-xs font-medium text-text-muted hover:text-text transition-colors"
@@ -108,7 +109,12 @@ export default function LandingPage() {
               Ledger Security
             </a>
 
-            <div className="pt-3 border-t border-border flex flex-col gap-2">
+            <div className="pt-3 border-t border-border flex items-center justify-between px-1 text-xs">
+              <span className="text-text-muted font-medium">Color theme</span>
+              <ThemeToggle variant="segmented" />
+            </div>
+
+            <div className="pt-2 border-t border-border flex flex-col gap-2">
               <Link
                 href="/login"
                 className="w-full text-center px-4 py-2 text-xs font-medium text-text bg-surface-subtle border border-border rounded-[6px]"

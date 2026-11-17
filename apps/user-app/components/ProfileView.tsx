@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { signOut } from "next-auth/react";
-import { ShieldCheck, LogOut, Key, Copy, Check } from "lucide-react";
-import { Avatar, Button } from "@repo/ui";
+import { ShieldCheck, LogOut, Key, Copy, Check, Moon } from "lucide-react";
+import { Avatar, Button, ThemeToggle } from "@repo/ui";
 
 interface ProfileViewProps {
   user: {
@@ -78,7 +78,27 @@ export default function ProfileView({ user }: ProfileViewProps) {
         </dl>
       </div>
 
-      {/* 3. Security & Session */}
+      {/* 3. Appearance & Theme Preference */}
+      <div className="bg-surface rounded-[10px] border border-border p-6 space-y-4">
+        <h3 className="font-medium text-text-muted text-xs">
+          Appearance & theme
+        </h3>
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
+          <div className="flex items-center gap-3">
+            <Moon className="w-4 h-4 text-primary" />
+            <div>
+              <p className="text-sm font-medium text-text">Color theme</p>
+              <p className="text-xs text-text-muted">
+                Choose between warm stone light mode, calm carbon dark mode, or follow system default.
+              </p>
+            </div>
+          </div>
+          <ThemeToggle variant="segmented" />
+        </div>
+      </div>
+
+      {/* 4. Security & Session */}
       <div className="bg-surface rounded-[10px] border border-border p-6 space-y-4">
         <h3 className="font-medium text-text-muted text-xs">
           Security and session

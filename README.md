@@ -49,6 +49,7 @@ Pre-seeded accounts are provided for instant testing of all consumer wallet, pee
 - **Merchant QR Payments** — Generates transaction-specific SVG QR codes with customer checkout powered by in-browser camera scanning (`html5-qrcode`) and multi-pass image upload decoding (`jsqr`).
 - **Financial & Merchant Analytics** — Aggregates monthly spend/income, category breakdowns, and top recipients for consumers, alongside 7-day revenue velocity and payment success metrics for merchants.
 - **Session & Identity Isolation** — Separates personal user and business merchant accounts using role-specific NextAuth JWT sessions and isolated session cookies to avoid collision during local development.
+- **Calm Ledger Dark & Light Theme** — Full-fidelity theme system with warm stone light mode and carbon dark mode, persistent across tabs, with zero flash of unstyled theme (FOUC) and dedicated toggle controls.
 - **Shared Database Client Package** — Centralizes Prisma schema migrations and client instantiation in a shared package with global connection pooling to prevent exhaustion across Next.js Fast Refresh cycles.
 
 ---
@@ -255,6 +256,7 @@ A critical part of payments engineering is understanding system boundaries and f
 - [x] Offset-paginated transaction history and case-insensitive user search
 - [x] User personal spending analytics (monthly spending/income, category breakdown, top peers)
 - [x] Merchant dashboard analytics (7-day revenue velocity chart, success rate, day/month comparisons)
+- [x] Calm Ledger dark and light theme system with local storage persistence and zero-FOUC initialization
 - [x] Secret-free repository architecture with dedicated `.env.example` templates
 
 ### In Progress

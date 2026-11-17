@@ -43,12 +43,24 @@ The design tokens are defined centrally in `packages/ui/src/styles/theme.css` an
 | **Info** | `--color-info` | `text-info` | `#2B5C8A` | Notice banners, informational badges |
 | **Info Subtle** | `--color-info-subtle` | `bg-info-subtle` | `#EDF4F9` | Soft tint background for info banners |
 
-### 2.2 Dark Theme Tokens (Tokens Defined & Dark-Ready)
-- Background: `#0A0F0D`
-- Surface: `#111815`
-- Border: `#1F2A25`
-- Text: `#EDF2EE`
-- Primary: `#5FD3A8` (high-contrast mint-green)
+### 2.2 Dark Theme Tokens & Architecture (Fully Implemented)
+Dark theme is integrated across the monorepo with zero flash of unstyled theme (FOUC) using `@repo/ui`:
+- **Background (`--bg` / `bg-bg`):** `#0A0F0D` (deep warm carbon)
+- **Surface (`--surface` / `bg-surface`):** `#111815` (elevated ledger card surface)
+- **Surface Subtle (`--surface-subtle` / `bg-surface-subtle`):** `#16211C` (inputs, table headers, hover)
+- **Border (`--border` / `border-border`):** `#223129` (subtle 1px hairline border)
+- **Border Strong (`--border-strong` / `border-border-strong`):** `#33463B` (focused or active elements)
+- **Text Primary (`--text` / `text-text`):** `#EDF2EE` (crisp high-contrast text)
+- **Text Muted (`--text-muted` / `text-text-muted`):** `#9BA7A1` (secondary metadata)
+- **Text Faint (`--text-faint` / `text-text-faint`):** `#6B7872` (timestamps, placeholders)
+- **Primary (`--primary` / `bg-primary`):** `#5FD3A8` (high-contrast mint green)
+- **Primary Tint (`--primary-tint` / `bg-primary-tint`):** `#143328` (soft mint background)
+- **Primary Foreground (`--primary-fg` / `text-primary-fg`):** `#0A0F0D` (accessible dark contrast)
+
+#### Theme Components (`@repo/ui`):
+- `<ThemeProvider>`: React Context managing `"light" | "dark" | "system"` with `localStorage` persistence and cross-tab synchronization.
+- `<ThemeScript>`: Blocking inline script in `<head>` to prevent flash of light theme on cold page loads.
+- `<ThemeToggle>`: Multi-variant UI control (`icon`, `segmented`, `dropdown`) with smooth transition animations and full accessibility support.
 
 ---
 

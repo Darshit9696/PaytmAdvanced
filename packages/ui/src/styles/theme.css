@@ -51,16 +51,20 @@
   --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Opt-in dark theme only (via data-theme="dark"). No automatic prefers-color-scheme switching. */
-[data-theme="dark"] {
+/* Dark theme tokens (supports data-theme="dark", :root.dark, or html.dark) */
+[data-theme="dark"],
+:root.dark,
+html.dark {
+  color-scheme: dark;
+
   --bg: #0A0F0D;
   --surface: #111815;
-  --surface-subtle: #18221E;
-  --border: #283830;
-  --border-strong: #3C5046;
+  --surface-subtle: #16211C;
+  --border: #223129;
+  --border-strong: #33463B;
   --text: #EDF2EE;
-  --text-muted: #95A19B;
-  --text-faint: #62706A;
+  --text-muted: #9BA7A1;
+  --text-faint: #6B7872;
 
   --primary: #5FD3A8;
   --primary-hover: #4EC297;

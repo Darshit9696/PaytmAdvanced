@@ -26,7 +26,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { Amount } from "@repo/ui";
+import { Amount, ThemeToggle } from "@repo/ui";
 
 // Reusable Components
 import { StatCard } from "@/components/StatCard";
@@ -285,6 +285,12 @@ export default function MerchantDashboardPage() {
               <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           </nav>
+
+          <div className="flex items-center justify-between px-1 py-2 text-xs border-t border-white/10">
+            <span className="text-white/70">Theme</span>
+            <ThemeToggle variant="segmented" />
+          </div>
+
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
             className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-[6px] text-xs font-medium bg-white/10 text-white"
@@ -311,6 +317,8 @@ export default function MerchantDashboardPage() {
           </div>
 
           <div className="flex items-center gap-2.5 self-start sm:self-auto">
+            <ThemeToggle variant="icon" />
+
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-[11px] font-medium text-amber-700 dark:text-amber-300">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
               <span>Simulator • No Real Money</span>

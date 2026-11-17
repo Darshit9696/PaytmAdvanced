@@ -9,6 +9,7 @@ import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Field } from "@repo/ui/field";
 import { Alert } from "@repo/ui/toast";
+import { ThemeToggle } from "@repo/ui";
 
 export default function MerchantSignupPage() {
   const router = useRouter();
@@ -73,7 +74,10 @@ export default function MerchantSignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans">
+    <div className="min-h-screen bg-bg flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans relative">
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle variant="icon" />
+      </div>
       <div className="w-full max-w-4xl bg-surface border border-border rounded-lg shadow-soft overflow-hidden grid lg:grid-cols-12 min-h-[600px]">
         
         {/* Left Side: Calm Ink-Green Brand Panel */}
