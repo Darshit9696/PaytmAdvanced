@@ -104,9 +104,9 @@ export default function DashboardLayout({
             P
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold tracking-tight text-text">PayPulse</span>
-            <span className="text-[10px] tracking-wider uppercase font-medium text-text-muted -mt-0.5">
-              Personal Ledger
+            <span className="text-sm font-semibold tracking-tight text-text">PayPulse</span>
+            <span className="text-xs text-text-muted">
+              Personal ledger
             </span>
           </div>
         </Link>

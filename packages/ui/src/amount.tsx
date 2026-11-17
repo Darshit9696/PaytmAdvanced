@@ -65,7 +65,7 @@ export const Amount: React.FC<AmountProps> = ({
     "2xl": "text-2xl",
     "3xl": "text-3xl tracking-tight",
     "4xl": "text-3xl sm:text-4xl tracking-tight",
-    display: "text-3xl sm:text-4xl tracking-tight",
+    display: "text-4xl sm:text-5xl md:text-[52px] tracking-tight leading-none",
   };
 
   const weightClasses: Record<string, string> = {
@@ -88,7 +88,7 @@ export const Amount: React.FC<AmountProps> = ({
     else if (signPrefix === "-") colorClass = "text-danger";
   }
 
-  const defaultWeight = size === "display" || size === "4xl" ? "font-light" : "font-normal";
+  const defaultWeight = "font-normal";
   const resolvedWeight = weight ? weightClasses[weight] : defaultWeight;
 
   return (

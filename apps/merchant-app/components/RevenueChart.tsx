@@ -75,24 +75,19 @@ export function RevenueChart() {
   const maxAmount = Math.max(...data.map((d) => d.amount), 1);
 
   return (
-    <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-5 font-sans">
+    <div className="bg-surface border border-border rounded-[10px] p-6 space-y-5 font-sans">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
-            <BarChart3 className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-text">Settlement & Sales Velocity</h3>
-            <p className="text-xs text-text-muted">7-day gross customer transaction volume</p>
-          </div>
+        <div>
+          <h3 className="text-sm font-semibold text-text">Settlement and sales velocity</h3>
+          <p className="text-xs text-text-muted">7-day gross customer transaction volume</p>
         </div>
 
         <div className="flex items-center gap-3 text-xs font-medium">
           <div className="flex items-center gap-1.5 text-text-muted">
             <Calendar className="w-3.5 h-3.5 text-text-faint" />
-            <span>7-Day Volume:</span>
-            <Amount value={totalWeekly} size="sm" weight="semibold" />
+            <span>7-day volume:</span>
+            <Amount value={totalWeekly} size="sm" weight="medium" />
           </div>
           {changePercentage !== null && (
             <span

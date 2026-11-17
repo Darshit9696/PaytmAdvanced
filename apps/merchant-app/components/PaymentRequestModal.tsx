@@ -41,18 +41,13 @@ export function PaymentRequestModal({
       <div className="w-full max-w-md bg-surface border border-border rounded-[16px] shadow-lg overflow-hidden relative space-y-5 p-6 sm:p-7">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border pb-3.5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
-              <QrCode className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-text">Customer Payment Request</h3>
-              <p className="text-[11px] text-text-muted">Dynamic point-of-sale checkout</p>
-            </div>
+          <div>
+            <h3 className="text-sm font-semibold text-text">Customer payment request</h3>
+            <p className="text-xs text-text-muted">Dynamic point-of-sale checkout</p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-text-muted hover:text-text hover:bg-surface-subtle rounded-[6px] transition-colors cursor-pointer border border-border shadow-xs"
+            className="p-1.5 text-text-muted hover:text-text hover:bg-surface-subtle rounded-[6px] transition-colors cursor-pointer border border-border"
           >
             <X className="w-4 h-4" />
           </button>
@@ -60,7 +55,7 @@ export function PaymentRequestModal({
 
         {/* Business & Amount Info */}
         <div className="text-center space-y-1.5">
-          <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">{businessName}</p>
+          <p className="text-xs font-medium text-text-muted">{businessName}</p>
           <div>
             <Amount value={displayAmount} size="3xl" weight="semibold" />
           </div>
@@ -73,7 +68,7 @@ export function PaymentRequestModal({
 
         {/* Real QR Code Graphic */}
         <div className="bg-surface-subtle border border-border rounded-[10px] p-5 flex flex-col items-center justify-center space-y-3">
-          <div className="w-40 h-40 bg-white p-2.5 rounded-[8px] border border-border shadow-xs flex items-center justify-center">
+          <div className="w-40 h-40 bg-white p-2.5 rounded-[8px] border border-border flex items-center justify-center">
             <QRCodeSVG
               value={paymentUrl}
               size={144}

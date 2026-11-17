@@ -76,84 +76,49 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-[1100px] w-full space-y-6 font-sans">
-      {/* 1. Header Greeting */}
+      {/* 1. Header Greeting (Small, 16px, regular, muted) */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-text">
+        <p className="text-base text-text-muted font-normal">
           Welcome back, {user.name}
-        </h1>
-        <p className="text-text-muted text-sm mt-0.5">
-          Your personal wallet ledger, activity, and cash flow overview.
         </p>
       </div>
 
       {/* 2. Calm Ledger Balance Hero Card */}
-      <div className="bg-surface border border-border rounded-[10px] p-6 sm:p-8 shadow-xs relative overflow-hidden">
-        {/* Subtle accent highlight bar on top */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
-
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
-              <Wallet className="w-3.5 h-3.5 text-primary" />
-              <span>Available wallet balance</span>
-            </div>
-            <div className="flex items-baseline gap-3">
-              <Amount value={walletBalance} size="4xl" weight="semibold" />
+      <div className="bg-surface border border-border rounded-[10px] p-5 sm:px-6 sm:py-5">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <div className="space-y-1.5">
+            <span className="text-xs font-medium text-text-muted block">
+              Available balance
+            </span>
+            <div>
+              <Amount value={walletBalance} size="display" weight="medium" />
             </div>
           </div>
 
-          {/* Action Buttons - Single filled primary button (Send Money) */}
-          <div className="flex flex-wrap gap-2.5 w-full lg:w-auto">
-            {/* Send Money - Primary filled button */}
+          {/* Action Row - Only "Send money" (primary, filled) and "Add money" (secondary, outline) */}
+          <div className="flex items-center gap-2.5">
+            {/* Send Money - Primary filled button (no shadow, 1px border) */}
             <Link
               href="/dashboard/transfer"
-              className="h-10 bg-primary hover:bg-primary-hover text-white px-4 rounded-[10px] text-xs font-medium transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+              className="h-10 bg-primary hover:bg-primary-hover text-white px-4 rounded-[8px] text-xs font-medium transition-colors flex items-center justify-center gap-2 border border-primary cursor-pointer"
             >
               <Send className="w-4 h-4" />
-              <span>Send Money</span>
+              <span>Send money</span>
             </Link>
 
-            {/* Scan & Pay - Outline */}
-            <Link
-              href="/dashboard/scan"
-              className="h-10 bg-surface-subtle hover:bg-surface text-text border border-border hover:border-border-strong px-4 rounded-[10px] text-xs font-medium transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-            >
-              <QrCode className="w-4 h-4 text-primary" />
-              <span>Scan & Pay</span>
-            </Link>
-
-            {/* Add Money - Outline */}
+            {/* Add Money - Outline button (no shadow, 1px border) */}
             <Link
               href="/dashboard/on-ramp"
-              className="h-10 bg-surface-subtle hover:bg-surface text-text border border-border hover:border-border-strong px-4 rounded-[10px] text-xs font-medium transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+              className="h-10 bg-surface hover:bg-surface-subtle text-text border border-border hover:border-border-strong px-4 rounded-[8px] text-xs font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <Plus className="w-4 h-4 text-text-muted" />
-              <span>Add Money</span>
-            </Link>
-
-            {/* Withdraw - Outline */}
-            <Link
-              href="/dashboard/withdraw"
-              className="h-10 bg-surface-subtle hover:bg-surface text-text border border-border hover:border-border-strong px-4 rounded-[10px] text-xs font-medium transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-            >
-              <ArrowDownLeft className="w-4 h-4 text-text-muted" />
-              <span>Withdraw</span>
-            </Link>
-
-            {/* Ledger Audit - Outline */}
-            <Link
-              href="/dashboard/reconciliation"
-              className="h-10 bg-surface-subtle hover:bg-surface text-text-muted hover:text-text border border-border hover:border-border-strong px-3.5 rounded-[10px] text-xs font-medium transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-              title="Continuous double-entry ledger audit"
-            >
-              <Scale className="w-4 h-4" />
-              <span>Audit Ledger</span>
+              <span>Add money</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* 3. Search Users */}
+      {/* 3. Search Users (40px high, max-w-[480px], debounced, no search button) */}
       <SearchUsers />
 
       {/* 4. Analytics, Chart & Breakdown */}
@@ -162,7 +127,7 @@ export default async function DashboardPage() {
       {/* 5. Bottom Section: Recent Activity & Quick Transfers */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Recent Transactions Card */}
-        <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-4">
+        <div className="bg-surface border border-border rounded-[10px] p-6 space-y-4">
           <div className="flex justify-between items-center pb-3 border-b border-border">
             <h3 className="font-medium text-xs text-text-muted flex items-center gap-2">
               <History className="w-3.5 h-3.5 text-primary" />
@@ -205,7 +170,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Quick Send Favorites Card */}
-        <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-4">
+        <div className="bg-surface border border-border rounded-[10px] p-6 space-y-4">
           <div className="flex justify-between items-center pb-3 border-b border-border">
             <h3 className="font-medium text-xs text-text-muted">
               Quick transfers

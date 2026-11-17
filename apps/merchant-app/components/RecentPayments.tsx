@@ -61,17 +61,12 @@ export function RecentPayments() {
   });
 
   return (
-    <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-5 font-sans">
+    <div className="bg-surface border border-border rounded-[10px] p-6 space-y-5 font-sans">
       {/* Header & Filter Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
-            <History className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-text">Customer Payment Log</h3>
-            <p className="text-xs text-text-muted">Live incoming customer checkout activity</p>
-          </div>
+        <div>
+          <h3 className="text-sm font-semibold text-text">Customer payment log</h3>
+          <p className="text-xs text-text-muted">Live incoming customer checkout activity</p>
         </div>
 
         {/* Tab Filters */}
@@ -81,9 +76,9 @@ export function RecentPayments() {
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-3 py-1 rounded-[4px] font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-[4px] font-medium transition-colors cursor-pointer ${
                   filter === tab
-                    ? "bg-surface text-text shadow-xs border border-border font-semibold"
+                    ? "bg-surface text-text border border-border font-semibold"
                     : "text-text-muted hover:text-text"
                 }`}
               >
@@ -94,7 +89,7 @@ export function RecentPayments() {
 
           <button
             onClick={fetchPayments}
-            className="p-1.5 rounded-[6px] bg-surface-subtle hover:bg-surface text-text-muted hover:text-text border border-border transition-colors cursor-pointer shadow-xs"
+            className="p-1.5 rounded-[6px] bg-surface-subtle hover:bg-surface text-text-muted hover:text-text border border-border transition-colors cursor-pointer"
             title="Refresh payments"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />

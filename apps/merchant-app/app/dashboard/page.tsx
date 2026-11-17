@@ -170,7 +170,7 @@ export default function MerchantDashboardPage() {
             </span>
             <a
               href="#overview"
-              className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-xs font-medium bg-white/15 text-white shadow-xs"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-xs font-medium bg-white/15 text-white"
             >
               <LayoutDashboard className="w-4 h-4 text-accent" />
               <span>Overview</span>
@@ -238,7 +238,7 @@ export default function MerchantDashboardPage() {
       {/* --------------------------------------------------------------------- */}
       {/* 2. Mobile Top Bar with Collapsible Drawer                            */}
       {/* --------------------------------------------------------------------- */}
-      <header className="md:hidden bg-primary text-white p-4 flex items-center justify-between sticky top-0 z-40 shadow-xs border-b border-[#1F4D43]">
+      <header className="md:hidden bg-primary text-white p-4 flex items-center justify-between sticky top-0 z-40 border-b border-[#1F4D43]">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-[6px] bg-white/10 flex items-center justify-center text-accent">
             <Building2 className="w-4 h-4" />
@@ -302,7 +302,7 @@ export default function MerchantDashboardPage() {
         {/* Top Header & Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
           <div>
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-text">
+            <h1 className="text-base sm:text-lg font-semibold tracking-tight text-text">
               Store Settlement Console
             </h1>
             <p className="text-xs text-text-muted mt-0.5">
@@ -314,7 +314,7 @@ export default function MerchantDashboardPage() {
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="flex items-center gap-1.5 text-xs bg-surface hover:bg-surface-subtle text-text px-3 py-1.5 rounded-[6px] border border-border transition-colors cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 text-xs bg-surface hover:bg-surface-subtle text-text px-3 py-1.5 rounded-[6px] border border-border transition-colors cursor-pointer"
               title="Refresh merchant balance"
             >
               <RefreshCw className={`w-3.5 h-3.5 text-primary ${refreshing ? "animate-spin" : ""}`} />
@@ -324,15 +324,13 @@ export default function MerchantDashboardPage() {
         </div>
 
         {/* 1. Merchant Balance Hero Card (Flat, no card-in-card) */}
-        <div id="overview" className="bg-surface border border-border rounded-[10px] p-6 shadow-xs relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
-
+        <div id="overview" className="bg-surface border border-border rounded-[10px] p-5 sm:px-6 sm:py-5 relative overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <span className="text-xs font-medium text-text-muted block">
                 Merchant account
               </span>
-              <h2 className="text-2xl font-semibold tracking-tight text-text">
+              <h2 className="text-base sm:text-lg font-semibold tracking-tight text-text">
                 {displayBusinessName}
               </h2>
               <div className="flex flex-wrap items-center gap-4 text-xs text-text-muted">
@@ -352,9 +350,9 @@ export default function MerchantDashboardPage() {
                 <Wallet className="w-3.5 h-3.5 text-primary" />
               </div>
               <div>
-                <Amount value={displayBalance} size="3xl" weight="semibold" />
+                <Amount value={displayBalance} size="display" weight="medium" />
               </div>
-              <p className="text-[11px] text-success mt-1 font-medium flex items-center gap-1">
+              <p className="text-xs text-success mt-1 font-normal flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" /> Available for automatic payout
               </p>
             </div>

@@ -21,23 +21,16 @@ export function MerchantQRCard({
   };
 
   return (
-    <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-5 flex flex-col justify-between items-center text-center font-sans">
+    <div className="bg-surface border border-border rounded-[10px] p-6 space-y-5 flex flex-col justify-between items-center text-center font-sans">
       {/* Header */}
-      <div className="w-full flex items-center justify-between pb-4 border-b border-border">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
-            <QrCode className="w-4 h-4" />
-          </div>
-          <span className="text-sm font-semibold text-text">Countertop QR</span>
-        </div>
-        <span className="text-[10px] font-medium bg-success-subtle/50 text-success px-2 py-0.5 rounded-[4px] border border-success/30 font-mono">
-          Active
-        </span>
+      <div className="w-full pb-4 border-b border-border text-left">
+        <span className="text-sm font-semibold text-text">Countertop QR</span>
+        <p className="text-xs text-text-muted mt-0.5">Physical store payment standee</p>
       </div>
 
       {/* QR Visual Frame (Flat, no card-in-card) */}
       <div className="space-y-3 w-full flex flex-col items-center py-2">
-        <div className="w-40 h-40 bg-white p-2.5 rounded-[8px] border border-border shadow-xs flex items-center justify-center">
+        <div className="w-40 h-40 bg-white p-2.5 rounded-[8px] border border-border flex items-center justify-center">
           {/* SVG Store QR in Ink-Green & Slate */}
           <svg viewBox="0 0 100 100" className="w-full h-full fill-current">
             <rect x="0" y="0" width="30" height="30" rx="3" fill="#0F3D33" />

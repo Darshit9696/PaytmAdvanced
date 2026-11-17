@@ -31,7 +31,7 @@ export default function ProfileView({ user }: ProfileViewProps) {
   return (
     <div className="max-w-[1100px] w-full space-y-6 font-sans">
       {/* 1. Profile Header Banner */}
-      <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs relative overflow-hidden">
+      <div className="bg-surface border border-border rounded-[10px] p-6 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center gap-5">
           <Avatar name={userName} size="xl" />
 
@@ -57,7 +57,7 @@ export default function ProfileView({ user }: ProfileViewProps) {
       </div>
 
       {/* 2. Personal Information Definition List */}
-      <div className="bg-surface rounded-[10px] border border-border shadow-xs p-6 space-y-4">
+      <div className="bg-surface rounded-[10px] border border-border p-6 space-y-4">
         <h3 className="font-medium text-text-muted text-xs">
           Personal details
         </h3>
@@ -79,7 +79,7 @@ export default function ProfileView({ user }: ProfileViewProps) {
       </div>
 
       {/* 3. Security & Session */}
-      <div className="bg-surface rounded-[10px] border border-border shadow-xs p-6 space-y-4">
+      <div className="bg-surface rounded-[10px] border border-border p-6 space-y-4">
         <h3 className="font-medium text-text-muted text-xs">
           Security and session
         </h3>

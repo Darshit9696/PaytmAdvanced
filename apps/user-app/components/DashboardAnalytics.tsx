@@ -135,7 +135,7 @@ export function DashboardAnalytics() {
         <p className="text-xs text-text-muted">{error}</p>
         <button
           onClick={fetchAnalytics}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold bg-surface border border-border hover:bg-surface-subtle text-text px-4 py-2 rounded-[6px] transition-all cursor-pointer shadow-xs"
+          className="inline-flex items-center gap-1.5 text-xs font-medium bg-surface border border-border hover:bg-surface-subtle text-text px-4 py-2 rounded-[6px] transition-colors cursor-pointer"
         >
           <RefreshCw className="w-3.5 h-3.5" />
           <span>Try Again</span>
@@ -171,128 +171,92 @@ export function DashboardAnalytics() {
       {/* 1. Monthly Overview Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Monthly Spending Card */}
-        <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
-              <div className="w-7 h-7 rounded-[6px] bg-danger-subtle/50 text-danger border border-danger/20 flex items-center justify-center">
-                <ArrowUpRight className="w-4 h-4" />
-              </div>
-              <span>Monthly spending</span>
-            </div>
-            <span className="text-[11px] font-medium text-text-muted bg-surface-subtle px-2 py-0.5 rounded-[6px] border border-border font-mono">
-              {monthlySpending.transactionCount}{" "}
-              {monthlySpending.transactionCount === 1 ? "payment" : "payments"}
-            </span>
-          </div>
-
+        <div className="bg-surface border border-border rounded-[10px] p-5 flex flex-col justify-between space-y-2">
+          <span className="text-xs font-medium text-text-muted">Monthly spending</span>
           <div>
-            <Amount value={monthlySpending.amount} size="2xl" weight="semibold" />
-            <p className="text-[11px] text-text-muted mt-1.5 flex items-center gap-1">
-              <Calendar className="w-3 h-3 text-text-faint" /> Current calendar month outgoings
+            <Amount value={monthlySpending.amount} size="2xl" weight="medium" />
+            <p className="text-xs text-text-faint mt-1">
+              Current calendar month outgoings
             </p>
           </div>
         </div>
 
         {/* Monthly Income Card */}
-        <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
-              <div className="w-7 h-7 rounded-[6px] bg-success-subtle/50 text-success border border-success/20 flex items-center justify-center">
-                <ArrowDownLeft className="w-4 h-4" />
-              </div>
-              <span>Monthly income</span>
-            </div>
-            <span className="text-[11px] font-medium text-text-muted bg-surface-subtle px-2 py-0.5 rounded-[6px] border border-border font-mono">
-              {monthlyIncome.transactionCount}{" "}
-              {monthlyIncome.transactionCount === 1 ? "received" : "received"}
-            </span>
-          </div>
-
+        <div className="bg-surface border border-border rounded-[10px] p-5 flex flex-col justify-between space-y-2">
+          <span className="text-xs font-medium text-text-muted">Monthly income</span>
           <div>
-            <Amount value={monthlyIncome.amount} size="2xl" weight="semibold" />
-            <p className="text-[11px] text-success mt-1.5 flex items-center gap-1 font-medium">
-              <TrendingUp className="w-3 h-3" /> P2P transfers received this month
+            <Amount value={monthlyIncome.amount} size="2xl" weight="medium" />
+            <p className="text-xs text-text-faint mt-1">
+              Transfers received this month
             </p>
           </div>
         </div>
       </div>
 
       {/* 2. Spending Categories Breakdown (No nested cards) */}
-      <div className="bg-surface border border-border rounded-[10px] p-5 sm:p-6 shadow-xs space-y-4">
+      <div className="bg-surface border border-border rounded-[10px] p-5 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-border">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
-              <PieChart className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-text">Expense categories</h3>
-              <p className="text-[11px] text-text-muted">Monthly spending breakdown by tag</p>
-            </div>
+          <div>
+            <h3 className="text-sm font-semibold text-text">Expense categories</h3>
+            <p className="text-xs text-text-muted">Monthly spending breakdown by tag</p>
           </div>
 
-          <div className="text-xs text-text-muted self-start sm:self-auto flex items-center gap-1.5">
-            <span>Total categorized:</span>
-            <Amount value={totalCategorizedAmount} size="sm" weight="semibold" />
-          </div>
+          {totalCategorizedAmount > 0 && (
+            <div className="text-xs text-text-muted self-start sm:self-auto flex items-center gap-1.5">
+              <span>Total categorized:</span>
+              <Amount value={totalCategorizedAmount} size="sm" weight="medium" />
+            </div>
+          )}
         </div>
 
-        {/* 4-Category Flat Grid (No cards inside card) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
-          {categories.map((item) => {
-            const icon = CATEGORY_ICONS[item.category] || (
-              <ShoppingBag className="w-4 h-4 text-primary" />
-            );
-            const percentage =
-              totalCategorizedAmount > 0
-                ? Math.round((item.amount / totalCategorizedAmount) * 100)
-                : 0;
-
-            return (
-              <div
-                key={item.category}
-                className="flex flex-col justify-between space-y-2 py-1"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-text-muted">{icon}</span>
-                    <span className="text-xs font-medium text-text">{item.category}</span>
-                  </div>
-                  <span className="text-[11px] text-text-muted font-mono">
-                    {percentage}%
-                  </span>
-                </div>
-
-                <div>
-                  <Amount value={item.amount} size="md" weight="semibold" />
-                  <p className="text-[11px] text-text-faint font-mono mt-0.5">
-                    {item.transactionCount}{" "}
-                    {item.transactionCount === 1 ? "payment" : "payments"}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {totalCategorizedAmount === 0 && (
-          <p className="text-center text-xs text-text-muted pt-1">
-            No categorized expenses recorded this month yet. Tag transfers with categories to track your spending.
+        {totalCategorizedAmount === 0 ? (
+          <p className="text-xs text-text-muted py-2">
+            No categorized spending this month yet
           </p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
+            {categories.map((item) => {
+              const icon = CATEGORY_ICONS[item.category] || (
+                <ShoppingBag className="w-4 h-4 text-primary" />
+              );
+              const percentage = Math.round((item.amount / totalCategorizedAmount) * 100);
+
+              return (
+                <div
+                  key={item.category}
+                  className="flex flex-col justify-between space-y-2 py-1"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-text-muted">{icon}</span>
+                      <span className="text-xs font-medium text-text">{item.category}</span>
+                    </div>
+                    <span className="text-xs text-text-muted font-mono">
+                      {percentage}%
+                    </span>
+                  </div>
+
+                  <div>
+                    <Amount value={item.amount} size="md" weight="medium" />
+                    <p className="text-xs text-text-faint font-mono mt-0.5">
+                      {item.transactionCount}{" "}
+                      {item.transactionCount === 1 ? "payment" : "payments"}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 
       {/* 3. Cash Flow Dual Bar Chart */}
-      <div className="bg-surface border border-border rounded-[10px] p-5 sm:p-6 shadow-xs space-y-4">
+      <div className="bg-surface border border-border rounded-[10px] p-5 sm:p-6 space-y-4">
         {/* Chart Header & Controls */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
-              <BarChart3 className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-text">Cash Flow Velocity</h3>
-              <p className="text-[11px] text-text-muted">Outgoings vs incoming volume</p>
-            </div>
+          <div>
+            <h3 className="text-sm font-semibold text-text">Cash flow velocity</h3>
+            <p className="text-xs text-text-muted">Outgoings vs incoming volume</p>
           </div>
 
           <div className="flex items-center gap-3 self-start sm:self-auto">
@@ -313,9 +277,9 @@ export function DashboardAnalytics() {
                   setChartMode("daily");
                   setHoveredIdx(null);
                 }}
-                className={`px-3 py-1 rounded-[6px] text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-[6px] text-xs font-medium transition-colors cursor-pointer ${
                   chartMode === "daily"
-                    ? "bg-surface text-text shadow-xs border border-border"
+                    ? "bg-surface text-text border border-border font-semibold"
                     : "text-text-muted hover:text-text"
                 }`}
               >
@@ -326,9 +290,9 @@ export function DashboardAnalytics() {
                   setChartMode("weekly");
                   setHoveredIdx(null);
                 }}
-                className={`px-3 py-1 rounded-[6px] text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-[6px] text-xs font-medium transition-colors cursor-pointer ${
                   chartMode === "weekly"
-                    ? "bg-surface text-text shadow-xs border border-border"
+                    ? "bg-surface text-text border border-border font-semibold"
                     : "text-text-muted hover:text-text"
                 }`}
               >
@@ -355,7 +319,7 @@ export function DashboardAnalytics() {
               </div>
             </>
           ) : (
-            <span className="text-text-faint text-[11px]">
+            <span className="text-text-faint text-xs">
               Hover over any column to inspect spending and income breakdown.
             </span>
           )}
@@ -420,15 +384,9 @@ export function DashboardAnalytics() {
       {/* 4. Top Contacts Insights */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Most Paid Contact */}
-        <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs space-y-4 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-border">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
-              <Users className="w-3.5 h-3.5 text-danger" />
-              <span>Most paid contact</span>
-            </div>
-            <span className="text-[10px] font-medium text-danger bg-danger-subtle/50 px-2 py-0.5 rounded-[4px] border border-danger/20 font-mono">
-              Top Outgoing
-            </span>
+        <div className="bg-surface border border-border rounded-[10px] p-5 space-y-4 flex flex-col justify-between">
+          <div className="pb-3 border-b border-border">
+            <span className="text-xs font-medium text-text-muted">Most paid contact</span>
           </div>
 
           {data?.topFriends.mostPaid ? (
@@ -447,12 +405,12 @@ export function DashboardAnalytics() {
               </div>
 
               <div className="text-right">
-                <Amount value={data.topFriends.mostPaid.totalAmount} size="md" weight="semibold" />
+                <Amount value={data.topFriends.mostPaid.totalAmount} size="md" weight="medium" />
                 <Link
                   href={`/dashboard/transfer?id=${data.topFriends.mostPaid.id}&name=${encodeURIComponent(
                     data.topFriends.mostPaid.name
                   )}`}
-                  className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium mt-1"
+                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-medium mt-1"
                 >
                   <span>Send again</span>
                   <Send className="w-3 h-3" />
@@ -468,15 +426,9 @@ export function DashboardAnalytics() {
         </div>
 
         {/* Top Income Source */}
-        <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs space-y-4 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-border">
-            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
-              <Sparkles className="w-3.5 h-3.5 text-success" />
-              <span>Top income source</span>
-            </div>
-            <span className="text-[10px] font-medium text-success bg-success-subtle/50 px-2 py-0.5 rounded-[4px] border border-success/20 font-mono">
-              Top Incoming
-            </span>
+        <div className="bg-surface border border-border rounded-[10px] p-5 space-y-4 flex flex-col justify-between">
+          <div className="pb-3 border-b border-border">
+            <span className="text-xs font-medium text-text-muted">Top income source</span>
           </div>
 
           {data?.topFriends.mostReceived ? (
@@ -497,8 +449,8 @@ export function DashboardAnalytics() {
               </div>
 
               <div className="text-right">
-                <Amount value={data.topFriends.mostReceived.totalAmount} size="md" weight="semibold" />
-                <span className="inline-block text-[11px] text-success font-medium mt-1">
+                <Amount value={data.topFriends.mostReceived.totalAmount} size="md" weight="medium" />
+                <span className="inline-block text-xs text-success font-medium mt-1">
                   Received in wallet
                 </span>
               </div>

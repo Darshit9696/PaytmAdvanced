@@ -597,26 +597,21 @@ export function QRScanner() {
   return (
     <div className="space-y-6 font-sans">
       {/* Scanner Viewport Box */}
-      <div className="relative bg-surface border border-border rounded-[10px] p-6 sm:p-8 shadow-xs overflow-hidden">
+      <div className="relative bg-surface border border-border rounded-[10px] p-6 sm:p-8 overflow-hidden">
         {/* Top Instructions / Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
-              <ScanLine className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold text-text">QR Viewfinder</h2>
-              <p className="text-xs text-text-muted">
-                {activeCameraLabel ? `Active: ${activeCameraLabel}` : "Position merchant QR code within the frame"}
-              </p>
-            </div>
+          <div>
+            <h2 className="text-sm font-semibold text-text">QR Viewfinder</h2>
+            <p className="text-xs text-text-muted">
+              {activeCameraLabel ? `Active: ${activeCameraLabel}` : "Position merchant QR code within the frame"}
+            </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => startScanner()}
               disabled={isLoading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-surface-subtle hover:bg-surface text-text text-xs font-medium border border-border transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-surface-subtle hover:bg-surface text-text text-xs font-medium border border-border transition-colors cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
               <span>Restart Camera</span>
@@ -624,7 +619,7 @@ export function QRScanner() {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-primary hover:bg-primary-hover text-white text-xs font-medium transition-all cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-primary hover:bg-primary-hover text-white text-xs font-medium transition-colors cursor-pointer border border-primary"
             >
               <Upload className="w-3.5 h-3.5" />
               <span>Upload Image</span>
@@ -686,13 +681,13 @@ export function QRScanner() {
                 <div className="flex flex-col sm:flex-row gap-2 pt-2">
                   <button
                     onClick={() => startScanner()}
-                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-[6px] text-xs font-medium transition-all shadow-xs cursor-pointer"
+                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-[6px] text-xs font-medium transition-colors border border-primary cursor-pointer"
                   >
                     Grant Permission & Retry
                   </button>
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3.5 py-1.5 bg-surface text-text border border-border rounded-[6px] text-xs font-medium hover:bg-surface-subtle transition-all cursor-pointer"
+                    className="px-3.5 py-1.5 bg-surface text-text border border-border rounded-[6px] text-xs font-medium hover:bg-surface-subtle transition-colors cursor-pointer"
                   >
                     Upload QR Image
                   </button>
@@ -710,7 +705,7 @@ export function QRScanner() {
                   <h3 className="text-sm font-semibold text-white">Payment Request Verified!</h3>
                   <p className="text-xs text-slate-300 font-mono">Ref: {scannedTxId}</p>
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-subtle/30 text-success border border-success/30 text-[11px] font-medium">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-subtle/30 text-success border border-success/30 text-xs font-medium">
                   <RefreshCw className="w-3 h-3 animate-spin" />
                   <span>Redirecting to Checkout...</span>
                 </div>
@@ -728,30 +723,30 @@ export function QRScanner() {
 
           {/* Helper Caption */}
           <p className="text-xs text-text-muted mt-3 text-center">
-            Point camera at any PayPulse Merchant QR code with link <code className="text-primary font-mono text-[11px]">/pay?transactionId=...</code>
+            Point camera at any PayPulse Merchant QR code with link <code className="text-primary font-mono text-xs">/pay?transactionId=...</code>
           </p>
         </div>
       </div>
 
       {/* Security & Verification Footer */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-surface border border-border rounded-[10px] p-4 flex items-center gap-3 shadow-xs">
+        <div className="bg-surface border border-border rounded-[10px] p-4 flex items-center gap-3">
           <div className="w-8 h-8 rounded-[6px] bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
             <h4 className="text-xs font-semibold text-text">Direct Database Verification</h4>
-            <p className="text-[11px] text-text-muted">Payment requests are confirmed directly against merchant records.</p>
+            <p className="text-xs text-text-muted">Payment requests are confirmed directly against merchant records.</p>
           </div>
         </div>
 
-        <div className="bg-surface border border-border rounded-[10px] p-4 flex items-center gap-3 shadow-xs">
+        <div className="bg-surface border border-border rounded-[10px] p-4 flex items-center gap-3">
           <div className="w-8 h-8 rounded-[6px] bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
             <Zap className="w-4 h-4" />
           </div>
           <div>
             <h4 className="text-xs font-semibold text-text">Instant Payment Routing</h4>
-            <p className="text-[11px] text-text-muted">Scanned QR automatically navigates to authorization checkout.</p>
+            <p className="text-xs text-text-muted">Scanned QR automatically navigates to authorization checkout.</p>
           </div>
         </div>
       </div>

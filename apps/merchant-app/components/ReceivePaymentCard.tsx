@@ -58,22 +58,11 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
 
   return (
     <>
-      <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-5 flex flex-col justify-between">
+      <div className="bg-surface border border-border rounded-[10px] p-6 space-y-5 flex flex-col justify-between">
         {/* Card Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
-              <QrCode className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-text">Generate Charge Request</h3>
-              <p className="text-xs text-text-muted">Dynamic point-of-sale checkout QR and direct link</p>
-            </div>
-          </div>
-
-          <span className="text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-            <Sparkles className="w-3 h-3" /> Point of Sale
-          </span>
+        <div className="pb-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-text">Create charge request</h3>
+          <p className="text-xs text-text-muted mt-0.5">Dynamic point-of-sale checkout QR and payment link</p>
         </div>
 
         {/* Payment Request Form */}
@@ -83,7 +72,7 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
             <label className="text-xs font-medium text-text-muted block">
               Charge amount
             </label>
-            <div className="relative flex items-center bg-surface border border-border rounded-[8px] px-3.5 py-2.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-xs">
+            <div className="relative flex items-center bg-surface border border-border rounded-[8px] px-3.5 py-2.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
               <span className="text-xl font-mono text-text-muted mr-2 font-medium">₹</span>
               <input
                 type="number"
@@ -92,7 +81,7 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
                 onChange={(e) => setAmount(e.target.value)}
                 min="1"
                 step="any"
-                className="w-full text-xl font-semibold font-mono tabular-nums text-text bg-transparent outline-none placeholder-text-faint"
+                className="w-full text-xl font-medium font-mono tabular-nums text-text bg-transparent outline-none placeholder-text-faint"
               />
             </div>
           </div>
@@ -106,9 +95,9 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
                   key={chip}
                   type="button"
                   onClick={() => setAmount(chip.toString())}
-                  className={`py-1.5 px-3 rounded-[6px] text-xs font-mono font-medium border transition-all cursor-pointer ${
+                  className={`py-1.5 px-3 rounded-[6px] text-xs font-mono font-medium border transition-colors cursor-pointer ${
                     amount === chip.toString()
-                      ? "bg-primary text-white border-primary shadow-xs"
+                      ? "bg-primary text-white border-primary"
                       : "bg-surface-subtle text-text border border-border hover:bg-surface"
                   }`}
                 >
@@ -128,7 +117,7 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
               placeholder="e.g. Table 4 Order, Grocery Basket #102"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full text-xs text-text bg-surface p-2.5 rounded-[8px] border border-border outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all shadow-xs placeholder-text-faint"
+              className="w-full text-xs text-text bg-surface p-2.5 rounded-[8px] border border-border outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-colors placeholder-text-faint"
             />
           </div>
 

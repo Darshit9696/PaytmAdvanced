@@ -8,7 +8,7 @@ interface StatCardProps {
   value: string;
   change?: string;
   isPositive?: boolean;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   subtitle?: string;
 }
 
@@ -17,22 +17,16 @@ export function StatCard({
   value,
   change,
   isPositive = true,
-  icon,
   subtitle,
 }: StatCardProps) {
   return (
-    <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs hover:border-border-strong transition-all flex flex-col justify-between space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
-          {title}
-        </span>
-        <div className="w-8 h-8 rounded-[6px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-          {icon}
-        </div>
-      </div>
+    <div className="bg-surface border border-border rounded-[10px] p-5 flex flex-col justify-between space-y-2">
+      <span className="text-xs font-medium text-text-muted">
+        {title}
+      </span>
 
       <div className="space-y-1">
-        <div className="text-2xl sm:text-3xl font-semibold text-text font-mono tracking-tight tabular-nums">
+        <div className="text-2xl sm:text-3xl font-medium text-text font-mono tracking-tight tabular-nums">
           {value}
         </div>
         {change && (
@@ -49,7 +43,7 @@ export function StatCard({
           </div>
         )}
         {subtitle && (
-          <p className="text-[11px] text-text-faint font-medium font-sans">{subtitle}</p>
+          <p className="text-xs text-text-faint font-normal">{subtitle}</p>
         )}
       </div>
     </div>
