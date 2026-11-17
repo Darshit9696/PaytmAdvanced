@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./*": "./src/*.tsx"
+    ".": "./src/index.ts",
+    "./*": "./src/*.tsx",
+    "./theme.css": "./src/styles/theme.css",
+    "./styles/*": "./src/styles/*"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -20,6 +23,7 @@
     "typescript": "5.9.2"
   },
   "dependencies": {
+    "lucide-react": "^1.24.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   }

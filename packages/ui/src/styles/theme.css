@@ -1,0 +1,177 @@
+/* ==========================================================================
+   PaytmAdvanced / PayPulse — "Calm Ledger" Design System Tokens
+   Tailwind CSS v4 Theme Extension
+   ========================================================================== */
+
+:root {
+  /* Warm stone neutrals */
+  --bg: #FAFAF7;
+  --surface: #FFFFFF;
+  --surface-subtle: #F4F4EF;
+  --border: #E7E6DF;
+  --border-strong: #D3D2C9;
+  --text: #0E1512;
+  --text-muted: #5C645F;
+  --text-faint: #8B938E;
+
+  /* Primary: Deep Ink-Green */
+  --primary: #0F3D33;
+  --primary-hover: #0B2F27;
+  --primary-tint: #E4EFEB;
+  --primary-fg: #FFFFFF;
+
+  /* Accent: Signal Lime (used sparingly) */
+  --accent: #C8F169;
+  --accent-hover: #B8E356;
+  --accent-fg: #0E1512;
+
+  /* Semantic */
+  --success: #177A4B;
+  --success-tint: #E8F5EE;
+  --success-border: #C2E5D3;
+
+  --warning: #B7791F;
+  --warning-tint: #FEF7EC;
+  --warning-border: #F8DEB5;
+
+  --danger: #C0392B;
+  --danger-tint: #FDF2F1;
+  --danger-border: #F5C6C2;
+
+  --info: #2B5C8A;
+  --info-tint: #EEF4F9;
+  --info-border: #CADDF0;
+
+  /* Elevation */
+  --shadow-soft: 0 2px 8px -1px rgba(14, 21, 18, 0.05), 0 1px 3px -1px rgba(14, 21, 18, 0.03);
+  --shadow-modal: 0 16px 40px -8px rgba(14, 21, 18, 0.12), 0 4px 12px -2px rgba(14, 21, 18, 0.06);
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans), "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Dark theme overrides */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A0F0D;
+    --surface: #111815;
+    --surface-subtle: #17211D;
+    --border: #1F2A25;
+    --border-strong: #2E3D36;
+    --text: #EDF2EE;
+    --text-muted: #8B9690;
+    --text-faint: #5A6660;
+
+    --primary: #5FD3A8;
+    --primary-hover: #4EC297;
+    --primary-tint: #143328;
+    --primary-fg: #0A0F0D;
+
+    --accent: #C8F169;
+    --accent-hover: #B8E356;
+    --accent-fg: #0A0F0D;
+
+    --success: #34D399;
+    --success-tint: #064E3B;
+    --success-border: #047857;
+
+    --warning: #FBBF24;
+    --warning-tint: #78350F;
+    --warning-border: #92400E;
+
+    --danger: #F87171;
+    --danger-tint: #7F1D1D;
+    --danger-border: #991B1B;
+
+    --info: #60A5FA;
+    --info-tint: #1E3A8A;
+    --info-border: #1D4ED8;
+
+    --shadow-soft: 0 2px 8px -1px rgba(0, 0, 0, 0.4);
+    --shadow-modal: 0 16px 40px -8px rgba(0, 0, 0, 0.6);
+  }
+}
+
+[data-theme="dark"] {
+  --bg: #0A0F0D;
+  --surface: #111815;
+  --surface-subtle: #17211D;
+  --border: #1F2A25;
+  --border-strong: #2E3D36;
+  --text: #EDF2EE;
+  --text-muted: #8B9690;
+  --text-faint: #5A6660;
+
+  --primary: #5FD3A8;
+  --primary-hover: #4EC297;
+  --primary-tint: #143328;
+  --primary-fg: #0A0F0D;
+
+  --accent: #C8F169;
+  --accent-hover: #B8E356;
+  --accent-fg: #0A0F0D;
+
+  --success: #34D399;
+  --success-tint: #064E3B;
+  --success-border: #047857;
+
+  --warning: #FBBF24;
+  --warning-tint: #78350F;
+  --warning-border: #92400E;
+
+  --danger: #F87171;
+  --danger-tint: #7F1D1D;
+  --danger-border: #991B1B;
+
+  --info: #60A5FA;
+  --info-tint: #1E3A8A;
+  --info-border: #1D4ED8;
+
+  --shadow-soft: 0 2px 8px -1px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 16px 40px -8px rgba(0, 0, 0, 0.6);
+}
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-tint: var(--primary-tint);
+  --color-primary-fg: var(--primary-fg);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+
+  --color-success: var(--success);
+  --color-success-tint: var(--success-tint);
+  --color-success-border: var(--success-border);
+
+  --color-warning: var(--warning);
+  --color-warning-tint: var(--warning-tint);
+  --color-warning-border: var(--warning-border);
+
+  --color-danger: var(--danger);
+  --color-danger-tint: var(--danger-tint);
+  --color-danger-border: var(--danger-border);
+
+  --color-info: var(--info);
+  --color-info-tint: var(--info-tint);
+  --color-info-border: var(--info-border);
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
