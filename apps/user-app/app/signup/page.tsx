@@ -3,8 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, Mail, Phone, Lock, ArrowRight, ShieldCheck, CheckCircle, Zap } from "lucide-react";
+import { User, Mail, Phone, Lock, ArrowRight, ShieldCheck, Check } from "lucide-react";
 import { signIn } from "next-auth/react";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Field } from "@repo/ui/field";
+import { Alert } from "@repo/ui/toast";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -41,7 +45,7 @@ export default function SignupPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || data.msg || "Something went wrong");
+        throw new Error(data.message || data.msg || "Failed to create account");
       }
 
       setSuccess(true);
@@ -53,7 +57,7 @@ export default function SignupPage() {
       });
 
       if (result?.error) {
-        setError("Account created, but automatic login failed.");
+        setError("Account created, but automatic sign-in failed. Please sign in manually.");
         return;
       }
 
@@ -68,158 +72,155 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#090d16] px-4 py-8 font-sans selection:bg-blue-500 selection:text-white">
-      <div className="w-full max-w-md overflow-hidden rounded-3xl bg-[#0f172a] shadow-2xl border border-slate-800">
+    <div className="min-h-screen bg-bg flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans">
+      <div className="w-full max-w-4xl bg-surface border border-border rounded-lg shadow-soft overflow-hidden grid lg:grid-cols-12 min-h-[580px]">
+        
+        {/* Left Side: Calm Ink-Green Brand Panel */}
+        <div className="lg:col-span-5 bg-[#0F3D33] text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, #FFFFFF 1px, transparent 1px), linear-gradient(to bottom, #FFFFFF 1px, transparent 1px)",
+              backgroundSize: "28px 28px",
+            }}
+          />
 
-        {/* Header / Brand Banner */}
-        <div className="bg-slate-900 px-8 pt-8 pb-6 border-b border-slate-800 text-white">
-          <div className="flex items-center justify-between mb-3">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5">
-                <div className="w-full h-full bg-[#090d16] rounded-[9px] flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-cyan-400" />
-                </div>
+          <div className="relative z-10 space-y-6">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-sm bg-accent text-accent-fg flex items-center justify-center font-bold text-sm tracking-tight shadow-xs select-none">
+                P
               </div>
-              <span className="text-xl font-extrabold text-white tracking-tight">PayPulse</span>
+              <span className="text-base font-bold tracking-tight text-white">PayPulse</span>
             </Link>
-            <span className="flex items-center gap-1 text-[11px] bg-blue-500/10 text-cyan-300 px-2.5 py-1 rounded-full border border-blue-500/20">
-              <ShieldCheck className="w-3.5 h-3.5" /> Instant Wallet
-            </span>
+
+            <div className="space-y-2 pt-8">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-white/10 text-accent text-[11px] font-medium border border-white/15">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Instant Wallet Account</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-snug">
+                Start with a balanced ledger.
+              </h1>
+              <p className="text-xs text-white/70 leading-relaxed pt-1">
+                Receive an immediate ₹10,000 welcome wallet balance with complete double-entry transaction history.
+              </p>
+            </div>
           </div>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Create a personal account to get ₹10,000 welcome balance in your digital wallet.
-          </p>
+
+          <div className="relative z-10 pt-8 border-t border-white/10 space-y-2 text-xs text-white/80">
+            <div className="flex items-center gap-2">
+              <Check className="w-3.5 h-3.5 text-accent" />
+              <span>Full cryptographic transaction audit</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-3.5 h-3.5 text-accent" />
+              <span>Free instant peer-to-peer transfers</span>
+            </div>
+          </div>
         </div>
 
-        {/* Signup Form */}
-        <form onSubmit={handleSignup} className="p-8 space-y-4">
-
-          {error && (
-            <div className="p-3 text-xs font-semibold text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-xl">
-              ⚠️ {error}
+        {/* Right Side: Clean Registration Form */}
+        <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-center bg-surface">
+          <div className="max-w-sm w-full mx-auto space-y-5">
+            
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-text">Create personal account</h2>
+              <p className="text-xs text-text-muted mt-1">
+                Enter your details to create an authenticated wallet.
+              </p>
             </div>
-          )}
 
-          {success && (
-            <div className="p-3 text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-emerald-400" /> Account created! Logging in...
-            </div>
-          )}
-
-          {/* Full Name Field */}
-          <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-              Full Name
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <User className="w-4 h-4" />
-              </div>
-              <input
-                type="text"
-                name="name"
-                placeholder="John Doe"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 transition-all text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Email Field */}
-          <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-              Email Address
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <Mail className="w-4 h-4" />
-              </div>
-              <input
-                type="email"
-                name="email"
-                placeholder="john@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 transition-all text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Phone Field */}
-          <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-              Phone Number
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <Phone className="w-4 h-4" />
-              </div>
-              <input
-                type="tel"
-                name="phone"
-                placeholder="10-digit phone number"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 transition-all text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Password Field */}
-          <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-              Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <Lock className="w-4 h-4" />
-              </div>
-              <input
-                type="password"
-                name="password"
-                placeholder="Create password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                minLength={6}
-                className="w-full pl-11 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 transition-all text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading || success}
-            className="w-full mt-3 py-3.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer text-sm"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Creating Account...
-              </span>
-            ) : (
-              <>
-                Create Account <ArrowRight className="w-4 h-4" />
-              </>
+            {error && (
+              <Alert variant="danger" onDismiss={() => setError("")}>
+                {error}
+              </Alert>
             )}
-          </button>
 
-          {/* Redirect to Login */}
-          <div className="pt-3 text-center text-xs text-slate-400 border-t border-slate-800/80">
-            Already have an account?{" "}
-            <Link href="/login" className="font-semibold text-cyan-400 hover:underline">
-              Log In
-            </Link>
+            {success && (
+              <Alert variant="success">
+                Account created successfully. Signing in...
+              </Alert>
+            )}
+
+            <form onSubmit={handleSignup} className="space-y-3.5">
+              <Field label="Full Name" required htmlFor="name">
+                <Input
+                  id="name"
+                  type="text"
+                  name="name"
+                  placeholder="Aarav Sharma"
+                  leftIcon={<User className="w-4 h-4" />}
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  autoFocus
+                />
+              </Field>
+
+              <Field label="Email Address" required htmlFor="email">
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder="aarav@example.com"
+                  leftIcon={<Mail className="w-4 h-4" />}
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </Field>
+
+              <Field label="Mobile Number" required htmlFor="phone">
+                <Input
+                  id="phone"
+                  type="tel"
+                  name="phone"
+                  placeholder="9876543210"
+                  prefixText="+91"
+                  leftIcon={<Phone className="w-4 h-4" />}
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </Field>
+
+              <Field label="Password" required hint="At least 6 characters" htmlFor="password">
+                <Input
+                  id="password"
+                  type="password"
+                  name="password"
+                  placeholder="••••••••"
+                  leftIcon={<Lock className="w-4 h-4" />}
+                  value={formData.password}
+                  onChange={handleChange}
+                  minLength={6}
+                  required
+                />
+              </Field>
+
+              <div className="pt-2">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  loading={loading || success}
+                  className="w-full"
+                  iconRight={<ArrowRight className="w-4 h-4" />}
+                >
+                  Create account
+                </Button>
+              </div>
+
+              <div className="pt-4 border-t border-border text-center text-xs text-text-muted">
+                Already have an account?{" "}
+                <Link href="/login" className="text-primary font-semibold hover:underline">
+                  Sign in
+                </Link>
+              </div>
+            </form>
+
           </div>
-        </form>
+        </div>
 
       </div>
     </div>

@@ -4,7 +4,11 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Phone, Lock, ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import { Phone, Lock, ArrowRight, ShieldCheck, Check } from "lucide-react";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Field } from "@repo/ui/field";
+import { Alert } from "@repo/ui/toast";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,7 +32,7 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Invalid phone number or password");
+      setError("Invalid phone number or password. Please verify your credentials.");
       return;
     }
 
@@ -37,114 +41,134 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#090d16] px-4 py-8 font-sans selection:bg-blue-500 selection:text-white">
-      <div className="w-full max-w-md overflow-hidden rounded-3xl bg-[#0f172a] shadow-2xl border border-slate-800">
+    <div className="min-h-screen bg-bg flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans">
+      <div className="w-full max-w-4xl bg-surface border border-border rounded-lg shadow-soft overflow-hidden grid lg:grid-cols-12 min-h-[560px]">
         
-        {/* Header / Brand Banner */}
-        <div className="bg-slate-900 px-8 pt-8 pb-6 border-b border-slate-800 text-white">
-          <div className="flex items-center justify-between mb-3">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5">
-                <div className="w-full h-full bg-[#090d16] rounded-[9px] flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-cyan-400" />
-                </div>
+        {/* Left Side: Calm Ink-Green Brand Panel */}
+        <div className="lg:col-span-5 bg-[#0F3D33] text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+          {/* Subtle line-grid pattern */}
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, #FFFFFF 1px, transparent 1px), linear-gradient(to bottom, #FFFFFF 1px, transparent 1px)",
+              backgroundSize: "28px 28px",
+            }}
+          />
+
+          <div className="relative z-10 space-y-6">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-sm bg-accent text-accent-fg flex items-center justify-center font-bold text-sm tracking-tight shadow-xs select-none">
+                P
               </div>
-              <span className="text-xl font-extrabold text-white tracking-tight">PayPulse</span>
+              <span className="text-base font-bold tracking-tight text-white">PayPulse</span>
             </Link>
-            <span className="flex items-center gap-1 text-[11px] bg-blue-500/10 text-cyan-300 px-2.5 py-1 rounded-full border border-blue-500/20">
-              <ShieldCheck className="w-3.5 h-3.5" /> User Sign In
-            </span>
+
+            <div className="space-y-2 pt-8">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-white/10 text-accent text-[11px] font-medium border border-white/15">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Personal Account</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-snug">
+                Every rupee, quietly accounted for.
+              </h1>
+              <p className="text-xs text-white/70 leading-relaxed pt-1">
+                Precision peer-to-peer transfers backed by continuous double-entry ledger verification.
+              </p>
+            </div>
           </div>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Enter your credentials to access your personal digital wallet & dashboard.
-          </p>
+
+          {/* Trust bullets */}
+          <div className="relative z-10 pt-8 border-t border-white/10 space-y-2 text-xs text-white/80">
+            <div className="flex items-center gap-2">
+              <Check className="w-3.5 h-3.5 text-accent" />
+              <span>Instant wallet-to-wallet settlement</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-3.5 h-3.5 text-accent" />
+              <span>Protected NetBanking simulation</span>
+            </div>
+          </div>
         </div>
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="p-8 space-y-5">
-          {error && (
-            <div className="p-3 text-xs font-semibold text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-xl">
-              ⚠️ {error}
+        {/* Right Side: Clean Authentication Form */}
+        <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-center bg-surface">
+          <div className="max-w-sm w-full mx-auto space-y-6">
+            
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-text">Sign in to your wallet</h2>
+              <p className="text-xs text-text-muted mt-1">
+                Enter your mobile number and password to access your dashboard.
+              </p>
             </div>
-          )}
 
-          {/* Phone Number Field */}
-          <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-              Phone Number
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <Phone className="w-4 h-4" />
-              </div>
-              <input
-                type="tel"
-                placeholder="Enter 10-digit mobile number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                className="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 transition-all text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Password Field */}
-          <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-              Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <Lock className="w-4 h-4" />
-              </div>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 transition-all text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-2 py-3.5 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer text-sm"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Authenticating...
-              </span>
-            ) : (
-              <>
-                Login to Dashboard <ArrowRight className="w-4 h-4" />
-              </>
+            {error && (
+              <Alert variant="danger" onDismiss={() => setError("")}>
+                {error}
+              </Alert>
             )}
-          </button>
 
-          {/* Link to Signup */}
-          <div className="pt-4 text-center text-xs text-slate-400 border-t border-slate-800/80">
-            Don't have a personal account?{" "}
-            <Link href="/signup" className="font-semibold text-cyan-400 hover:underline">
-              Create Personal Account
-            </Link>
-          </div>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <Field label="Mobile Number" required htmlFor="phone">
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="9876543210"
+                  prefixText="+91"
+                  leftIcon={<Phone className="w-4 h-4" />}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </Field>
 
-          {/* Cross link to Merchant Login */}
-          <div className="pt-1 text-center text-[11px] text-slate-400">
-            Are you a merchant?{" "}
-            <a href="http://localhost:3002/login" className="font-semibold text-indigo-400 hover:underline">
-              Merchant Login
-            </a>
+              <Field label="Password" required htmlFor="password">
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  leftIcon={<Lock className="w-4 h-4" />}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </Field>
+
+              <div className="pt-2">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  loading={loading}
+                  className="w-full"
+                  iconRight={<ArrowRight className="w-4 h-4" />}
+                >
+                  Sign in
+                </Button>
+              </div>
+
+              <div className="pt-4 border-t border-border flex flex-col gap-2 text-center text-xs text-text-muted">
+                <p>
+                  Don&apos;t have a personal account?{" "}
+                  <Link href="/signup" className="text-primary font-semibold hover:underline">
+                    Create account
+                  </Link>
+                </p>
+
+                <p className="text-[11px] text-text-faint">
+                  Are you a business merchant?{" "}
+                  <a
+                    href="http://localhost:3002/login"
+                    className="text-text-muted hover:text-text font-medium underline"
+                  >
+                    Merchant login
+                  </a>
+                </p>
+              </div>
+            </form>
+
           </div>
-        </form>
+        </div>
 
       </div>
     </div>
