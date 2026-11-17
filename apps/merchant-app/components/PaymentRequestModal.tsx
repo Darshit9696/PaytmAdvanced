@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { X, Copy, Check, QrCode, ShieldCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { Amount, Button } from "@repo/ui";
 
 interface PaymentRequestModalProps {
   isOpen: boolean;
@@ -21,13 +22,13 @@ export function PaymentRequestModal({
   description,
   businessName,
   paymentUrl,
-  transactionId
+  transactionId,
 }: PaymentRequestModalProps) {
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
 
-  const displayAmount = Number(amount) > 0 ? Number(amount).toFixed(2) : "0.00";
+  const displayAmount = Number(amount) > 0 ? Number(amount) : 0;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(paymentUrl);
@@ -36,91 +37,93 @@ export function PaymentRequestModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-[#0f172a] border border-slate-800 rounded-3xl shadow-2xl overflow-hidden relative space-y-6 p-6 sm:p-8">
-        
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs font-sans">
+      <div className="w-full max-w-md bg-surface border border-border rounded-[16px] shadow-lg overflow-hidden relative space-y-5 p-6 sm:p-7">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div className="flex items-center justify-between border-b border-border pb-3.5">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center">
-              <QrCode className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
+              <QrCode className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Payment Request</h3>
-              <p className="text-xs text-slate-400">Ready for customer payment</p>
+              <h3 className="text-sm font-semibold text-text">Customer Payment Request</h3>
+              <p className="text-[11px] text-text-muted">Dynamic point-of-sale checkout</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+            className="p-1.5 text-text-muted hover:text-text hover:bg-surface-subtle rounded-[6px] transition-colors cursor-pointer border border-border shadow-xs"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Business & Amount Info */}
-        <div className="text-center space-y-2">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{businessName}</p>
-          <div className="text-4xl font-extrabold text-white font-mono tracking-tight">
-            ₹{displayAmount}
+        <div className="text-center space-y-1.5">
+          <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">{businessName}</p>
+          <div>
+            <Amount value={displayAmount} size="3xl" weight="semibold" />
           </div>
           {description && (
-            <p className="text-xs text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full inline-block font-medium">
+            <p className="text-xs text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-md inline-block font-medium">
               {description}
             </p>
           )}
         </div>
 
         {/* Real QR Code Graphic */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col items-center justify-center space-y-3">
-          <div className="w-44 h-44 bg-white p-3 rounded-2xl shadow-md flex items-center justify-center relative">
+        <div className="bg-surface-subtle border border-border rounded-[10px] p-5 flex flex-col items-center justify-center space-y-3">
+          <div className="w-40 h-40 bg-white p-2.5 rounded-[8px] border border-border shadow-xs flex items-center justify-center">
             <QRCodeSVG
               value={paymentUrl}
-              size={152}
+              size={144}
               level="M"
               className="w-full h-full"
             />
           </div>
 
-          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-mono">
+          <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-mono">
             <span>Payment ID:</span>
-            <span className="font-bold text-slate-200">{transactionId}</span>
+            <span className="font-semibold text-text">{transactionId}</span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="space-y-2.5">
-          <button
+        <div className="space-y-2">
+          <Button
+            variant="primary"
+            size="md"
             onClick={handleCopy}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+            className="w-full"
           >
             {copied ? (
               <>
-                <Check className="w-4 h-4 text-emerald-300" />
+                <Check className="w-4 h-4 text-emerald-300 mr-1.5" />
                 <span>Link Copied to Clipboard!</span>
               </>
             ) : (
               <>
-                <Copy className="w-4 h-4" />
-                <span>Copy Payment Link</span>
+                <Copy className="w-4 h-4 mr-1.5" />
+                <span>Copy Customer Checkout Link</span>
               </>
             )}
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={onClose}
-            className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-2.5 px-4 rounded-xl border border-slate-800 transition-all text-xs cursor-pointer"
+            className="w-full"
           >
             Close Preview
-          </button>
+          </Button>
         </div>
 
         {/* Security Note */}
-        <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-400 font-medium">
+        <div className="flex items-center justify-center gap-1.5 text-[11px] text-success font-medium">
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>PayPulse Merchant Verified Request</span>
+          <span>Real-time double-entry settlement upon scan</span>
         </div>
-
       </div>
     </div>
   );

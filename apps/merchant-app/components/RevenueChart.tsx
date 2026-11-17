@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { BarChart3, TrendingUp, TrendingDown, Calendar } from "lucide-react";
+import { Amount } from "@repo/ui";
 
 interface DayData {
   day: string;
@@ -74,108 +75,98 @@ export function RevenueChart() {
   const maxAmount = Math.max(...data.map((d) => d.amount), 1);
 
   return (
-    <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-      
+    <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-5 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-cyan-400 border border-blue-500/30 flex items-center justify-center">
-            <BarChart3 className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
+            <BarChart3 className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-white">Revenue Overview</h3>
-            <p className="text-xs text-slate-400">7-Day Transaction & Sales Velocity</p>
+            <h3 className="text-sm font-semibold text-text">Settlement & Sales Velocity</h3>
+            <p className="text-xs text-text-muted">7-day gross customer transaction volume</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-xs font-semibold">
-          <div className="flex items-center gap-1.5 text-slate-400">
-            <Calendar className="w-3.5 h-3.5" />
-            <span>This Week Total:</span>
-            <span className="text-white font-bold font-mono">
-              {loading ? "..." : `₹${totalWeekly.toLocaleString("en-IN")}`}
-            </span>
+        <div className="flex items-center gap-3 text-xs font-medium">
+          <div className="flex items-center gap-1.5 text-text-muted">
+            <Calendar className="w-3.5 h-3.5 text-text-faint" />
+            <span>7-Day Volume:</span>
+            <Amount value={totalWeekly} size="sm" weight="semibold" />
           </div>
-          {loading ? (
-            <span className="px-2.5 py-1 rounded-full text-[11px] bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1 animate-pulse">
-              <TrendingUp className="w-3 h-3" /> ...
-            </span>
-          ) : changePercentage === null ? (
-            <span className="px-2.5 py-1 rounded-full text-[11px] bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1">
-              —
-            </span>
-          ) : changePercentage > 0 ? (
-            <span className="px-2.5 py-1 rounded-full text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> +{changePercentage}%
-            </span>
-          ) : changePercentage < 0 ? (
-            <span className="px-2.5 py-1 rounded-full text-[11px] bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1">
-              <TrendingDown className="w-3 h-3" /> {changePercentage}%
-            </span>
-          ) : (
-            <span className="px-2.5 py-1 rounded-full text-[11px] bg-slate-500/10 text-slate-400 border border-slate-500/20 flex items-center gap-1">
-              0.0%
+          {changePercentage !== null && (
+            <span
+              className={`px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-medium border flex items-center gap-1 ${
+                changePercentage >= 0
+                  ? "bg-success-subtle/50 text-success border-success/30"
+                  : "bg-danger-subtle/50 text-danger border-danger/30"
+              }`}
+            >
+              {changePercentage >= 0 ? (
+                <TrendingUp className="w-3 h-3" />
+              ) : (
+                <TrendingDown className="w-3 h-3" />
+              )}
+              {changePercentage > 0 ? "+" : ""}
+              {changePercentage}%
             </span>
           )}
         </div>
       </div>
 
-      {/* Visual Bar Chart */}
-      <div className="pt-4 space-y-6">
-        
-        {/* Active Hover Detail Banner */}
-        <div className="h-10 bg-slate-900 border border-slate-800 rounded-xl px-4 flex items-center justify-between text-xs">
-          {activeBar !== null && data[activeBar] ? (
-            <>
-              <span className="text-slate-400">
-                <strong className="text-white">{data[activeBar].day}</strong> Sales Volume:
-              </span>
-              <span className="font-bold text-indigo-400 font-mono">
-                ₹{data[activeBar].amount.toLocaleString("en-IN")} ({data[activeBar].transactions}{" "}
-                {data[activeBar].transactions === 1 ? "payment" : "payments"})
-              </span>
-            </>
-          ) : (
-            <span className="text-slate-400">
-              {loading
-                ? "Loading sales data..."
-                : error
-                ? "Failed to load revenue data"
-                : totalWeekly === 0
-                ? "No sales recorded this week. Hover over any bar to inspect daily sales detail"
-                : "Hover over any bar to inspect daily sales detail"}
+      {/* Active Bar Inspector Banner */}
+      <div className="h-8 bg-surface-subtle border border-border rounded-[6px] px-3 flex items-center justify-between text-xs">
+        {activeBar !== null && data[activeBar] ? (
+          <>
+            <span className="text-text-muted">
+              <strong className="text-text">{data[activeBar].day}</strong> Activity:
             </span>
-          )}
-        </div>
+            <div className="flex items-center gap-3 font-mono font-medium">
+              <span className="text-primary">
+                Volume: <Amount value={data[activeBar].amount} size="xs" weight="semibold" />
+              </span>
+              <span className="text-text-muted text-[11px]">
+                ({data[activeBar].transactions} orders)
+              </span>
+            </div>
+          </>
+        ) : (
+          <span className="text-text-faint text-[11px]">
+            Hover over any day column to inspect gross volume and order counts.
+          </span>
+        )}
+      </div>
 
-        {/* Bars Container */}
-        <div className="h-44 flex items-end justify-between gap-3 sm:gap-6 pt-6 px-2 border-b border-slate-800">
+      {/* Bar Chart Container */}
+      <div className="pt-2">
+        <div className="h-44 flex items-end justify-between gap-2 sm:gap-4 px-2 border-b border-border pb-2">
           {data.map((item, idx) => {
-            const heightPercent = Math.round((item.amount / maxAmount) * 100);
+            const heightPct = Math.round(((item.amount || 0) / maxAmount) * 100);
             const isHovered = activeBar === idx;
 
             return (
               <div
                 key={item.day}
                 onMouseEnter={() => setActiveBar(idx)}
+                onMouseLeave={() => setActiveBar(null)}
                 className="flex-1 flex flex-col items-center gap-2 group cursor-pointer"
               >
-                {/* Bar Element */}
-                <div className="w-full max-w-[40px] bg-slate-900 rounded-t-xl overflow-hidden h-36 flex items-end p-1">
+                <div className="w-full max-w-[42px] bg-surface-subtle rounded-t-[4px] overflow-hidden h-32 flex items-end justify-center p-1 border-x border-t border-border">
                   <div
-                    style={{ height: `${heightPercent}%` }}
-                    className={`w-full rounded-t-lg transition-all duration-300 ${
-                      isHovered
-                        ? "bg-gradient-to-t from-indigo-600 to-purple-500 shadow-lg shadow-indigo-500/30"
-                        : "bg-indigo-600/40 hover:bg-indigo-600/70"
+                    style={{ height: `${Math.max(heightPct, 6)}%` }}
+                    className={`w-full rounded-t-[3px] transition-all duration-200 ${
+                      item.amount > 0
+                        ? isHovered
+                          ? "bg-primary"
+                          : "bg-primary/80 group-hover:bg-primary"
+                        : "bg-border"
                     }`}
                   />
                 </div>
 
-                {/* Day Label */}
                 <span
-                  className={`text-xs font-semibold transition-colors ${
-                    isHovered ? "text-indigo-400 font-bold" : "text-slate-400"
+                  className={`text-[11px] font-mono transition-colors ${
+                    isHovered ? "text-primary font-semibold" : "text-text-muted"
                   }`}
                 >
                   {item.day}
@@ -184,9 +175,7 @@ export function RevenueChart() {
             );
           })}
         </div>
-
       </div>
-
     </div>
   );
 }

@@ -21,35 +21,35 @@ export function StatCard({
   subtitle,
 }: StatCardProps) {
   return (
-    <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-sm hover:border-slate-700 transition-all flex flex-col justify-between space-y-3">
+    <div className="bg-surface border border-border rounded-[10px] p-5 shadow-xs hover:border-border-strong transition-all flex flex-col justify-between space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
           {title}
         </span>
-        <div className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-indigo-400">
+        <div className="w-8 h-8 rounded-[6px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
           {icon}
         </div>
       </div>
 
       <div className="space-y-1">
-        <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono tracking-tight">
+        <div className="text-2xl sm:text-3xl font-semibold text-text font-mono tracking-tight tabular-nums">
           {value}
         </div>
         {change && (
-          <div className="flex items-center gap-1.5 text-xs font-semibold">
+          <div className="flex items-center gap-1.5 text-xs font-medium">
             {isPositive ? (
-              <span className="text-emerald-400 flex items-center gap-1">
+              <span className="text-success flex items-center gap-1">
                 <TrendingUp className="w-3.5 h-3.5" /> {change}
               </span>
             ) : (
-              <span className="text-rose-400 flex items-center gap-1">
+              <span className="text-danger flex items-center gap-1">
                 <TrendingDown className="w-3.5 h-3.5" /> {change}
               </span>
             )}
           </div>
         )}
         {subtitle && (
-          <p className="text-[11px] text-slate-400 font-medium">{subtitle}</p>
+          <p className="text-[11px] text-text-faint font-medium font-sans">{subtitle}</p>
         )}
       </div>
     </div>

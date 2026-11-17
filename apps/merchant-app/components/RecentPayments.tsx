@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { History, CheckCircle2, Clock, XCircle, ExternalLink, RefreshCw } from "lucide-react";
+import { History, CheckCircle2, Clock, XCircle, RefreshCw, FileText } from "lucide-react";
+import { Amount } from "@repo/ui";
 
 interface DbPayment {
   transactionId: string;
@@ -17,7 +18,6 @@ export function RecentPayments() {
   const [payments, setPayments] = useState<DbPayment[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"All" | "Success" | "Pending">("All");
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const fetchPayments = async () => {
     try {
@@ -41,34 +41,12 @@ export function RecentPayments() {
   const formatPaymentDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
-      const now = new Date();
-      const isToday =
-        date.getDate() === now.getDate() &&
-        date.getMonth() === now.getMonth() &&
-        date.getFullYear() === now.getFullYear();
-
-      const timeStr = date.toLocaleTimeString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      if (isToday) {
-        return `Today, ${timeStr}`;
-      }
-
-      const isYesterday =
-        new Date(now.setDate(now.getDate() - 1)).toDateString() === date.toDateString();
-      if (isYesterday) {
-        return `Yesterday, ${timeStr}`;
-      }
-
       return date.toLocaleDateString("en-IN", {
         day: "2-digit",
         month: "short",
+        year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-        hour12: true,
       });
     } catch {
       return dateStr;
@@ -82,122 +60,114 @@ export function RecentPayments() {
     return true;
   });
 
-  const handleViewAll = () => {
-    setToastMessage(`Total store customer transactions recorded: ${payments.length}`);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
-
   return (
-    <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+    <div className="bg-surface border border-border rounded-[10px] p-6 shadow-xs space-y-5 font-sans">
       {/* Header & Filter Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center">
-            <History className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-[6px] bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
+            <History className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-white">Recent Payments</h3>
-            <p className="text-xs text-slate-400">Live store customer transaction activity</p>
+            <h3 className="text-sm font-semibold text-text">Customer Payment Log</h3>
+            <p className="text-xs text-text-muted">Live incoming customer checkout activity</p>
           </div>
         </div>
 
-        {/* Tab Filters & Refresh */}
+        {/* Tab Filters */}
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+          <div className="flex bg-surface-subtle p-0.5 rounded-[6px] border border-border text-xs">
             {(["All", "Success", "Pending"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-[4px] font-medium transition-all cursor-pointer ${
                   filter === tab
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-surface text-text shadow-xs border border-border font-semibold"
+                    : "text-text-muted hover:text-text"
                 }`}
               >
-                {tab}
+                {tab === "All" ? "All Orders" : tab}
               </button>
             ))}
           </div>
 
           <button
             onClick={fetchPayments}
-            className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            title="Refresh payment logs"
+            className="p-1.5 rounded-[6px] bg-surface-subtle hover:bg-surface text-text-muted hover:text-text border border-border transition-colors cursor-pointer shadow-xs"
+            title="Refresh payments"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-indigo-400" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
           </button>
         </div>
       </div>
 
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold p-3 rounded-xl flex items-center justify-between animate-in fade-in duration-200">
-          <span>ℹ️ {toastMessage}</span>
-        </div>
-      )}
-
-      {/* Payment Table Container */}
-      <div className="overflow-x-auto">
+      {/* Table Container */}
+      <div className="overflow-x-auto border border-border rounded-[8px]">
         <table className="w-full text-left text-xs">
-          <thead>
-            <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
-              <th className="pb-3 px-2">Customer</th>
-              <th className="pb-3 px-2">Transaction ID</th>
-              <th className="pb-3 px-2">Date &amp; Time</th>
-              <th className="pb-3 px-2 text-right">Amount</th>
-              <th className="pb-3 px-2 text-center">Status</th>
+          <thead className="bg-surface-subtle text-text-muted uppercase text-[10px] tracking-wider border-b border-border">
+            <tr>
+              <th className="py-2.5 px-3.5">Transaction ID</th>
+              <th className="py-2.5 px-3.5">Customer / Payee</th>
+              <th className="py-2.5 px-3.5">Date & Time</th>
+              <th className="py-2.5 px-3.5">Amount</th>
+              <th className="py-2.5 px-3.5">Settlement Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/80">
+          <tbody className="divide-y divide-border">
             {loading ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-slate-400">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-                    <span>Loading customer transactions...</span>
-                  </div>
+                <td colSpan={5} className="py-8 text-center text-text-muted">
+                  <RefreshCw className="w-4 h-4 animate-spin mx-auto mb-1.5 text-primary" />
+                  Loading payment activity...
                 </td>
               </tr>
             ) : filteredPayments.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-slate-400">
-                  No {filter !== "All" ? filter.toLowerCase() : ""} transactions found.
+                <td colSpan={5} className="py-8 text-center text-text-muted">
+                  No transactions recorded matching this filter.
                 </td>
               </tr>
             ) : (
-              filteredPayments.map((payment) => {
-                const customerName = payment.customer?.name || "Store Customer";
+              filteredPayments.map((p) => {
+                const isSuccess = p.status === "SUCCESS";
+                const isPending = p.status === "PENDING";
+
                 return (
-                  <tr key={payment.transactionId} className="hover:bg-slate-900/60 transition-colors">
-                    <td className="py-3.5 px-2 font-bold text-slate-100 flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center font-bold text-xs uppercase">
-                        {customerName[0] || "C"}
-                      </div>
-                      <span>{customerName}</span>
+                  <tr key={p.transactionId} className="hover:bg-surface-subtle transition-colors">
+                    <td className="py-3 px-3.5 font-mono text-[11px] text-text-muted">
+                      {p.transactionId.length > 18
+                        ? `${p.transactionId.slice(0, 16)}...`
+                        : p.transactionId}
                     </td>
-                    <td className="py-3.5 px-2 text-slate-400 font-mono">
-                      {payment.transactionId.slice(0, 16)}...
+
+                    <td className="py-3 px-3.5 font-medium text-text">
+                      {p.customer?.name || "Direct Checkout User"}
                     </td>
-                    <td className="py-3.5 px-2 text-slate-400">
-                      {formatPaymentDate(payment.createdAt)}
+
+                    <td className="py-3 px-3.5 font-mono text-text-muted text-[11px]">
+                      {formatPaymentDate(p.createdAt)}
                     </td>
-                    <td className="py-3.5 px-2 text-right font-extrabold text-white font-mono">
-                      ₹{payment.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+
+                    <td className="py-3 px-3.5">
+                      <Amount value={p.amount} size="sm" weight="semibold" />
                     </td>
-                    <td className="py-3.5 px-2 text-center">
-                      {payment.status === "SUCCESS" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                          <CheckCircle2 className="w-3 h-3" /> Success
-                        </span>
-                      ) : payment.status === "PENDING" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                          <Clock className="w-3 h-3" /> Pending
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                          <XCircle className="w-3 h-3" /> Failed
-                        </span>
-                      )}
+
+                    <td className="py-3 px-3.5">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[10px] font-medium font-mono uppercase border ${
+                          isSuccess
+                            ? "bg-success-subtle/50 text-success border-success/30"
+                            : isPending
+                            ? "bg-warning-subtle/50 text-warning border-warning/30"
+                            : "bg-danger-subtle/50 text-danger border-danger/30"
+                        }`}
+                      >
+                        {isSuccess && <CheckCircle2 className="w-3 h-3" />}
+                        {isPending && <Clock className="w-3 h-3" />}
+                        {!isSuccess && !isPending && <XCircle className="w-3 h-3" />}
+                        {p.status}
+                      </span>
                     </td>
                   </tr>
                 );
@@ -207,15 +177,9 @@ export function RecentPayments() {
         </table>
       </div>
 
-      {/* Footer Action */}
-      <div className="pt-2 flex justify-center">
-        <button
-          onClick={handleViewAll}
-          className="bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white font-bold py-2.5 px-6 rounded-xl border border-slate-800 transition-all text-xs flex items-center gap-2 cursor-pointer"
-        >
-          <span>View All Payments ({payments.length})</span>
-          <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
-        </button>
+      <div className="flex items-center justify-between text-xs text-text-faint pt-1">
+        <span>Showing {filteredPayments.length} transactions</span>
+        <span>Automatic real-time settlement</span>
       </div>
     </div>
   );

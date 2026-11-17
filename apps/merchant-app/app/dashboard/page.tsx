@@ -15,11 +15,20 @@ import {
   DollarSign,
   CheckCircle2,
   Clock,
-  CreditCard
+  CreditCard,
+  LayoutDashboard,
+  QrCode,
+  BarChart3,
+  History,
+  Menu,
+  X,
+  ArrowUpRight,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import { Amount } from "@repo/ui";
 
-// Custom UI Components
+// Reusable Components
 import { StatCard } from "@/components/StatCard";
 import { ReceivePaymentCard } from "@/components/ReceivePaymentCard";
 import { MerchantQRCard } from "@/components/MerchantQRCard";
@@ -62,6 +71,7 @@ export default function MerchantDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -112,10 +122,10 @@ export default function MerchantDashboardPage() {
 
   if (status === "loading" || (loading && !merchant)) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-[#090d16] font-sans">
-        <div className="flex flex-col items-center gap-3 text-slate-400">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-sm font-semibold">Loading Merchant Portal...</p>
+      <div className="flex h-screen w-full items-center justify-center bg-bg font-sans">
+        <div className="flex flex-col items-center gap-3 text-text-muted">
+          <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs font-semibold">Loading Merchant Console...</p>
         </div>
       </div>
     );
@@ -125,103 +135,245 @@ export default function MerchantDashboardPage() {
     return null;
   }
 
-  const displayBusinessName = merchant?.businessName || session.user.businessName || "Jack and Johns Stores";
+  const displayBusinessName = merchant?.businessName || session.user.businessName || "Acme Retail Store";
   const displayOwnerName = merchant?.ownerName || session.user.ownerName || session.user.name || "Owner";
   const displayEmail = merchant?.email || session.user.email || "merchant@business.com";
   const displayBalance = merchant?.balance ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 font-sans flex flex-col selection:bg-indigo-500 selection:text-white">
-
-      {/* Top Navbar */}
-      <header className="bg-[#0b101d] border-b border-slate-800/80 py-4 px-6 md:px-12 flex items-center justify-between shadow-lg sticky top-0 z-40">
-        <div className="flex items-center gap-3">
-          <Link href="http://localhost:3000" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 p-0.5 shadow-md shadow-indigo-500/20">
-              <div className="w-full h-full bg-[#090d16] rounded-[10px] flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-indigo-400" />
+    <div className="min-h-screen bg-bg text-text font-sans flex flex-col md:flex-row">
+      {/* --------------------------------------------------------------------- */}
+      {/* 1. Dark Ink-Green Sidebar (#0F3D33) for Desktop                       */}
+      {/* --------------------------------------------------------------------- */}
+      <aside className="hidden md:flex flex-col w-64 bg-primary text-white shrink-0 sticky top-0 h-screen border-r border-[#1F4D43] select-none justify-between p-5">
+        <div className="space-y-6">
+          {/* Brand Logo */}
+          <div className="flex items-center gap-3 pb-4 border-b border-white/10">
+            <div className="w-9 h-9 rounded-[8px] bg-white/10 border border-white/15 flex items-center justify-center text-accent">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-sm tracking-tight text-white">PayPulse</span>
+                <span className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.2 rounded border border-accent/40 font-mono">
+                  BIZ
+                </span>
               </div>
+              <p className="text-[11px] text-white/60">Merchant Console</p>
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-extrabold tracking-tight text-white flex items-center gap-2">
-                PayPulse <span className="text-indigo-400 text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20">Merchant</span>
-              </span>
-              <span className="text-[10px] font-semibold text-slate-400">
-                Merchant Business Console
-              </span>
-            </div>
-          </Link>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="space-y-1">
+            <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wider block px-2 mb-2">
+              Management
+            </span>
+            <a
+              href="#overview"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-xs font-medium bg-white/15 text-white shadow-xs"
+            >
+              <LayoutDashboard className="w-4 h-4 text-accent" />
+              <span>Overview</span>
+            </a>
+            <a
+              href="#charge"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <QrCode className="w-4 h-4 text-white/70" />
+              <span>Charge Terminal</span>
+            </a>
+            <a
+              href="#analytics"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <BarChart3 className="w-4 h-4 text-white/70" />
+              <span>Sales Velocity</span>
+            </a>
+            <a
+              href="#transactions"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <History className="w-4 h-4 text-white/70" />
+              <span>Customer Log</span>
+            </a>
+          </nav>
+
+          {/* Switch to Personal App Link */}
+          <div className="pt-4 border-t border-white/10">
+            <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wider block px-2 mb-2">
+              Cross-App
+            </span>
+            <a
+              href="http://localhost:3000/dashboard"
+              className="flex items-center justify-between px-3 py-2 rounded-[6px] text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors border border-white/10"
+            >
+              <span>Personal Wallet</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-accent" />
+            </a>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="hidden sm:flex items-center gap-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-colors cursor-pointer"
-            title="Refresh merchant balance"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-indigo-400 ${refreshing ? "animate-spin" : ""}`} />
-            <span>Refresh</span>
-          </button>
+        {/* Bottom Profile Pill */}
+        <div className="pt-4 border-t border-white/10 space-y-3">
+          <div className="flex items-center gap-2.5 px-1">
+            <div className="w-8 h-8 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-accent font-semibold text-xs uppercase">
+              {displayBusinessName[0]}
+            </div>
+            <div className="truncate flex-1">
+              <p className="text-xs font-medium text-white truncate">{displayBusinessName}</p>
+              <p className="text-[10px] text-white/60 truncate">{displayOwnerName}</p>
+            </div>
+          </div>
 
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="flex items-center gap-2 text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3.5 py-2 rounded-xl border border-rose-500/20 transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-medium bg-white/10 hover:bg-white/15 text-white/80 transition-colors cursor-pointer"
           >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
+            <LogOut className="w-3.5 h-3.5 text-danger" />
+            <span>Sign Out</span>
           </button>
         </div>
-      </header>
+      </aside>
 
-      {/* Main Content Layout */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 md:p-8 space-y-6">
-
-        {/* 1. Merchant Header & Balance Summary Card */}
-        <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full font-semibold border border-emerald-500/20">
-                <ShieldCheck className="w-3.5 h-3.5" /> Merchant Account Verified
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs bg-indigo-500/10 text-indigo-300 px-3 py-1 rounded-full font-semibold border border-indigo-500/20">
-                <CreditCard className="w-3.5 h-3.5" /> Payments Enabled
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs bg-blue-500/10 text-cyan-300 px-3 py-1 rounded-full font-semibold border border-blue-500/20">
-                Account Status: Active
-              </span>
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">{displayBusinessName}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-indigo-400" /> Owner: <strong className="text-slate-200">{displayOwnerName}</strong>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-indigo-400" /> Email: <strong className="text-slate-200">{displayEmail}</strong>
-              </span>
-            </div>
+      {/* --------------------------------------------------------------------- */}
+      {/* 2. Mobile Top Bar with Collapsible Drawer                            */}
+      {/* --------------------------------------------------------------------- */}
+      <header className="md:hidden bg-primary text-white p-4 flex items-center justify-between sticky top-0 z-40 shadow-xs border-b border-[#1F4D43]">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-[6px] bg-white/10 flex items-center justify-center text-accent">
+            <Building2 className="w-4 h-4" />
           </div>
-
-          {/* Merchant Balance Metrics Box */}
-          <div className="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 min-w-[260px] flex flex-col justify-between">
-            <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-              <span className="font-bold uppercase tracking-wider">Merchant Balance</span>
-              <Wallet className="w-4 h-4 text-indigo-400" />
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono">
-              ₹{displayBalance.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </div>
-            <p className="text-[11px] text-emerald-400 mt-1 font-semibold flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5" /> Available for instant bank payout
-            </p>
+          <div>
+            <span className="font-semibold text-sm tracking-tight">PayPulse Business</span>
+            <span className="text-[10px] text-white/60 block -mt-0.5">{displayBusinessName}</span>
           </div>
         </div>
 
-        {/* 2. Overview / KPI Cards Grid (4 Compact Stat Cards) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="p-1.5 rounded-[6px] bg-white/10 text-white cursor-pointer"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </header>
+
+      {/* Mobile Drawer Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-primary text-white p-4 space-y-3 border-b border-[#1F4D43] animate-in fade-in duration-150">
+          <nav className="space-y-1">
+            <a
+              href="#overview"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-xs font-medium bg-white/15 text-white"
+            >
+              <LayoutDashboard className="w-4 h-4 text-accent" />
+              <span>Overview</span>
+            </a>
+            <a
+              href="#charge"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-xs font-medium text-white/70"
+            >
+              <QrCode className="w-4 h-4" />
+              <span>Charge Terminal</span>
+            </a>
+            <a
+              href="http://localhost:3000/dashboard"
+              className="flex items-center justify-between px-3 py-2 rounded-[6px] text-xs font-medium text-accent"
+            >
+              <span>Personal Wallet</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
+          </nav>
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-[6px] text-xs font-medium bg-white/10 text-white"
+          >
+            <LogOut className="w-3.5 h-3.5 text-danger" />
+            <span>Sign Out</span>
+          </button>
+        </div>
+      )}
+
+      {/* --------------------------------------------------------------------- */}
+      {/* 3. Main Light Content Area                                           */}
+      {/* --------------------------------------------------------------------- */}
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-6xl w-full mx-auto">
+        {/* Top Header & Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-text">
+              Store Settlement Console
+            </h1>
+            <p className="text-xs text-text-muted mt-0.5">
+              Live incoming customer transactions, dynamic terminal charges, and balance settlements.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5 self-start sm:self-auto">
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="flex items-center gap-1.5 text-xs bg-surface hover:bg-surface-subtle text-text px-3 py-1.5 rounded-[6px] border border-border transition-colors cursor-pointer shadow-xs"
+              title="Refresh merchant balance"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 text-primary ${refreshing ? "animate-spin" : ""}`} />
+              <span>Refresh</span>
+            </button>
+
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-success-subtle/50 text-success px-2.5 py-1 rounded-[6px] border border-success/30 font-mono">
+              <ShieldCheck className="w-3 h-3" /> TERMINAL_LIVE
+            </span>
+          </div>
+        </div>
+
+        {/* 1. Merchant Balance Hero Card */}
+        <div id="overview" className="bg-surface border border-border rounded-[10px] p-6 shadow-xs relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
+                  Merchant Account
+                </span>
+                <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-[4px] border border-primary/20 font-mono font-medium">
+                  Verified Settlement Account
+                </span>
+              </div>
+              <h2 className="text-2xl font-semibold tracking-tight text-text">
+                {displayBusinessName}
+              </h2>
+              <div className="flex flex-wrap items-center gap-4 text-xs text-text-muted">
+                <span className="flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-text-faint" /> Owner: <strong className="text-text font-medium">{displayOwnerName}</strong>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5 text-text-faint" /> Email: <strong className="text-text font-medium">{displayEmail}</strong>
+                </span>
+              </div>
+            </div>
+
+            {/* Balance Box */}
+            <div className="bg-surface-subtle rounded-[8px] p-5 border border-border min-w-[240px] flex flex-col justify-between">
+              <div className="flex items-center justify-between text-xs text-text-muted mb-1.5">
+                <span className="font-semibold uppercase tracking-wider text-[11px]">Settled Balance</span>
+                <Wallet className="w-3.5 h-3.5 text-primary" />
+              </div>
+              <div>
+                <Amount value={displayBalance} size="3xl" weight="semibold" />
+              </div>
+              <p className="text-[11px] text-success mt-1 font-medium flex items-center gap-1">
+                <TrendingUp className="w-3 h-3" /> Available for automatic payout
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Overview / KPI Strip */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           <StatCard
-            title="Today's Revenue"
+            title="Today's Volume"
             value={stats ? `₹${stats.todayRevenue.amount.toLocaleString("en-IN")}` : "₹0"}
             change={
               stats?.todayRevenue.changePercentage !== null && stats?.todayRevenue.changePercentage !== undefined
@@ -229,7 +381,7 @@ export default function MerchantDashboardPage() {
                 : "— vs yesterday"
             }
             isPositive={(stats?.todayRevenue.changePercentage ?? 0) >= 0}
-            icon={<DollarSign className="w-5 h-5 text-indigo-400" />}
+            icon={<DollarSign className="w-4 h-4 text-primary" />}
           />
           <StatCard
             title="This Month"
@@ -240,25 +392,25 @@ export default function MerchantDashboardPage() {
                 : "— vs last month"
             }
             isPositive={(stats?.thisMonth.changePercentage ?? 0) >= 0}
-            icon={<TrendingUp className="w-5 h-5 text-emerald-400" />}
+            icon={<TrendingUp className="w-4 h-4 text-success" />}
           />
           <StatCard
-            title="Successful Payments"
+            title="Settled Orders"
             value={stats ? stats.successfulPayments.count.toLocaleString() : "0"}
             subtitle={`${stats?.successfulPayments.successRate ?? 100}% processed successfully`}
-            icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />}
+            icon={<CheckCircle2 className="w-4 h-4 text-success" />}
           />
           <StatCard
-            title="Pending Payments"
+            title="Pending Checkouts"
             value={stats ? stats.pendingPayments.count.toLocaleString() : "0"}
-            subtitle="Awaiting customer completion"
+            subtitle="Awaiting customer scan"
             isPositive={false}
-            icon={<Clock className="w-5 h-5 text-amber-400" />}
+            icon={<Clock className="w-4 h-4 text-warning" />}
           />
         </div>
 
-        {/* 3. Middle Grid: Receive Payment UI + My Store QR Card */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        {/* 3. Middle Grid: Charge Terminal + Countertop QR Card */}
+        <div id="charge" className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <ReceivePaymentCard businessName={displayBusinessName} />
           </div>
@@ -267,18 +419,16 @@ export default function MerchantDashboardPage() {
           </div>
         </div>
 
-        {/* 4. Revenue Overview (Analytics Preview Chart) */}
-        <RevenueChart />
+        {/* 4. Sales Velocity Chart */}
+        <div id="analytics">
+          <RevenueChart />
+        </div>
 
         {/* 5. Recent Payments Table */}
-        <RecentPayments />
-
+        <div id="transactions">
+          <RecentPayments />
+        </div>
       </main>
-
-      {/* Footer */}
-      <footer className="w-full bg-[#060910] border-t border-slate-800/80 py-4 px-6 text-center text-xs text-slate-500 mt-auto">
-        <p>© PayPulse Merchant Portal 2026. Business Merchant Platform.</p>
-      </footer>
     </div>
   );
 }
