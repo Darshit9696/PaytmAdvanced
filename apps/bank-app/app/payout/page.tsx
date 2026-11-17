@@ -106,18 +106,18 @@ function PayoutGatewayContent() {
       {/* Top Header */}
       <header className="w-full bg-surface border-b border-border py-4 px-6 md:px-12 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="flex items-center font-bold tracking-tight text-base text-text">
+          <div className="flex items-center font-semibold tracking-tight text-base text-text">
             <span>HDFC Bank</span>
           </div>
           <div className="h-4 w-px bg-border" />
-          <span className="text-[11px] font-mono text-text-muted uppercase tracking-wider">
-            IMPS / NEFT Settlement Gateway
+          <span className="text-[11px] font-mono text-text-muted">
+            IMPS / NEFT settlement gateway
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 text-xs text-text-muted bg-surface-subtle border border-border px-3 py-1 rounded-full">
+        <div className="flex items-center gap-1.5 text-xs text-text-muted">
           <Lock className="w-3.5 h-3.5 text-primary" />
-          <span>Automated Clearing House</span>
+          <span>Automated clearing house</span>
         </div>
       </header>
 
@@ -128,13 +128,13 @@ function PayoutGatewayContent() {
 
           {/* Banner */}
           <div className="bg-surface-subtle border-b border-border p-5 text-center space-y-1">
-            <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
-              Simulated Bank Account Payout
+            <span className="text-xs font-medium text-text-muted block">
+              Simulated bank account payout
             </span>
             <div className="pt-1">
               <Amount value={amountVal} size="3xl" weight="semibold" />
             </div>
-            <p className="text-xs text-text-muted">Crediting HDFC Bank Account from Wallet</p>
+            <p className="text-xs text-text-muted">Crediting HDFC Bank account from wallet</p>
           </div>
 
           {/* Body Content */}
@@ -145,29 +145,29 @@ function PayoutGatewayContent() {
               </div>
             )}
 
-            {/* Account Details Box */}
-            <div className="bg-surface-subtle rounded-[8px] p-4 border border-border space-y-2.5 text-xs">
-              <div className="flex justify-between items-center py-0.5 border-b border-border pb-1.5">
-                <span className="text-text-muted">Beneficiary</span>
-                <span className="font-semibold text-text">{userName}</span>
+            {/* Account Details (Flat definition list, no card-in-card) */}
+            <dl className="divide-y divide-border text-xs">
+              <div className="flex justify-between items-center py-2.5 first:pt-0">
+                <dt className="text-text-muted">Beneficiary</dt>
+                <dd className="font-medium text-text">{userName}</dd>
               </div>
-              <div className="flex justify-between items-center py-0.5 border-b border-border pb-1.5">
-                <span className="text-text-muted">Target Account</span>
-                <span className="font-mono text-text">HDFC {getMaskedAccount(accNumber)}</span>
+              <div className="flex justify-between items-center py-2.5">
+                <dt className="text-text-muted">Target account</dt>
+                <dd className="font-mono text-text">HDFC {getMaskedAccount(accNumber)}</dd>
               </div>
-              <div className="flex justify-between items-center py-0.5 border-b border-border pb-1.5">
-                <span className="text-text-muted">Current Balance</span>
-                <span className="font-mono text-text">
+              <div className="flex justify-between items-center py-2.5">
+                <dt className="text-text-muted">Current balance</dt>
+                <dd className="font-mono text-text">
                   <Amount value={bankBal} size="xs" weight="medium" />
-                </span>
+                </dd>
               </div>
-              <div className="flex justify-between items-center py-0.5">
-                <span className="text-text-muted">Transaction Token</span>
-                <span className="font-mono text-[10px] text-primary truncate max-w-[180px]">
+              <div className="flex justify-between items-center py-2.5 last:pb-0">
+                <dt className="text-text-muted">Transaction token</dt>
+                <dd className="font-mono text-[11px] text-primary truncate max-w-[180px]">
                   {token || "TEST_TOKEN"}
-                </span>
+                </dd>
               </div>
-            </div>
+            </dl>
 
             {/* Stepper Status Alerts */}
             {step === "processing" && (
