@@ -80,8 +80,8 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
         <form onSubmit={handleGenerate} className="space-y-4">
           {/* Amount Field */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-              Charge Amount
+            <label className="text-xs font-medium text-text-muted block">
+              Charge amount
             </label>
             <div className="relative flex items-center bg-surface border border-border rounded-[8px] px-3.5 py-2.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-xs">
               <span className="text-xl font-mono text-text-muted mr-2 font-medium">₹</span>
@@ -120,8 +120,8 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
 
           {/* Optional Item / Note Description */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-              Item or Invoice Description (Optional)
+            <label className="text-xs font-medium text-text-muted block">
+              Item or invoice description (optional)
             </label>
             <input
               type="text"

@@ -105,13 +105,13 @@ export function RecentPayments() {
       {/* Table Container */}
       <div className="overflow-x-auto border border-border rounded-[8px]">
         <table className="w-full text-left text-xs">
-          <thead className="bg-surface-subtle text-text-muted uppercase text-[10px] tracking-wider border-b border-border">
+          <thead className="bg-surface-subtle text-text-muted text-xs font-medium border-b border-border">
             <tr>
               <th className="py-2.5 px-3.5">Transaction ID</th>
-              <th className="py-2.5 px-3.5">Customer / Payee</th>
-              <th className="py-2.5 px-3.5">Date & Time</th>
+              <th className="py-2.5 px-3.5">Customer / payee</th>
+              <th className="py-2.5 px-3.5">Date and time</th>
               <th className="py-2.5 px-3.5">Amount</th>
-              <th className="py-2.5 px-3.5">Settlement Status</th>
+              <th className="py-2.5 px-3.5">Settlement status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -155,7 +155,7 @@ export function RecentPayments() {
 
                     <td className="py-3 px-3.5">
                       <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[10px] font-medium font-mono uppercase border ${
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-xs font-medium font-mono border ${
                           isSuccess
                             ? "bg-success-subtle/50 text-success border-success/30"
                             : isPending

@@ -165,7 +165,7 @@ export default function MerchantDashboardPage() {
 
           {/* Navigation Links */}
           <nav className="space-y-1">
-            <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wider block px-2 mb-2">
+            <span className="text-[11px] font-medium text-white/50 block px-2 mb-2">
               Management
             </span>
             <a
@@ -200,8 +200,8 @@ export default function MerchantDashboardPage() {
 
           {/* Switch to Personal App Link */}
           <div className="pt-4 border-t border-white/10">
-            <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wider block px-2 mb-2">
-              Cross-App
+            <span className="text-[11px] font-medium text-white/50 block px-2 mb-2">
+              Cross-app
             </span>
             <a
               href="http://localhost:3000/dashboard"
@@ -227,7 +227,7 @@ export default function MerchantDashboardPage() {
 
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-medium bg-white/10 hover:bg-white/15 text-white/80 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-medium hover:bg-white/10 text-white/70 hover:text-white transition-colors cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5 text-danger" />
             <span>Sign Out</span>
@@ -298,7 +298,7 @@ export default function MerchantDashboardPage() {
       {/* --------------------------------------------------------------------- */}
       {/* 3. Main Light Content Area                                           */}
       {/* --------------------------------------------------------------------- */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-6xl w-full mx-auto">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-[1400px] w-full">
         {/* Top Header & Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
           <div>
@@ -320,27 +320,18 @@ export default function MerchantDashboardPage() {
               <RefreshCw className={`w-3.5 h-3.5 text-primary ${refreshing ? "animate-spin" : ""}`} />
               <span>Refresh</span>
             </button>
-
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-success-subtle/50 text-success px-2.5 py-1 rounded-[6px] border border-success/30 font-mono">
-              <ShieldCheck className="w-3 h-3" /> TERMINAL_LIVE
-            </span>
           </div>
         </div>
 
-        {/* 1. Merchant Balance Hero Card */}
+        {/* 1. Merchant Balance Hero Card (Flat, no card-in-card) */}
         <div id="overview" className="bg-surface border border-border rounded-[10px] p-6 shadow-xs relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
-                  Merchant Account
-                </span>
-                <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-[4px] border border-primary/20 font-mono font-medium">
-                  Verified Settlement Account
-                </span>
-              </div>
+              <span className="text-xs font-medium text-text-muted block">
+                Merchant account
+              </span>
               <h2 className="text-2xl font-semibold tracking-tight text-text">
                 {displayBusinessName}
               </h2>
@@ -354,10 +345,10 @@ export default function MerchantDashboardPage() {
               </div>
             </div>
 
-            {/* Balance Box */}
-            <div className="bg-surface-subtle rounded-[8px] p-5 border border-border min-w-[240px] flex flex-col justify-between">
+            {/* Balance Column (Flat border-l, no nested box) */}
+            <div className="flex flex-col justify-between md:border-l md:border-border md:pl-6 min-w-[240px]">
               <div className="flex items-center justify-between text-xs text-text-muted mb-1.5">
-                <span className="font-semibold uppercase tracking-wider text-[11px]">Settled Balance</span>
+                <span className="font-medium text-xs">Settled balance</span>
                 <Wallet className="w-3.5 h-3.5 text-primary" />
               </div>
               <div>
