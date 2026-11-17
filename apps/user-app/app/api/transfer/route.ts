@@ -209,22 +209,34 @@ export const POST = async (request: Request) => {
             }
 
             // create the record for the receiver
-            await tx.notification.createMany({
-                data: [
-                    {
-                        userId: Number(receiverId),
-                        title: "Payment Received",
-                        type: "TRANSFER_RECEIVED",
-                        message: `You have successfully received ₹${amount.toFixed(2)} from ${sender.name}`,
-                    },
-                    {
-                        userId: Number(senderId),
-                        title: "Transfer Successful",
-                        type: "TRANSFER_SENT",
-                        message: `You have successfully sent ₹${amount.toFixed(2)} to ${receiver.name}`,
-                    }
-                ]
-            });
+            // await tx.notification.createMany({
+            //     data: [
+            //         {
+            //             userId: Number(receiverId),
+            //             title: "Payment Received",
+            //             type: "TRANSFER_RECEIVED",
+            //             message: `You have successfully received ₹${amount.toFixed(2)} from ${sender.name}`,
+            //         },
+            //         {
+            //             userId: Number(senderId),
+            //             title: "Transfer Successful",
+            //             type: "TRANSFER_SENT",
+            //             message: `You have successfully sent ₹${amount.toFixed(2)} to ${receiver.name}`,
+            //         }
+            //     ]
+            // });
+            
+            await tx.outBox.create({
+                data : {
+                    type : "TRANSFER_COMPLETED",
+                    payLoad : JSON.stringify({
+                        transactionId : txn.id,
+                        senderId : sId,
+                        receiverId: rId,
+                        amount,
+                    })
+                }
+            })
 
             return txn;
         }, {

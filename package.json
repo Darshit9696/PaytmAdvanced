@@ -28,6 +28,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "@tailwindcss/postcss": "^4.3.2"
+    "@tailwindcss/postcss": "^4.3.2",
+    "bullmq": "^6.7.2",
+    "ioredis": "^6.0.0"
   }
 }

@@ -7,9 +7,9 @@ export const POST = async (request:NextRequest) => {
 
     
     const transaction = await prisma.onRampTransaction.findUnique({
-    where : {
-        token,
-    }
+        where : {
+            token,
+        }
     })
 
     if (!transaction || transaction.status !== "Success") {

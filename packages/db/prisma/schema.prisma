@@ -37,18 +37,20 @@ model User {
 }
 
 model Notification {
-  id Int @id@default(autoincrement())
-  userId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  type NotificationType
-  title String
-  message String
-  
-  isRead Boolean @default(false)
+  eventId   String?
 
+  type      NotificationType
+  title     String
+  message   String
+
+  isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
+  @@unique([eventId, userId])
   @@index([userId])
 }
 
@@ -129,6 +131,19 @@ model LedgerEntry {
 
   @@unique([transactionId, walletId])
   @@map("ledger_entries")
+}
+
+model OutBox {
+  id String @id @default(cuid())
+
+  type String
+  payLoad String
+  createdAt DateTime @default(now())
+  publishedAt DateTime?
+  completedAt DateTime?
+
+  @@index([publishedAt, createdAt])
+  @@map("outbox_events")
 }
 
 

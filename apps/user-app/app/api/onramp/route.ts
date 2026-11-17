@@ -19,7 +19,7 @@ import { prisma } from "@repo/db/client";
 // Generate UUID token
 //         │
 //         ▼
-// Insert Processing transaction
+// Insert Processing transaction    
 //         │
 //         ▼
 // Return token + redirect URL

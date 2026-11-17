@@ -21,7 +21,7 @@ export const GET = async (request: NextRequest) => {
                 select: {
                     name: true,
                     wallet: {
-                        select: {
+                        select:  {
                             balance: true,
                         }
                     },

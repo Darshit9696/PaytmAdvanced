@@ -1,6 +1,5 @@
 {
   "name": "user-app",
-  "@repo/db": "*",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@repo/db": "*",
     "axios": "^1.19.0",
     "bcrypt": "^6.0.0",
     "html5-qrcode": "^2.3.8",
