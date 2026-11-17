@@ -4,7 +4,7 @@
    ========================================================================== */
 
 :root {
-  /* Warm stone neutrals */
+  /* Warm stone neutrals (Light is default) */
   --bg: #FAFAF7;
   --surface: #FFFFFF;
   --surface-subtle: #F4F4EF;
@@ -51,57 +51,16 @@
   --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Dark theme overrides */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0A0F0D;
-    --surface: #111815;
-    --surface-subtle: #17211D;
-    --border: #1F2A25;
-    --border-strong: #2E3D36;
-    --text: #EDF2EE;
-    --text-muted: #8B9690;
-    --text-faint: #5A6660;
-
-    --primary: #5FD3A8;
-    --primary-hover: #4EC297;
-    --primary-tint: #143328;
-    --primary-fg: #0A0F0D;
-
-    --accent: #C8F169;
-    --accent-hover: #B8E356;
-    --accent-fg: #0A0F0D;
-
-    --success: #34D399;
-    --success-tint: #064E3B;
-    --success-border: #047857;
-
-    --warning: #FBBF24;
-    --warning-tint: #78350F;
-    --warning-border: #92400E;
-
-    --danger: #F87171;
-    --danger-tint: #7F1D1D;
-    --danger-border: #991B1B;
-
-    --info: #60A5FA;
-    --info-tint: #1E3A8A;
-    --info-border: #1D4ED8;
-
-    --shadow-soft: 0 2px 8px -1px rgba(0, 0, 0, 0.4);
-    --shadow-modal: 0 16px 40px -8px rgba(0, 0, 0, 0.6);
-  }
-}
-
+/* Opt-in dark theme only (via data-theme="dark"). No automatic prefers-color-scheme switching. */
 [data-theme="dark"] {
   --bg: #0A0F0D;
   --surface: #111815;
-  --surface-subtle: #17211D;
-  --border: #1F2A25;
-  --border-strong: #2E3D36;
+  --surface-subtle: #18221E;
+  --border: #283830;
+  --border-strong: #3C5046;
   --text: #EDF2EE;
-  --text-muted: #8B9690;
-  --text-faint: #5A6660;
+  --text-muted: #95A19B;
+  --text-faint: #62706A;
 
   --primary: #5FD3A8;
   --primary-hover: #4EC297;
