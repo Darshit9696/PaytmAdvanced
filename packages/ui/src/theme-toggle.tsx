@@ -67,7 +67,7 @@ export function ThemeToggle({
 
     return (
       <div
-        className={`inline-flex items-center p-1 bg-surface-subtle border border-border rounded-md text-xs font-medium ${className}`}
+        className={`inline-flex items-center p-1 bg-surface border border-border rounded-lg text-xs font-medium gap-1 ${className}`}
         role="radiogroup"
         aria-label="Color theme"
       >
@@ -79,14 +79,15 @@ export function ThemeToggle({
               type="button"
               role="radio"
               aria-checked={isSelected}
+              aria-pressed={isSelected}
               onClick={() => setTheme(opt.value)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all cursor-pointer whitespace-nowrap select-none ${
                 isSelected
-                  ? "bg-surface text-text font-semibold shadow-xs border border-border"
-                  : "text-text-muted hover:text-text hover:bg-surface/50 border border-transparent"
+                  ? "bg-surface-subtle text-primary font-semibold shadow-xs border border-border"
+                  : "text-text-muted hover:text-text bg-transparent border border-transparent"
               }`}
             >
-              <span className={isSelected ? "text-primary" : "text-text-faint"}>
+              <span className={isSelected ? "text-primary" : "text-text-muted"}>
                 {opt.icon}
               </span>
               <span>{opt.label}</span>

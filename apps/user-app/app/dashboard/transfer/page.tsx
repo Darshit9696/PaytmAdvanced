@@ -247,34 +247,43 @@ function SendMoneyContent() {
               </div>
 
               {/* Search Results */}
-              <div className="divide-y divide-border border border-border rounded-[8px] overflow-hidden max-h-60 overflow-y-auto bg-surface">
-                {users.map((u) => (
-                  <div
-                    key={u.id}
-                    onClick={() => setSelectedUser(u)}
-                    className="p-3 hover:bg-surface-subtle cursor-pointer flex items-center justify-between transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar name={u.name} size="md" />
-                      <div>
-                        <p className="text-sm font-medium text-text">{u.name}</p>
-                        <p className="text-xs text-text-muted font-mono">+91 {u.number}</p>
+              {users.length > 0 && (
+                <div className="divide-y divide-border max-h-[420px] overflow-y-auto pb-6">
+                  {users.map((u) => (
+                    <div
+                      key={u.id}
+                      onClick={() => setSelectedUser(u)}
+                      className="py-3.5 px-2 hover:bg-surface-subtle/80 rounded-[6px] cursor-pointer flex items-center justify-between transition-colors group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar name={u.name} size="md" />
+                        <div>
+                          <p className="text-sm font-medium text-text group-hover:text-primary transition-colors">
+                            {u.name}
+                          </p>
+                          <p className="text-xs text-text-muted font-mono">+91 {u.number}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-primary opacity-80 group-hover:opacity-100 transition-opacity">
+                        <span>Select</span>
+                        <Send className="w-3.5 h-3.5" />
                       </div>
                     </div>
-                    <Send className="w-3.5 h-3.5 text-primary" />
-                  </div>
-                ))}
-                {searchQuery && users.length === 0 && (
-                  <p className="text-xs text-text-muted text-center py-6">
-                    No registered contact found matching "{searchQuery}"
-                  </p>
-                )}
-                {!searchQuery && (
-                  <p className="text-xs text-text-faint text-center py-6">
-                    Type a name or phone number above to select a recipient.
-                  </p>
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
+
+              {searchQuery && users.length === 0 && (
+                <p className="text-xs text-text-muted text-center py-8">
+                  No registered contact found matching &ldquo;{searchQuery}&rdquo;
+                </p>
+              )}
+
+              {!searchQuery && users.length === 0 && (
+                <p className="text-xs text-text-faint text-center py-6">
+                  Type a name or phone number above to select a recipient.
+                </p>
+              )}
             </div>
           ) : (
             /* Step 2: Payment Form */

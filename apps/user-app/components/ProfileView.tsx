@@ -33,25 +33,18 @@ export default function ProfileView({ user }: ProfileViewProps) {
       {/* 1. Profile Header Banner */}
       <div className="bg-surface border border-border rounded-[10px] p-6 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center gap-5">
-          <Avatar name={userName} size="xl" />
+          <div className="shrink-0 flex items-center justify-center">
+            <Avatar
+              name={userName}
+              size="xl"
+              className="w-[56px] h-[56px] min-w-[56px] min-h-[56px] shrink-0 aspect-square rounded-full text-lg"
+              style={{ width: 56, height: 56, minWidth: 56, minHeight: 56 }}
+            />
+          </div>
 
           <div className="text-center sm:text-left space-y-1">
             <h2 className="text-xl font-semibold tracking-tight text-text">{userName}</h2>
-
-            <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-text-muted font-mono">
-              <span>Wallet ID: {userId}</span>
-              <button
-                onClick={handleCopyId}
-                className="p-1 hover:bg-surface-subtle rounded transition-colors text-primary cursor-pointer border border-border"
-                title="Copy Wallet ID"
-              >
-                {copied ? (
-                  <Check className="w-3.5 h-3.5 text-success" />
-                ) : (
-                  <Copy className="w-3.5 h-3.5" />
-                )}
-              </button>
-            </div>
+            <p className="text-xs text-text-muted">Personal digital wallet account</p>
           </div>
         </div>
       </div>
@@ -73,7 +66,22 @@ export default function ProfileView({ user }: ProfileViewProps) {
           </div>
           <div className="py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 last:pb-0">
             <dt className="text-xs text-text-muted">Wallet account ID</dt>
-            <dd className="text-sm text-text font-mono tabular-nums">#{userId}</dd>
+            <dd className="text-sm text-text font-mono tabular-nums flex items-center gap-2">
+              <span>#{userId}</span>
+              <button
+                type="button"
+                onClick={handleCopyId}
+                className="p-1 hover:bg-surface-subtle rounded transition-colors text-primary cursor-pointer border border-border inline-flex items-center justify-center"
+                title="Copy Wallet ID"
+                aria-label="Copy Wallet ID"
+              >
+                {copied ? (
+                  <Check className="w-3.5 h-3.5 text-success" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5 text-text-muted hover:text-primary" />
+                )}
+              </button>
+            </dd>
           </div>
         </dl>
       </div>

@@ -249,31 +249,30 @@ export default function ReconciliationPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
           <Button
             variant="primary"
             size="sm"
             onClick={handleRunAudit}
             disabled={runningAudit || loadingReport}
             loading={runningAudit}
+            icon={<RefreshCw className={`w-3.5 h-3.5 shrink-0 ${runningAudit ? "animate-spin" : ""}`} />}
+            className="h-[36px] inline-flex items-center gap-2 whitespace-nowrap px-3.5 text-xs font-medium"
           >
-            <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${runningAudit ? "animate-spin" : ""}`} />
-            <span>{runningAudit ? "Auditing Database..." : "Run Audit Job"}</span>
+            {runningAudit ? "Auditing Database..." : "Run audit job"}
           </Button>
 
-          {report && !isBalanced && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleAutoFix}
-              disabled={runningFix}
-              loading={runningFix}
-              className="text-warning border-warning/40 hover:bg-warning-subtle"
-            >
-              <Wrench className={`w-3.5 h-3.5 mr-1.5 ${runningFix ? "animate-spin" : ""}`} />
-              <span>{runningFix ? "Aligning..." : "Auto-Align Wallets"}</span>
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleAutoFix}
+            disabled={runningFix || isBalanced}
+            loading={runningFix}
+            icon={<Wrench className={`w-3.5 h-3.5 shrink-0 ${runningFix ? "animate-spin" : ""}`} />}
+            className="h-[36px] inline-flex items-center gap-2 whitespace-nowrap px-3.5 text-xs font-medium border-border hover:bg-surface-subtle disabled:opacity-40"
+          >
+            {runningFix ? "Aligning..." : "Auto-align wallets"}
+          </Button>
         </div>
       </div>
 

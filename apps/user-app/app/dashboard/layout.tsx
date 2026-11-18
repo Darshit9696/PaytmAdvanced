@@ -162,7 +162,7 @@ export default function DashboardLayout({
         <div className="pt-3 border-t border-border flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-8 h-8 rounded-full bg-primary-tint text-primary font-bold text-xs flex items-center justify-center shrink-0 border border-primary/20">
+              <div className="w-8 h-8 min-w-[32px] min-h-[32px] rounded-full bg-primary-tint text-primary font-bold text-xs flex items-center justify-center shrink-0 aspect-square border border-primary/20 select-none">
                 {userName.charAt(0).toUpperCase()}
               </div>
               <div className="truncate">
