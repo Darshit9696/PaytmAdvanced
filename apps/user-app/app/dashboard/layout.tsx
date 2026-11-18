@@ -210,8 +210,10 @@ export default function DashboardLayout({
 
           {/* Right Header Controls */}
           <div className="flex items-center gap-2 shrink-0">
-            <NotificationBell />
-            <ThemeToggle variant="icon" />
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <ThemeToggle variant="icon" />
+            </div>
 
             {/* Mobile Drawer Menu Toggle */}
             <button
@@ -296,7 +298,7 @@ export default function DashboardLayout({
 
         {/* Main Content Body */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 pb-20 md:pb-8">
-          <div className="max-w-[1100px] w-full">
+          <div className="max-w-[1100px] w-full" style={{ maxWidth: 1100 }}>
             {children}
           </div>
         </main>

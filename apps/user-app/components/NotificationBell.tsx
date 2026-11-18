@@ -70,7 +70,8 @@ export function NotificationBell() {
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label="View notifications"
         aria-expanded={isOpen}
-        className={`w-9 h-9 flex items-center justify-center shrink-0 rounded-md transition-all duration-150 relative cursor-pointer border ${
+        style={{ width: 36, height: 36, minWidth: 36, minHeight: 36 }}
+        className={`w-[36px] h-[36px] min-w-[36px] min-h-[36px] flex items-center justify-center shrink-0 rounded-md transition-all duration-150 relative cursor-pointer border ${
           isOpen
             ? "bg-primary-tint text-primary border-primary/30"
             : "bg-surface hover:bg-surface-subtle text-text-muted hover:text-text border-border"
@@ -79,7 +80,7 @@ export function NotificationBell() {
         <Bell className="w-4 h-4" />
 
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-accent text-accent-fg text-[10px] font-bold font-mono px-1 min-w-[16px] h-[16px] rounded-full flex items-center justify-center border border-surface pointer-events-none">
+          <span className="absolute -top-1 -right-1 bg-accent text-accent-fg text-[10px] font-bold font-mono px-1 min-w-[16px] h-[16px] rounded-full flex items-center justify-center border border-surface pointer-events-none z-10">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}

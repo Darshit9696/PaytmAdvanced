@@ -50,7 +50,8 @@ export function ThemeToggle({
     // Render placeholder with same dimensions (36px) to avoid layout shift
     return (
       <div
-        className={`w-9 h-9 min-w-[36px] min-h-[36px] shrink-0 rounded-md bg-transparent opacity-0 ${className}`}
+        className={`w-[36px] h-[36px] min-w-[36px] min-h-[36px] shrink-0 rounded-md bg-transparent opacity-0 ${className}`}
+        style={{ width: 36, height: 36 }}
         aria-hidden="true"
       />
     );
@@ -166,11 +167,11 @@ export function ThemeToggle({
     <button
       type="button"
       onClick={toggleTheme}
-      className={`relative inline-flex items-center justify-center w-9 h-9 min-w-[36px] min-h-[36px] shrink-0 rounded-md bg-transparent hover:bg-surface-subtle text-text-muted hover:text-text transition-colors cursor-pointer select-none border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 group ${className}`}
+      className={`relative inline-flex items-center justify-center w-[36px] h-[36px] min-w-[36px] min-h-[36px] max-w-[36px] max-h-[36px] p-0 shrink-0 rounded-md bg-transparent hover:bg-surface-subtle text-text-muted hover:text-text transition-colors cursor-pointer select-none border-0 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 group ${className}`}
       title="Toggle theme"
       aria-label="Toggle theme"
+      style={{ width: 36, height: 36, minWidth: 36, minHeight: 36, maxWidth: 36, maxHeight: 36 }}
     >
-      <span className="sr-only">Toggle theme</span>
       {isDark ? (
         <Sun className="w-4 h-4 text-amber-400 group-hover:rotate-45 transition-transform duration-200" />
       ) : (
