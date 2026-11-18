@@ -619,7 +619,7 @@ export function QRScanner() {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-primary hover:bg-primary-hover text-white text-xs font-medium transition-colors cursor-pointer border border-primary"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-primary hover:bg-primary-hover text-primary-fg text-xs font-medium transition-colors cursor-pointer border border-primary"
             >
               <Upload className="w-3.5 h-3.5" />
               <span>Upload Image</span>
@@ -681,7 +681,7 @@ export function QRScanner() {
                 <div className="flex flex-col sm:flex-row gap-2 pt-2">
                   <button
                     onClick={() => startScanner()}
-                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-[6px] text-xs font-medium transition-colors border border-primary cursor-pointer"
+                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-primary-fg rounded-[6px] text-xs font-medium transition-colors border border-primary cursor-pointer"
                   >
                     Grant Permission & Retry
                   </button>

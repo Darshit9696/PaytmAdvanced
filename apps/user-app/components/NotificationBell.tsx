@@ -64,13 +64,13 @@ export function NotificationBell() {
   ).length;
 
   return (
-    <div ref={containerRef} className="relative inline-flex items-center">
+    <div ref={containerRef} className="relative inline-flex items-center shrink-0">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label="View notifications"
         aria-expanded={isOpen}
-        className={`p-2 rounded-sm transition-all duration-150 relative cursor-pointer border ${
+        className={`w-9 h-9 flex items-center justify-center shrink-0 rounded-md transition-all duration-150 relative cursor-pointer border ${
           isOpen
             ? "bg-primary-tint text-primary border-primary/30"
             : "bg-surface hover:bg-surface-subtle text-text-muted hover:text-text border-border"

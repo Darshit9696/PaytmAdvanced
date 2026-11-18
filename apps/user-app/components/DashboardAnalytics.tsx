@@ -72,11 +72,48 @@ interface AnalyticsData {
 }
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  Food: <Utensils className="w-4 h-4 text-warning" />,
-  Shopping: <ShoppingBag className="w-4 h-4 text-primary" />,
-  Travel: <Navigation className="w-4 h-4 text-info" />,
-  Entertainment: <Film className="w-4 h-4 text-danger" />,
+  Food: <Utensils className="w-4 h-4 text-text-muted" />,
+  Shopping: <ShoppingBag className="w-4 h-4 text-text-muted" />,
+  Travel: <Navigation className="w-4 h-4 text-text-muted" />,
+  Entertainment: <Film className="w-4 h-4 text-text-muted" />,
 };
+
+/**
+ * Computes integer percentages that always sum to exactly 100 using the
+ * Largest Remainder (Hare-Niemeyer) method.
+ */
+function calculateLargestRemainderPercentages(amounts: number[]): number[] {
+  const total = amounts.reduce((acc, curr) => acc + Math.max(0, curr), 0);
+  if (total <= 0) {
+    return amounts.map(() => 0);
+  }
+
+  const rawPercentages = amounts.map((amt) => (Math.max(0, amt) / total) * 100);
+  const floors = rawPercentages.map(Math.floor);
+
+  const remainders = rawPercentages.map((raw, idx) => ({
+    idx,
+    remainder: raw - floors[idx],
+    amount: amounts[idx],
+  }));
+
+  const floorSum = floors.reduce((acc, f) => acc + f, 0);
+  const diff = 100 - floorSum;
+
+  remainders.sort((a, b) => {
+    if (Math.abs(b.remainder - a.remainder) > 0.000001) {
+      return b.remainder - a.remainder;
+    }
+    return b.amount - a.amount;
+  });
+
+  const result = [...floors];
+  for (let i = 0; i < diff && i < remainders.length; i++) {
+    result[remainders[i].idx] += 1;
+  }
+
+  return result;
+}
 
 export function DashboardAnalytics() {
   const [data, setData] = useState<AnalyticsData | null>(null);
@@ -214,39 +251,57 @@ export function DashboardAnalytics() {
             No categorized spending this month yet
           </p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
-            {categories.map((item) => {
-              const icon = CATEGORY_ICONS[item.category] || (
-                <ShoppingBag className="w-4 h-4 text-primary" />
-              );
-              const percentage = Math.round((item.amount / totalCategorizedAmount) * 100);
+          (() => {
+            const categoryPercentages = calculateLargestRemainderPercentages(
+              categories.map((c) => c.amount)
+            );
 
-              return (
-                <div
-                  key={item.category}
-                  className="flex flex-col justify-between space-y-2 py-1"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-text-muted">{icon}</span>
-                      <span className="text-xs font-medium text-text">{item.category}</span>
+            return (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
+                {categories.map((item, idx) => {
+                  const icon = CATEGORY_ICONS[item.category] || (
+                    <ShoppingBag className="w-4 h-4 text-text-muted" />
+                  );
+                  const percentage = categoryPercentages[idx] ?? 0;
+
+                  return (
+                    <div
+                      key={item.category}
+                      className="flex flex-col justify-between space-y-2 py-1"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-text-muted">{icon}</span>
+                          <span className="text-xs font-medium text-text">{item.category}</span>
+                        </div>
+                        <span className="text-xs text-text-muted font-mono">
+                          {percentage}%
+                        </span>
+                      </div>
+
+                      <div>
+                        <Amount value={item.amount} size="md" weight="medium" />
+                        <p className="text-xs text-text-faint font-mono mt-0.5">
+                          {item.transactionCount}{" "}
+                          {item.transactionCount === 1 ? "payment" : "payments"}
+                        </p>
+                        {/* 3px-high proportional bar under amount */}
+                        <div
+                          className="h-[3px] w-full bg-surface-subtle border border-border/40 rounded-full overflow-hidden mt-2"
+                          title={`${percentage}% of monthly spending`}
+                        >
+                          <div
+                            className="h-full bg-primary rounded-full transition-all duration-300"
+                            style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <span className="text-xs text-text-muted font-mono">
-                      {percentage}%
-                    </span>
-                  </div>
-
-                  <div>
-                    <Amount value={item.amount} size="md" weight="medium" />
-                    <p className="text-xs text-text-faint font-mono mt-0.5">
-                      {item.transactionCount}{" "}
-                      {item.transactionCount === 1 ? "payment" : "payments"}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            );
+          })()
         )}
       </div>
 

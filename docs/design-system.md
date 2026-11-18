@@ -27,8 +27,8 @@ The design tokens are defined centrally in `packages/ui/src/styles/theme.css` an
 | **Border** | `--color-border` | `border-border` | `#E7E6DF` | Standard 1px hairline border |
 | **Border Strong** | `--color-border-strong` | `border-border-strong`| `#D3D2C9` | Hovered or focused component borders |
 | **Text Primary** | `--color-text` | `text-text` | `#0E1512` | Highest contrast text (headings, labels, amounts) |
-| **Text Muted** | `--color-text-muted` | `text-text-muted` | `#5C645F` | Secondary descriptions, column headers |
-| **Text Faint** | `--color-text-faint` | `text-text-faint` | `#8B938E` | Timestamps, placeholders, inactive icons |
+| **Text Muted** | `--color-text-muted` | `text-text-muted` | `#525A55` | Secondary descriptions, column headers (WCAG AA) |
+| **Text Faint** | `--color-text-faint` | `text-text-faint` | `#666F6A` | Timestamps, placeholders, inactive icons (WCAG AA) |
 | **Primary** | `--color-primary` | `bg-primary`, `text-primary` | `#0F3D33` | Deep ink-green brand color |
 | **Primary Hover** | `--color-primary-hover` | `bg-primary-hover` | `#0B2F27` | Interactive button hover state |
 | **Primary Subtle** | `--color-primary-subtle`| `bg-primary-subtle` | `#E4EFEB` | Soft ink-green tint for selections |
@@ -51,11 +51,11 @@ Dark theme is integrated across the monorepo with zero flash of unstyled theme (
 - **Border (`--border` / `border-border`):** `#223129` (subtle 1px hairline border)
 - **Border Strong (`--border-strong` / `border-border-strong`):** `#33463B` (focused or active elements)
 - **Text Primary (`--text` / `text-text`):** `#EDF2EE` (crisp high-contrast text)
-- **Text Muted (`--text-muted` / `text-text-muted`):** `#9BA7A1` (secondary metadata)
-- **Text Faint (`--text-faint` / `text-text-faint`):** `#6B7872` (timestamps, placeholders)
+- **Text Muted (`--text-muted` / `text-text-muted`):** `#B0BCB6` (secondary metadata, WCAG AA 8.2:1)
+- **Text Faint (`--text-faint` / `text-text-faint`):** `#8F9C95` (timestamps, placeholders, WCAG AA 5.7:1)
 - **Primary (`--primary` / `bg-primary`):** `#5FD3A8` (high-contrast mint green)
 - **Primary Tint (`--primary-tint` / `bg-primary-tint`):** `#143328` (soft mint background)
-- **Primary Foreground (`--primary-fg` / `text-primary-fg`):** `#0A0F0D` (accessible dark contrast)
+- **Primary Foreground (`--primary-fg` / `text-primary-fg`):** `#0A0F0D` (accessible dark contrast, WCAG AA 10.4:1)
 
 #### Theme Components (`@repo/ui`):
 - `<ThemeProvider>`: React Context managing `"light" | "dark" | "system"` with `localStorage` persistence and cross-tab synchronization.

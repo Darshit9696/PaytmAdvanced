@@ -97,7 +97,7 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
                   onClick={() => setAmount(chip.toString())}
                   className={`py-1.5 px-3 rounded-[6px] text-xs font-mono font-medium border transition-colors cursor-pointer ${
                     amount === chip.toString()
-                      ? "bg-primary text-white border-primary"
+                      ? "bg-primary text-primary-fg border-primary"
                       : "bg-surface-subtle text-text border border-border hover:bg-surface"
                   }`}
                 >

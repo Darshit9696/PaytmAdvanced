@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function ScanPayPage() {
   return (
-    <div className="max-w-3xl mx-auto space-y-6 font-sans">
+    <div className="max-w-[1100px] w-full space-y-6 font-sans">
       {/* Top Breadcrumb & Heading */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div className="space-y-1">

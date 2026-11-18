@@ -6,7 +6,7 @@ import { Button } from "@repo/ui";
 
 export default function UserAppMerchantGatewayPage() {
   return (
-    <div className="max-w-4xl mx-auto p-2 sm:p-4 font-sans space-y-6">
+    <div className="max-w-[1100px] w-full space-y-6 font-sans">
       {/* Header Banner */}
       <div className="bg-surface border border-border rounded-[10px] p-6 sm:p-8 shadow-xs space-y-3">
         <div className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium border border-primary/20">
@@ -63,7 +63,7 @@ export default function UserAppMerchantGatewayPage() {
           </div>
           <a
             href="http://localhost:3002/signup"
-            className="inline-flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-hover text-white font-medium py-2.5 px-4 rounded-[6px] text-xs transition-all shadow-xs"
+            className="inline-flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-hover text-primary-fg font-medium py-2.5 px-4 rounded-[6px] text-xs transition-all shadow-xs"
           >
             <span>Register Merchant Account</span>
             <ArrowRight className="w-3.5 h-3.5" />

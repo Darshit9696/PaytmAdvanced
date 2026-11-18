@@ -204,7 +204,7 @@ function PayContent() {
             <div className="space-y-2 pt-2">
               <Link
                 href="/dashboard/scan"
-                className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-medium py-2.5 px-4 rounded-[6px] text-xs transition-all shadow-xs"
+                className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-primary-fg font-medium py-2.5 px-4 rounded-[6px] text-xs transition-all shadow-xs"
               >
                 <QrCode className="w-3.5 h-3.5" />
                 <span>Scan Merchant QR Code</span>
@@ -290,7 +290,7 @@ function PayContent() {
             <div className="space-y-2 pt-2">
               <Link
                 href="/dashboard"
-                className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-medium py-2.5 px-4 rounded-[6px] text-xs transition-all shadow-xs"
+                className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-primary-fg font-medium py-2.5 px-4 rounded-[6px] text-xs transition-all shadow-xs"
               >
                 <span>Return to Dashboard</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -346,7 +346,7 @@ function PayContent() {
               </div>
               <Link
                 href={`/login?callbackUrl=/pay?transactionId=${encodeURIComponent(txDetails?.transactionId || transactionId || "")}`}
-                className="bg-primary hover:bg-primary-hover text-white font-medium px-3 py-1 rounded-[4px] text-xs transition-colors shrink-0"
+                className="bg-primary hover:bg-primary-hover text-primary-fg font-medium px-3 py-1 rounded-[4px] text-xs transition-colors shrink-0"
               >
                 Sign In
               </Link>

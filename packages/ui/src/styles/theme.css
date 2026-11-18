@@ -11,8 +11,8 @@
   --border: #E7E6DF;
   --border-strong: #D3D2C9;
   --text: #0E1512;
-  --text-muted: #5C645F;
-  --text-faint: #8B938E;
+  --text-muted: #525A55;
+  --text-faint: #666F6A;
 
   /* Primary: Deep Ink-Green */
   --primary: #0F3D33;
@@ -63,8 +63,8 @@ html.dark {
   --border: #223129;
   --border-strong: #33463B;
   --text: #EDF2EE;
-  --text-muted: #9BA7A1;
-  --text-faint: #6B7872;
+  --text-muted: #B0BCB6;
+  --text-faint: #8F9C95;
 
   --primary: #5FD3A8;
   --primary-hover: #4EC297;

@@ -39,10 +39,18 @@ export function ThemeToggle({
   }, [isOpen]);
 
   if (!mounted) {
-    // Render placeholder with same dimensions to avoid layout shift
+    if (variant === "segmented") {
+      return (
+        <div
+          className={`inline-flex items-center p-1 bg-surface-subtle border border-border rounded-md text-xs font-medium opacity-60 h-8 ${className}`}
+          aria-hidden="true"
+        />
+      );
+    }
+    // Render placeholder with same dimensions (36px) to avoid layout shift
     return (
       <div
-        className={`w-8 h-8 rounded-md bg-surface-subtle border border-border opacity-60 ${className}`}
+        className={`w-9 h-9 min-w-[36px] min-h-[36px] shrink-0 rounded-md bg-transparent opacity-0 ${className}`}
         aria-hidden="true"
       />
     );
@@ -151,22 +159,22 @@ export function ThemeToggle({
     );
   }
 
-  // 3. Compact Icon Toggle Button (Default)
+  // 3. Compact Icon Toggle Button (Default: 36px ghost style)
   const isDark = resolvedTheme === "dark";
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      className={`relative inline-flex items-center justify-center w-8 h-8 rounded-md bg-surface hover:bg-surface-subtle border border-border text-text transition-colors cursor-pointer group ${className}`}
-      title={isDark ? "Switch to light theme" : "Switch to dark theme"}
-      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      className={`relative inline-flex items-center justify-center w-9 h-9 min-w-[36px] min-h-[36px] shrink-0 rounded-md bg-transparent hover:bg-surface-subtle text-text-muted hover:text-text transition-colors cursor-pointer select-none border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 group ${className}`}
+      title="Toggle theme"
+      aria-label="Toggle theme"
     >
       <span className="sr-only">Toggle theme</span>
       {isDark ? (
         <Sun className="w-4 h-4 text-amber-400 group-hover:rotate-45 transition-transform duration-200" />
       ) : (
-        <Moon className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors" />
+        <Moon className="w-4 h-4 text-text-muted group-hover:text-text transition-colors" />
       )}
     </button>
   );

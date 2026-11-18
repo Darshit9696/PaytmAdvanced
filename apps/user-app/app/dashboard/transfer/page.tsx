@@ -331,7 +331,7 @@ function SendMoneyContent() {
                       onClick={() => setCategory(cat)}
                       className={`py-2 px-3 rounded-[6px] text-xs font-medium border transition-all cursor-pointer ${
                         category === cat
-                          ? "bg-primary text-white border-primary shadow-xs"
+                          ? "bg-primary text-primary-fg border-primary shadow-xs"
                           : "bg-surface-subtle text-text-muted border-border hover:text-text hover:bg-surface"
                       }`}
                     >

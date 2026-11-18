@@ -50,7 +50,7 @@ export default function Home() {
           </Link>
           <Link
             href="/signup"
-            className="text-xs font-medium bg-primary hover:bg-primary-hover text-white px-3.5 py-1.5 rounded-[6px] transition-all shadow-xs"
+            className="text-xs font-medium bg-primary hover:bg-primary-hover text-primary-fg px-3.5 py-1.5 rounded-[6px] transition-all shadow-xs"
           >
             Register Store
           </Link>
@@ -105,7 +105,7 @@ export default function Home() {
             </Link>
             <Link
               href="/signup"
-              className="flex-1 bg-primary hover:bg-primary-hover text-white font-medium py-2.5 px-4 rounded-[6px] transition-all flex items-center justify-center gap-1.5 text-xs shadow-xs"
+              className="flex-1 bg-primary hover:bg-primary-hover text-primary-fg font-medium py-2.5 px-4 rounded-[6px] transition-all flex items-center justify-center gap-1.5 text-xs shadow-xs"
             >
               <span>Register Store</span>
               <ArrowRight className="w-3.5 h-3.5" />

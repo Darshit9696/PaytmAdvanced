@@ -59,7 +59,7 @@ export default function BankAppHome() {
           <div className="pt-2">
             <a
               href="http://localhost:3000/dashboard"
-              className="inline-flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-hover text-white font-medium py-2.5 px-4 rounded-[6px] shadow-xs transition-all text-xs"
+              className="inline-flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-hover text-primary-fg font-medium py-2.5 px-4 rounded-[6px] shadow-xs transition-all text-xs"
             >
               <span>Return to Consumer Dashboard</span>
               <ArrowRight className="w-3.5 h-3.5" />

@@ -28,7 +28,7 @@ export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-bg text-text selection:bg-primary selection:text-white font-sans relative">
+    <div className="min-h-screen bg-bg text-text selection:bg-primary selection:text-primary-fg font-sans relative">
       {/* --------------------------------------------------------------------- */}
       {/* 1. NAVBAR                                                             */}
       {/* --------------------------------------------------------------------- */}
@@ -36,7 +36,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-[8px] bg-primary flex items-center justify-center text-white shadow-xs">
+            <div className="w-9 h-9 rounded-[8px] bg-primary flex items-center justify-center text-primary-fg shadow-xs">
               <Scale className="w-4 h-4 text-accent" />
             </div>
             <span className="text-base font-semibold tracking-tight text-text">
@@ -68,7 +68,7 @@ export default function LandingPage() {
             </Link>
             <a
               href="#account-choice"
-              className="px-4 py-2 text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all"
+              className="px-4 py-2 text-xs font-medium text-primary-fg bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all"
             >
               Get Started
             </a>
@@ -124,7 +124,7 @@ export default function LandingPage() {
               <a
                 href="#account-choice"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full text-center px-4 py-2 text-xs font-medium text-white bg-primary rounded-[6px]"
+                className="w-full text-center px-4 py-2 text-xs font-medium text-primary-fg bg-primary rounded-[6px]"
               >
                 Get Started
               </a>
@@ -158,7 +158,7 @@ export default function LandingPage() {
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
               <a
                 href="#account-choice"
-                className="w-full sm:w-auto px-6 py-3 text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 text-xs font-medium text-primary-fg bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all flex items-center justify-center gap-2"
               >
                 <span>Open An Account</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -391,7 +391,7 @@ export default function LandingPage() {
               </Link>
               <Link
                 href="/signup"
-                className="px-4 py-2 text-center text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all"
+                className="px-4 py-2 text-center text-xs font-medium text-primary-fg bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all"
               >
                 Open Personal Account
               </Link>
@@ -446,7 +446,7 @@ export default function LandingPage() {
               </a>
               <a
                 href="http://localhost:3002/signup"
-                className="px-4 py-2 text-center text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all"
+                className="px-4 py-2 text-center text-xs font-medium text-primary-fg bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all"
               >
                 Register Store Account
               </a>

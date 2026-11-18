@@ -181,7 +181,7 @@ export default function DashboardLayout({
             </button>
           </div>
 
-          <div className="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-700 dark:text-amber-300 font-medium text-center">
+          <div className="text-[11px] text-amber-600/90 dark:text-amber-400/90 font-medium text-center select-none py-0.5">
             Simulator Mode • No Real Money
           </div>
         </div>
@@ -208,16 +208,10 @@ export default function DashboardLayout({
             <span className="text-text font-semibold">{pageTitle}</span>
           </div>
 
-          {/* Simulator Status Badge */}
-          <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-[11px] font-medium text-amber-700 dark:text-amber-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-            <span>Simulator • Virtual Balances (No Real Money)</span>
-          </div>
-
           {/* Right Header Controls */}
-          <div className="flex items-center gap-2">
-            <ThemeToggle variant="icon" />
+          <div className="flex items-center gap-2 shrink-0">
             <NotificationBell />
+            <ThemeToggle variant="icon" />
 
             {/* Mobile Drawer Menu Toggle */}
             <button

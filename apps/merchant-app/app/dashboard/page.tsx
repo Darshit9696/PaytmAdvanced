@@ -145,7 +145,7 @@ export default function MerchantDashboardPage() {
       {/* --------------------------------------------------------------------- */}
       {/* 1. Dark Ink-Green Sidebar (#0F3D33) for Desktop                       */}
       {/* --------------------------------------------------------------------- */}
-      <aside className="hidden md:flex flex-col w-64 bg-primary text-white shrink-0 sticky top-0 h-screen border-r border-[#1F4D43] select-none justify-between p-5">
+      <aside className="hidden md:flex flex-col w-64 bg-[#0F3D33] text-white shrink-0 sticky top-0 h-screen border-r border-[#1F4D43] select-none justify-between p-5">
         <div className="space-y-6">
           {/* Brand Logo */}
           <div className="flex items-center gap-3 pb-4 border-b border-white/10">
@@ -159,13 +159,13 @@ export default function MerchantDashboardPage() {
                   BIZ
                 </span>
               </div>
-              <p className="text-[11px] text-white/60">Merchant Console</p>
+              <p className="text-[11px] text-white/75">Merchant Console</p>
             </div>
           </div>
 
           {/* Navigation Links */}
           <nav className="space-y-1">
-            <span className="text-[11px] font-medium text-white/50 block px-2 mb-2">
+            <span className="text-[11px] font-medium text-white/70 block px-2 mb-2">
               Management
             </span>
             <a
@@ -200,7 +200,7 @@ export default function MerchantDashboardPage() {
 
           {/* Switch to Personal App Link */}
           <div className="pt-4 border-t border-white/10">
-            <span className="text-[11px] font-medium text-white/50 block px-2 mb-2">
+            <span className="text-[11px] font-medium text-white/70 block px-2 mb-2">
               Cross-app
             </span>
             <a
@@ -221,7 +221,7 @@ export default function MerchantDashboardPage() {
             </div>
             <div className="truncate flex-1">
               <p className="text-xs font-medium text-white truncate">{displayBusinessName}</p>
-              <p className="text-[10px] text-white/60 truncate">{displayOwnerName}</p>
+              <p className="text-[10px] text-white/75 truncate">{displayOwnerName}</p>
             </div>
           </div>
 
@@ -238,14 +238,14 @@ export default function MerchantDashboardPage() {
       {/* --------------------------------------------------------------------- */}
       {/* 2. Mobile Top Bar with Collapsible Drawer                            */}
       {/* --------------------------------------------------------------------- */}
-      <header className="md:hidden bg-primary text-white p-4 flex items-center justify-between sticky top-0 z-40 border-b border-[#1F4D43]">
+      <header className="md:hidden bg-[#0F3D33] text-white p-4 flex items-center justify-between sticky top-0 z-40 border-b border-[#1F4D43]">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-[6px] bg-white/10 flex items-center justify-center text-accent">
             <Building2 className="w-4 h-4" />
           </div>
           <div>
             <span className="font-semibold text-sm tracking-tight">PayPulse Business</span>
-            <span className="text-[10px] text-white/60 block -mt-0.5">{displayBusinessName}</span>
+            <span className="text-[10px] text-white/75 block -mt-0.5">{displayBusinessName}</span>
           </div>
         </div>
 
@@ -259,7 +259,7 @@ export default function MerchantDashboardPage() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-primary text-white p-4 space-y-3 border-b border-[#1F4D43] animate-in fade-in duration-150">
+        <div className="md:hidden bg-[#0F3D33] text-white p-4 space-y-3 border-b border-[#1F4D43] animate-in fade-in duration-150">
           <nav className="space-y-1">
             <a
               href="#overview"

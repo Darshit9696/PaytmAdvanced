@@ -128,7 +128,7 @@ export default function WithdrawMoneyPage() {
                       onClick={() => setAmount(val.toString())}
                       className={`py-2 px-3 rounded-[6px] text-xs font-mono font-medium transition-all cursor-pointer ${
                         isActive
-                          ? "bg-primary text-white shadow-xs border border-primary"
+                          ? "bg-primary text-primary-fg shadow-xs border border-primary"
                           : "bg-surface-subtle text-text border border-border hover:bg-surface"
                       }`}
                     >

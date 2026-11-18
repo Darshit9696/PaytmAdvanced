@@ -108,7 +108,7 @@ export default async function DashboardPage() {
             {/* Send Money - Primary filled button (no shadow, 1px border) */}
             <Link
               href="/dashboard/transfer"
-              className="h-10 bg-primary hover:bg-primary-hover text-white px-4 rounded-[8px] text-xs font-medium transition-colors flex items-center justify-center gap-2 border border-primary cursor-pointer"
+              className="h-10 bg-primary hover:bg-primary-hover text-primary-fg px-4 rounded-[8px] text-xs font-medium transition-colors flex items-center justify-center gap-2 border border-primary cursor-pointer"
             >
               <Send className="w-4 h-4" />
               <span>Send money</span>

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 "use client";
 
 import React from "react";
@@ -8,7 +9,6 @@ export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> 
 
 export function Table({
   className = "",
-  stickyHeader = false,
   children,
   ...props
 }: TableProps) {

@@ -121,7 +121,7 @@ export const SearchUsers = () => {
                       e.stopPropagation();
                       router.push(`/dashboard/transfer?id=${user.id}`);
                     }}
-                    className="flex items-center gap-1.5 px-2.5 py-1 bg-surface hover:bg-primary hover:text-white text-text border border-border rounded-[6px] text-xs font-medium transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-2.5 py-1 bg-surface hover:bg-primary hover:text-primary-fg hover:border-primary text-text border border-border rounded-[6px] text-xs font-medium transition-colors cursor-pointer"
                   >
                     <span>Send</span>
                     <Send className="w-3 h-3" />
