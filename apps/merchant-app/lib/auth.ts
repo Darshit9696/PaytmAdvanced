@@ -87,7 +87,7 @@ export const authOptions: AuthOptions = {
     },
   },
 
-  secret: process.env.NEXTAUTH_SECRET || "merchant-secret-key-12345",
+  secret: process.env.NEXTAUTH_SECRET,
 
   pages: {
     signIn: "/login",
