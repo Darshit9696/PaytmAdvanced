@@ -9,7 +9,8 @@
     "check-types": "turbo run check-types",
     "db:seed": "node packages/db/seed.js",
     "db:reconcile": "node packages/db/reconcile.js",
-    "reconcile": "node packages/db/reconcile.js"
+    "reconcile": "node packages/db/reconcile.js",
+    "postinstall": "npm run db:generate --workspace=@repo/db"
   },
   "devDependencies": {
     "autoprefixer": "^10.5.2",
@@ -29,6 +30,7 @@
   ],
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.2",
+    "@upstash/redis": "^1.41.0",
     "bullmq": "^6.7.2",
     "ioredis": "^6.0.0"
   }

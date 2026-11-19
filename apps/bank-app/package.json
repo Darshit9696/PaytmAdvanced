@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@repo/db": "*",
     "@repo/ui": "*",
     "next": "16.3.0",
     "postcss": "^8.5.25",
