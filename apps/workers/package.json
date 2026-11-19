@@ -5,13 +5,12 @@
   "scripts": {
     "dev": "tsx watch --env-file=../../.env src/index.ts",
     "relay": "tsx watch --env-file=../../.env src/outbox-relay.ts",
-    "worker": "tsx watch --env-file=../../.env src/notification-worker.ts"
+    "worker": "tsx watch --env-file=../../.env src/notification-worker.ts",
+    "start": "tsx src/index.ts"
   },
   "dependencies": {
     "@repo/db": "*",
-    "@repo/queue": "*"
-  },
-  "devDependencies": {
+    "@repo/queue": "*",
     "tsx": "^4.20.6"
   }
 }
