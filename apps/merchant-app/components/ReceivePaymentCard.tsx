@@ -45,7 +45,15 @@ export function ReceivePaymentCard({ businessName }: ReceivePaymentCardProps) {
       const data = await res.json();
       setTransactionId(data.transactionId);
 
-      const generatedUrl = `http://localhost:3000/pay?transactionId=${data.transactionId}`;
+      const userAppUrl =
+        process.env.NEXT_PUBLIC_USER_APP_URL ||
+        (process.env.NODE_ENV !== "production" ? "http://localhost:3000" : "");
+
+      if (!userAppUrl) {
+        throw new Error("Consumer wallet URL configuration missing (NEXT_PUBLIC_USER_APP_URL)");
+      }
+
+      const generatedUrl = `${userAppUrl.replace(/\/+$/, "")}/pay?transactionId=${data.transactionId}`;
       setPaymentUrl(generatedUrl);
       setIsModalOpen(true);
     } catch (e) {

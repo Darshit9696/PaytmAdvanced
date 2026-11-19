@@ -4,7 +4,14 @@ import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 // Process payout: Deduct wallet balance, credit bank account balance, and set OffRampTransaction status to Success
 export const POST = async (request: NextRequest) => {
-    // 0. Rate limiting check (max 20 payout settlements/min)
+    // 0. Pre-flight check: Ensure BANK_WEBHOOK_SECRET is configured before any operations
+    const webhookSecret = process.env.BANK_WEBHOOK_SECRET;
+    if (!webhookSecret || !webhookSecret.trim()) {
+        console.error("[Bank Payout API] Server configuration error: BANK_WEBHOOK_SECRET is not configured");
+        return new Response("Server configuration error: BANK_WEBHOOK_SECRET is not configured", { status: 500 });
+    }
+
+    // Rate limiting check (max 20 payout settlements/min)
     const rateLimitCheck = checkRateLimit(request, rateLimitPresets.settlement);
     if (!rateLimitCheck.success && rateLimitCheck.response) {
         return rateLimitCheck.response;
@@ -127,7 +134,14 @@ export const POST = async (request: NextRequest) => {
     }
 
     // Call User App Off-Ramp Webhook
-    const webhookUrl = process.env.USER_APP_OFFRAMP_WEBHOOK_URL ?? "http://localhost:3000/api/offramp-webhook";
+    const webhookUrl =
+        process.env.USER_APP_OFFRAMP_WEBHOOK_URL ||
+        (process.env.NODE_ENV !== "production" ? "http://localhost:3000/api/offramp-webhook" : "");
+
+    if (!webhookUrl) {
+        console.error("USER_APP_OFFRAMP_WEBHOOK_URL is not configured");
+        return new Response("Off-ramp webhook callback URL configuration missing", { status: 500 });
+    }
     let webhookResponse;
 
     try {
@@ -135,6 +149,7 @@ export const POST = async (request: NextRequest) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "x-webhook-secret": webhookSecret,
             },
             body: JSON.stringify({ token }),
         });

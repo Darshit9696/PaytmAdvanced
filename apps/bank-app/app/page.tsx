@@ -4,6 +4,12 @@ import { Building2, ShieldCheck, Lock, ArrowRight } from "lucide-react";
 import { Button, ThemeToggle } from "@repo/ui";
 
 export default function BankAppHome() {
+  const userAppUrl =
+    process.env.NEXT_PUBLIC_USER_APP_URL ||
+    (process.env.NODE_ENV !== "production" ? "http://localhost:3000" : "");
+  const returnDashboardUrl = userAppUrl
+    ? `${userAppUrl.replace(/\/+$/, "")}/dashboard`
+    : "#";
   return (
     <div className="min-h-screen bg-bg text-text font-sans flex flex-col justify-between">
       {/* Header */}
@@ -58,7 +64,7 @@ export default function BankAppHome() {
 
           <div className="pt-2">
             <a
-              href="http://localhost:3000/dashboard"
+              href={returnDashboardUrl}
               className="inline-flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-hover text-primary-fg font-medium py-2.5 px-4 rounded-[6px] shadow-xs transition-all text-xs"
             >
               <span>Return to Consumer Dashboard</span>

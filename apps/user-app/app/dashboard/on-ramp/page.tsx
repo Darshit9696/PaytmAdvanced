@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Wallet, ShieldCheck, ArrowRight, ArrowLeft } from "lucide-react";
+import { Wallet, ShieldCheck, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Amount, Button } from "@repo/ui";
+import { Amount, Button, PageHeader } from "@repo/ui";
 
 export default function AddMoneyPage() {
   const router = useRouter();
@@ -38,12 +38,10 @@ export default function AddMoneyPage() {
       }
 
       const data = await response.json();
-      const token = data.token;
-
-      if (token) {
-        window.location.href = `http://localhost:3001/pay?token=${token}`;
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
       } else {
-        throw new Error("Token not received from backend");
+        throw new Error(data.error || "Payment gateway redirect URL not received");
       }
     } catch (err) {
       console.error(err);
@@ -54,22 +52,12 @@ export default function AddMoneyPage() {
 
   return (
     <div className="max-w-[1100px] w-full space-y-6 font-sans">
+      <PageHeader
+        title="Add Money"
+        subtitle="Deposit funds via linked bank gateway into your ledger wallet"
+      />
+
       <div className="max-w-xl space-y-6">
-        {/* Top Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-border">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="p-2 hover:bg-surface-subtle text-text-muted hover:text-text rounded-[6px] border border-border transition-colors cursor-pointer shadow-xs"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <div>
-              <h1 className="text-xl font-semibold tracking-tight text-text">Add money</h1>
-              <p className="text-xs text-text-muted">Deposit funds via linked bank gateway</p>
-            </div>
-          </div>
-        </div>
 
         {/* Main Container Card */}
         <div className="bg-surface border border-border rounded-[10px] overflow-hidden shadow-xs">

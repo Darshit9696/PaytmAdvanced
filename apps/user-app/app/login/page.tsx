@@ -19,6 +19,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const merchantAppUrl =
+    process.env.NEXT_PUBLIC_MERCHANT_APP_URL ||
+    (process.env.NODE_ENV !== "production" ? "http://localhost:3002" : "");
+  const merchantLoginUrl = merchantAppUrl
+    ? `${merchantAppUrl.replace(/\/+$/, "")}/login`
+    : "#";
+
   const handleLogin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
@@ -203,7 +210,7 @@ export default function LoginPage() {
                 <p className="text-[11px] text-text-faint">
                   Are you a business merchant?{" "}
                   <a
-                    href="http://localhost:3002/login"
+                    href={merchantLoginUrl}
                     className="text-text-muted hover:text-text font-medium underline"
                   >
                     Merchant login

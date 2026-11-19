@@ -19,6 +19,13 @@ export default function MerchantLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const userAppUrl =
+    process.env.NEXT_PUBLIC_USER_APP_URL ||
+    (process.env.NODE_ENV !== "production" ? "http://localhost:3000" : "");
+  const personalLoginUrl = userAppUrl
+    ? `${userAppUrl.replace(/\/+$/, "")}/login`
+    : "#";
+
   const handleLogin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
@@ -202,7 +209,7 @@ export default function MerchantLoginPage() {
                 <p className="text-[11px] text-text-faint">
                   Looking for personal wallet?{" "}
                   <a
-                    href="http://localhost:3000/login"
+                    href={personalLoginUrl}
                     className="text-text-muted hover:text-text font-medium underline"
                   >
                     Personal app login

@@ -5,7 +5,14 @@ import { checkRateLimit, rateLimitPresets } from "@/lib/rate-limit";
 
 // deduct the amt from the bank acc and add to the wallet acc
 export const POST = async (request: NextRequest) => {
-    // 0. Rate limiting check (max 20 settlements/min)
+    // 0. Pre-flight check: Ensure BANK_WEBHOOK_SECRET is configured before any operations
+    const webhookSecret = process.env.BANK_WEBHOOK_SECRET;
+    if (!webhookSecret || !webhookSecret.trim()) {
+        console.error("[Bank Pay API] Server configuration error: BANK_WEBHOOK_SECRET is not configured");
+        return new Response("Server configuration error: BANK_WEBHOOK_SECRET is not configured", { status: 500 });
+    }
+
+    // Rate limiting check (max 20 settlements/min)
     const rateLimitCheck = checkRateLimit(request, rateLimitPresets.settlement);
     if (!rateLimitCheck.success && rateLimitCheck.response) {
         return rateLimitCheck.response;
@@ -103,7 +110,14 @@ export const POST = async (request: NextRequest) => {
         return new Response("Payment processing failed", { status: 500 });
     }
     
-    const webhookUrl = process.env.USER_APP_WEBHOOK_URL ?? "http://localhost:3000/api/webhook";
+    const webhookUrl =
+        process.env.USER_APP_WEBHOOK_URL ||
+        (process.env.NODE_ENV !== "production" ? "http://localhost:3000/api/webhook" : "");
+
+    if (!webhookUrl) {
+        console.error("USER_APP_WEBHOOK_URL is not configured");
+        return new Response("Webhook callback URL configuration missing", { status: 500 });
+    }
     let webhookResponse;
 
     try {
@@ -111,6 +125,7 @@ export const POST = async (request: NextRequest) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "x-webhook-secret": webhookSecret,
             },
             body: JSON.stringify({ token }),
         });

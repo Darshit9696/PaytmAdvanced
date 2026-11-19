@@ -68,9 +68,18 @@ export const POST = async (request: NextRequest) => {
         })
     }
 
+    const bankAppUrl = process.env.BANK_APP_URL || (process.env.NODE_ENV !== "production" ? "http://localhost:3001" : "");
+    if (!bankAppUrl) {
+        console.error("BANK_APP_URL is not configured");
+        return NextResponse.json(
+            { error: "Payment gateway URL configuration missing" },
+            { status: 500 }
+        );
+    }
+
     return NextResponse.json({
         token,
-        redirectUrl: `http://localhost:3001/pay?token=${token}`
+        redirectUrl: `${bankAppUrl.replace(/\/+$/, "")}/pay?token=${token}`
     });
 
 }

@@ -28,6 +28,20 @@ function PayoutGatewayContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
+  const userAppUrl =
+    process.env.NEXT_PUBLIC_USER_APP_URL ||
+    (process.env.NODE_ENV !== "production" ? "http://localhost:3000" : "");
+
+  const handleReturnToUserApp = (path = "/dashboard") => {
+    if (!userAppUrl) {
+      console.error("NEXT_PUBLIC_USER_APP_URL is not configured");
+      alert("Consumer wallet URL configuration is missing.");
+      return;
+    }
+    const targetUrl = `${userAppUrl.replace(/\/+$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
+    window.location.href = targetUrl;
+  };
+
   useEffect(() => {
     const fetchPayoutData = async () => {
       try {
@@ -85,7 +99,7 @@ function PayoutGatewayContent() {
         setTimeout(() => {
           setStep("redirecting");
           setTimeout(() => {
-            router.push("http://localhost:3000/dashboard");
+            handleReturnToUserApp("/dashboard");
           }, 1500);
         }, 2000);
       }, 1500);
@@ -226,7 +240,7 @@ function PayoutGatewayContent() {
                 <Button
                   variant="outline"
                   size="md"
-                  onClick={() => router.push("http://localhost:3000/dashboard")}
+                  onClick={() => handleReturnToUserApp("/dashboard")}
                   className="w-full"
                 >
                   Cancel Payout

@@ -27,6 +27,16 @@ import { Amount, Avatar, Button, ThemeToggle } from "@repo/ui";
 export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const merchantAppUrl =
+    process.env.NEXT_PUBLIC_MERCHANT_APP_URL ||
+    (process.env.NODE_ENV !== "production" ? "http://localhost:3002" : "");
+  const merchantLoginUrl = merchantAppUrl
+    ? `${merchantAppUrl.replace(/\/+$/, "")}/login`
+    : "#";
+  const merchantSignupUrl = merchantAppUrl
+    ? `${merchantAppUrl.replace(/\/+$/, "")}/signup`
+    : "#";
+
   return (
     <div className="min-h-screen bg-bg text-text selection:bg-primary selection:text-primary-fg font-sans relative">
       {/* --------------------------------------------------------------------- */}
@@ -439,13 +449,13 @@ export default function LandingPage() {
 
             <div className="pt-6 grid sm:grid-cols-2 gap-2.5 mt-4 border-t border-border">
               <a
-                href="http://localhost:3002/login"
+                href={merchantLoginUrl}
                 className="px-4 py-2 text-center text-xs font-medium text-text bg-surface-subtle hover:bg-surface border border-border rounded-[6px] transition-all shadow-xs"
               >
                 Merchant Sign In
               </a>
               <a
-                href="http://localhost:3002/signup"
+                href={merchantSignupUrl}
                 className="px-4 py-2 text-center text-xs font-medium text-primary-fg bg-primary hover:bg-primary-hover rounded-[6px] shadow-xs transition-all"
               >
                 Register Store Account
@@ -525,7 +535,7 @@ export default function LandingPage() {
               <a href="#account-choice" className="hover:text-text transition-colors">Accounts</a>
               <a href="#security" className="hover:text-text transition-colors">Security</a>
               <Link href="/login" className="hover:text-text transition-colors">Personal Portal</Link>
-              <a href="http://localhost:3002/login" className="hover:text-text transition-colors">Merchant Console</a>
+              <a href={merchantLoginUrl} className="hover:text-text transition-colors">Merchant Console</a>
             </div>
           </div>
 
@@ -534,7 +544,7 @@ export default function LandingPage() {
             <div className="flex items-center gap-4 text-text-muted">
               <Link href="/login" className="hover:text-text">Personal Sign In</Link>
               <span>•</span>
-              <a href="http://localhost:3002/login" className="hover:text-text">Merchant Sign In</a>
+              <a href={merchantLoginUrl} className="hover:text-text">Merchant Sign In</a>
             </div>
           </div>
         </div>

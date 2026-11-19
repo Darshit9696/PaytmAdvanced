@@ -26,7 +26,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { Amount, ThemeToggle } from "@repo/ui";
+import { Amount, ThemeToggle, PageHeader } from "@repo/ui";
 
 // Reusable Components
 import { StatCard } from "@/components/StatCard";
@@ -72,6 +72,13 @@ export default function MerchantDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const userAppUrl =
+    process.env.NEXT_PUBLIC_USER_APP_URL ||
+    (process.env.NODE_ENV !== "production" ? "http://localhost:3000" : "");
+  const personalWalletUrl = userAppUrl
+    ? `${userAppUrl.replace(/\/+$/, "")}/dashboard`
+    : "#";
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -204,7 +211,7 @@ export default function MerchantDashboardPage() {
               Cross-app
             </span>
             <a
-              href="http://localhost:3000/dashboard"
+              href={personalWalletUrl}
               className="flex items-center justify-between px-3 py-2 rounded-[6px] text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors border border-white/10"
             >
               <span>Personal Wallet</span>
@@ -278,7 +285,7 @@ export default function MerchantDashboardPage() {
               <span>Charge Terminal</span>
             </a>
             <a
-              href="http://localhost:3000/dashboard"
+              href={personalWalletUrl}
               className="flex items-center justify-between px-3 py-2 rounded-[6px] text-xs font-medium text-accent"
             >
               <span>Personal Wallet</span>
@@ -306,35 +313,30 @@ export default function MerchantDashboardPage() {
       {/* --------------------------------------------------------------------- */}
       <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-[1400px] w-full">
         {/* Top Header & Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
-          <div>
-            <h1 className="text-base sm:text-lg font-semibold tracking-tight text-text">
-              Store Settlement Console
-            </h1>
-            <p className="text-xs text-text-muted mt-0.5">
-              Live incoming customer transactions, dynamic terminal charges, and balance settlements.
-            </p>
-          </div>
+        <PageHeader
+          title="Store Settlement Console"
+          subtitle="Live incoming customer transactions, dynamic terminal charges, and balance settlements."
+          actions={
+            <div className="flex items-center gap-2.5">
+              <ThemeToggle variant="icon" />
 
-          <div className="flex items-center gap-2.5 self-start sm:self-auto">
-            <ThemeToggle variant="icon" />
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-[11px] font-medium text-amber-700 dark:text-amber-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                <span>Simulator • No Real Money</span>
+              </div>
 
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-[11px] font-medium text-amber-700 dark:text-amber-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span>Simulator • No Real Money</span>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="flex items-center gap-1.5 text-xs bg-surface hover:bg-surface-subtle text-text px-3 py-1.5 rounded-[6px] border border-border transition-colors cursor-pointer"
+                title="Refresh merchant balance"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-primary ${refreshing ? "animate-spin" : ""}`} />
+                <span>Refresh</span>
+              </button>
             </div>
-
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="flex items-center gap-1.5 text-xs bg-surface hover:bg-surface-subtle text-text px-3 py-1.5 rounded-[6px] border border-border transition-colors cursor-pointer"
-              title="Refresh merchant balance"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 text-primary ${refreshing ? "animate-spin" : ""}`} />
-              <span>Refresh</span>
-            </button>
-          </div>
-        </div>
+          }
+        />
 
         {/* 1. Merchant Balance Hero Card (Flat, no card-in-card) */}
         <div id="overview" className="bg-surface border border-border rounded-[10px] p-5 sm:px-6 sm:py-5 relative overflow-hidden">
