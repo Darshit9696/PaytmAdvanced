@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter as useNextRouter } from "next/navigation";
 import {
-  ArrowLeft,
   ArrowUpRight,
   ArrowDownLeft,
   Search,
@@ -13,7 +12,7 @@ import {
   FileText,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { Amount, Avatar } from "@repo/ui";
+import { Amount, Avatar, PageHeader } from "@repo/ui";
 
 interface User {
   id: number;
@@ -115,26 +114,17 @@ export default function TransactionHistory() {
 
   return (
     <div className="max-w-[1100px] w-full space-y-6 font-sans">
-      {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="p-2 hover:bg-surface-subtle text-text-muted hover:text-text rounded-[6px] border border-border transition-colors cursor-pointer shadow-xs"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight text-text">Account Statement</h1>
-            <p className="text-xs text-text-muted">Complete ledger history of wallet transfers</p>
+      {/* Top Header */}
+      <PageHeader
+        title="Transactions"
+        subtitle="Complete ledger history of wallet transfers"
+        actions={
+          <div className="flex items-center gap-2 text-xs text-text-muted">
+            <FileText className="w-3.5 h-3.5 text-primary" />
+            <span>Total records: <strong className="font-mono text-text">{filteredTransactions.length}</strong></span>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2 text-xs text-text-muted">
-          <FileText className="w-3.5 h-3.5 text-primary" />
-          <span>Total records: <strong className="font-mono text-text">{filteredTransactions.length}</strong></span>
-        </div>
-      </div>
+        }
+      />
 
       {/* Action Controls Panel */}
       <div className="bg-surface border border-border rounded-[10px] p-4 shadow-xs space-y-3">

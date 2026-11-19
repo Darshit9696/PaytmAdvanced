@@ -137,7 +137,46 @@ async function decodeQRFromImageFile(file: File): Promise<string> {
   throw new Error("No QR code detected in uploaded image");
 }
 
-export function QRScanner() {
+export type ScannerStatus = "starting" | "scanning" | "permission_denied" | "no_camera";
+
+export interface QRScannerProps {
+  onStatusChange?: (status: ScannerStatus) => void;
+}
+
+export function ScannerStatusBadge({ status }: { status: ScannerStatus }) {
+  switch (status) {
+    case "starting":
+      return (
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-border text-xs font-medium text-text-muted shadow-xs select-none">
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+          <span>Starting camera...</span>
+        </div>
+      );
+    case "scanning":
+      return (
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-medium text-emerald-700 dark:text-emerald-400 shadow-xs select-none">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Scanning active</span>
+        </div>
+      );
+    case "permission_denied":
+      return (
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-danger-subtle/50 border border-danger/30 text-xs font-medium text-danger shadow-xs select-none">
+          <span className="w-2 h-2 rounded-full bg-danger" />
+          <span>Permission denied</span>
+        </div>
+      );
+    case "no_camera":
+      return (
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-subtle border border-border text-xs font-medium text-text-muted shadow-xs select-none">
+          <span className="w-2 h-2 rounded-full bg-text-faint" />
+          <span>No camera detected</span>
+        </div>
+      );
+  }
+}
+
+export function QRScanner({ onStatusChange }: QRScannerProps = {}) {
   const router = useRouter();
   const [isScanning, setIsScanning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -145,6 +184,27 @@ export function QRScanner() {
   const [invalidQrMessage, setInvalidQrMessage] = useState<string | null>(null);
   const [scannedTxId, setScannedTxId] = useState<string | null>(null);
   const [activeCameraLabel, setActiveCameraLabel] = useState<string | null>(null);
+
+  // Derive active scanner status
+  let currentStatus: ScannerStatus = "starting";
+  if (isLoading) {
+    currentStatus = "starting";
+  } else if (errorMessage) {
+    const em = errorMessage.toLowerCase();
+    if (em.includes("permission") || em.includes("denied") || em.includes("notallowed")) {
+      currentStatus = "permission_denied";
+    } else {
+      currentStatus = "no_camera";
+    }
+  } else if (isScanning) {
+    currentStatus = "scanning";
+  } else {
+    currentStatus = "starting";
+  }
+
+  useEffect(() => {
+    onStatusChange?.(currentStatus);
+  }, [currentStatus, onStatusChange]);
 
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const activeStreamRef = useRef<MediaStream | null>(null);
@@ -636,7 +696,10 @@ export function QRScanner() {
 
         {/* Camera Display Region */}
         <div className="mt-6 flex flex-col items-center justify-center">
-          <div className="relative w-full max-w-sm aspect-square bg-[#0E1512] rounded-[10px] overflow-hidden border border-border shadow-inner flex items-center justify-center">
+          <div
+            className="relative w-full max-w-[400px] aspect-square bg-[#0E1512] rounded-[10px] overflow-hidden border border-border shadow-inner flex items-center justify-center"
+            style={{ maxWidth: 400, maxHeight: 400 }}
+          >
             {/* HTML5 QR Container */}
             <div
               id={containerId}
@@ -675,19 +738,29 @@ export function QRScanner() {
                   <CameraOff className="w-5 h-5" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-xs font-semibold text-white">Camera Access Error</h3>
-                  <p className="text-[11px] text-slate-300 max-w-xs">{errorMessage}</p>
+                  <h3 className="text-xs font-semibold text-white">
+                    {currentStatus === "permission_denied"
+                      ? "Camera Permission Denied"
+                      : "No Camera Hardware Detected"}
+                  </h3>
+                  <p className="text-[11px] text-slate-300 max-w-xs">
+                    {currentStatus === "permission_denied"
+                      ? "Camera access was denied in your browser settings. Please allow camera permissions or upload an image directly."
+                      : "No camera device was detected on this system. You can upload a merchant QR image or screenshot to proceed."}
+                  </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 pt-2">
                   <button
                     onClick={() => startScanner()}
-                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-primary-fg rounded-[6px] text-xs font-medium transition-colors border border-primary cursor-pointer"
+                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-primary-fg rounded-[6px] text-xs font-medium transition-colors border border-primary cursor-pointer whitespace-nowrap"
                   >
-                    Grant Permission & Retry
+                    {currentStatus === "permission_denied"
+                      ? "Grant Permission & Retry"
+                      : "Retry Camera Check"}
                   </button>
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3.5 py-1.5 bg-surface text-text border border-border rounded-[6px] text-xs font-medium hover:bg-surface-subtle transition-colors cursor-pointer"
+                    className="px-3.5 py-1.5 bg-surface text-text border border-border rounded-[6px] text-xs font-medium hover:bg-surface-subtle transition-colors cursor-pointer whitespace-nowrap"
                   >
                     Upload QR Image
                   </button>

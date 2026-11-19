@@ -18,7 +18,7 @@ import {
   Wrench,
   Check,
 } from "lucide-react";
-import { Amount, Button } from "@repo/ui";
+import { Amount, Button, PageHeader } from "@repo/ui";
 
 interface ReconciliationReport {
   timestamp: string;
@@ -233,48 +233,37 @@ export default function ReconciliationPage() {
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-5">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-[8px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-            <Scale className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-text">
-              Ledger Reconciliation & Audit
-            </h1>
-            <p className="text-xs md:text-sm text-text-muted">
-              Continuous double-entry verification engine enforcing debits equal credits.
-            </p>
-          </div>
-        </div>
+      <PageHeader
+        title="Ledger Reconciliation & Audit"
+        subtitle="Continuous double-entry verification engine enforcing debits equal credits."
+        actions={
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleRunAudit}
+              disabled={runningAudit || loadingReport}
+              loading={runningAudit}
+              icon={<RefreshCw className={`w-3.5 h-3.5 shrink-0 ${runningAudit ? "animate-spin" : ""}`} />}
+              className="h-[36px] inline-flex items-center gap-2 whitespace-nowrap px-3.5 text-xs font-medium"
+            >
+              {runningAudit ? "Auditing Database..." : "Run audit job"}
+            </Button>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleRunAudit}
-            disabled={runningAudit || loadingReport}
-            loading={runningAudit}
-            icon={<RefreshCw className={`w-3.5 h-3.5 shrink-0 ${runningAudit ? "animate-spin" : ""}`} />}
-            className="h-[36px] inline-flex items-center gap-2 whitespace-nowrap px-3.5 text-xs font-medium"
-          >
-            {runningAudit ? "Auditing Database..." : "Run audit job"}
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleAutoFix}
-            disabled={runningFix || isBalanced}
-            loading={runningFix}
-            icon={<Wrench className={`w-3.5 h-3.5 shrink-0 ${runningFix ? "animate-spin" : ""}`} />}
-            className="h-[36px] inline-flex items-center gap-2 whitespace-nowrap px-3.5 text-xs font-medium border-border hover:bg-surface-subtle disabled:opacity-40"
-          >
-            {runningFix ? "Aligning..." : "Auto-align wallets"}
-          </Button>
-        </div>
-      </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleAutoFix}
+              disabled={runningFix || isBalanced}
+              loading={runningFix}
+              icon={<Wrench className={`w-3.5 h-3.5 shrink-0 ${runningFix ? "animate-spin" : ""}`} />}
+              className="h-[36px] inline-flex items-center gap-2 whitespace-nowrap px-3.5 text-xs font-medium border-border hover:bg-surface-subtle disabled:opacity-40"
+            >
+              {runningFix ? "Aligning..." : "Auto-align wallets"}
+            </Button>
+          </div>
+        }
+      />
 
       {/* Main Status Overview Card */}
       <div

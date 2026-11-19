@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ArrowLeft,
   Send,
   Search,
   CheckCircle2,
@@ -11,7 +10,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { Avatar, Amount, Button, Input } from "@repo/ui";
+import { Avatar, Amount, Button, Input, PageHeader } from "@repo/ui";
 
 interface UserType {
   id: number;
@@ -187,22 +186,12 @@ function SendMoneyContent() {
 
   return (
     <div className="max-w-[1100px] w-full space-y-6 font-sans">
+      <PageHeader
+        title="Send Money"
+        subtitle="Direct peer-to-peer ledger transfer"
+      />
+
       <div className="max-w-xl space-y-6">
-        {/* Top Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-border">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="p-2 hover:bg-surface-subtle text-text-muted hover:text-text rounded-[6px] border border-border transition-colors cursor-pointer shadow-xs"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <div>
-              <h1 className="text-xl font-semibold tracking-tight text-text">Send money</h1>
-              <p className="text-xs text-text-muted">Direct peer-to-peer ledger transfer</p>
-            </div>
-          </div>
-        </div>
 
         {/* Status Notification */}
         {status && (

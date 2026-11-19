@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { signOut } from "next-auth/react";
 import { ShieldCheck, LogOut, Key, Copy, Check, Moon } from "lucide-react";
-import { Avatar, Button, ThemeToggle } from "@repo/ui";
+import { Avatar, Button, ThemeToggle, PageHeader } from "@repo/ui";
 
 interface ProfileViewProps {
   user: {
@@ -30,6 +30,11 @@ export default function ProfileView({ user }: ProfileViewProps) {
 
   return (
     <div className="max-w-[1100px] w-full space-y-6 font-sans">
+      <PageHeader
+        title="Profile"
+        subtitle="Personal digital wallet account details and session security"
+      />
+
       {/* 1. Profile Header Banner */}
       <div className="bg-surface border border-border rounded-[10px] p-6 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center gap-5">

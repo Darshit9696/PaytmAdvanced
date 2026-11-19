@@ -17,7 +17,7 @@ import {
   Scale,
   Sparkles,
 } from "lucide-react";
-import { Amount, Avatar, Card, CardHeader, CardTitle, CardContent } from "@repo/ui";
+import { Amount, Avatar, Card, CardHeader, CardTitle, CardContent, PageHeader } from "@repo/ui";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -84,12 +84,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-[1100px] w-full space-y-6 font-sans">
-      {/* 1. Header Greeting (Small, 16px, regular, muted) */}
-      <div>
-        <p className="text-base text-text-muted font-normal">
-          Welcome back, {user.name}
-        </p>
-      </div>
+      {/* 1. Page Header */}
+      <PageHeader
+        title="Dashboard"
+        subtitle={`Welcome back, ${user.name}. Overview of personal ledger activity.`}
+        borderBottom={false}
+      />
 
       {/* 2. Calm Ledger Balance Hero Card */}
       <div className="bg-surface border border-border rounded-[10px] p-5 sm:px-6 sm:py-5">
